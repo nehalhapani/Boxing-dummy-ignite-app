@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "400169882902",
+    "firebase_url": "https://boxingproject-1601360740642.firebaseio.com",
+    "project_id": "boxingproject-1601360740642",
+    "storage_bucket": "boxingproject-1601360740642.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:400169882902:android:327b9f99d17bd02b9c2c37",
+        "android_client_info": {
+          "package_name": "com.boxingproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "400169882902-vcn7snnfnajehl7vj7i0hsh41e6k8aft.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjCQpdgOZJRImXWqyVzKylva5CwvuXSvE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "400169882902-vcn7snnfnajehl7vj7i0hsh41e6k8aft.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "400169882902-tj7i38lhuha95kv8htqqriam42jt7v7g.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.BoxingProject"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
