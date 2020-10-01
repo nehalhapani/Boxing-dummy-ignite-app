@@ -8,6 +8,10 @@ target 'BoxingProject' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
+  pod 'Firebase/Analytics'
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
   target 'BoxingProjectTests' do
     inherit! :complete
     # Pods for testing

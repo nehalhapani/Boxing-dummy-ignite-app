@@ -48,6 +48,9 @@ export const color = {
    * Error messages and icons.
    */
   error: palette.angry,
+  golden: palette.golden,
+  facebook_blue: palette.facebook_blue,
+  google_red: palette.google_red,
 
   /**
    * Storybook background for Text stories, or any stories where

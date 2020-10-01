@@ -1,3 +1,6 @@
 export * from "./primary-navigator"
+export * from "./auth-navigator"
+export * from "./bottom-tab-navigator"
+export * from "./drawer-navigator"
 export * from "./root-navigator"
 export * from "./navigation-utilities"
