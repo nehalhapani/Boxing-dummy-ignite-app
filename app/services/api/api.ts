@@ -43,6 +43,54 @@ export class Api {
       },
     })
   }
+  /**
+   * Gets a Categories
+   */
+
+  async getCategoryItems(): Promise<Types.GetCategoryResult> {
+    const response: ApiResponse<any> = await this.apisauce.get(`/0`)
+
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+    // transform the data into the format we are expecting
+    try {
+      return { kind: "ok", category: response.data.data }
+    } catch {
+      return { kind: "bad-data" }
+    }
+  }
+
+  async getSubCategoryItems(id: number): Promise<Types.GetCategoryResult> {
+    const response: ApiResponse<any> = await this.apisauce.get(`/${id}`)
+
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+    // transform the data into the format we are expecting
+    try {
+      return { kind: "ok", category: response.data.data }
+    } catch {
+      return { kind: "bad-data" }
+    }
+  }
+
+  async getMediaImage(id: number): Promise<Types.GetCategoryResult> {
+    const response: ApiResponse<any> = await this.apisauce.get(`/${id}`)
+
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+    // transform the data into the format we are expecting
+    try {
+      return { kind: "ok", category: response.data.data }
+    } catch {
+      return { kind: "bad-data" }
+    }
+  }
 
   /**
    * Gets a list of users.

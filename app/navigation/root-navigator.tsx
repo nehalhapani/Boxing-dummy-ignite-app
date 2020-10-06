@@ -12,6 +12,7 @@ import { PrimaryNavigator } from "./primary-navigator"
 import { AuthNavigator } from "./auth-navigator"
 import { useStores } from "../models"
 import { observer } from "mobx-react-lite"
+import { DrawerNavigator } from "./drawer-navigator"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -24,7 +25,7 @@ import { observer } from "mobx-react-lite"
  *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
  */
 export type RootParamList = {
-  primaryStack: undefined
+  drawer: undefined
   authStack: undefined
 }
 
@@ -43,8 +44,8 @@ const RootStack = observer(() => {
     >
       {authStore.isTokenSet ? (
         <Stack.Screen
-          name="primaryStack"
-          component={PrimaryNavigator}
+          name="drawer"
+          component={DrawerNavigator}
           options={{
             headerShown: false,
           }}

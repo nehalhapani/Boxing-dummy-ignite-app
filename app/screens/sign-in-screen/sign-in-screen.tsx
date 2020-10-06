@@ -156,7 +156,6 @@ export const SignInScreen = observer(function SignInScreen() {
         setRuntimeUsername(true)
         Alert.alert("Invalid Inputs!!", "Please enter valid username and password")
       } else {
-        Alert.alert("done")
         authStore.setToken()
       }
       console.log("Sucess")

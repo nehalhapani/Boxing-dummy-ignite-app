@@ -10,4 +10,5 @@ export const palette = {
   golden: "#EECE00",
   facebook_blue: "#4267B2",
   google_red: "#B23121",
+  brownGray: "#ADADAD",
 }

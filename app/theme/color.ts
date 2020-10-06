@@ -51,6 +51,7 @@ export const color = {
   golden: palette.golden,
   facebook_blue: palette.facebook_blue,
   google_red: palette.google_red,
+  brownGray: palette.brownGray,
 
   /**
    * Storybook background for Text stories, or any stories where

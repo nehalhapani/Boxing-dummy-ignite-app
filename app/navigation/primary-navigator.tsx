@@ -7,10 +7,7 @@
 import React from "react"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
-import { NavigationContainer } from "@react-navigation/native"
-
-import { BottomTabNavigator } from "./bottom-tab-navigator"
-import { HomeScreen } from "../screens"
+import { HomeScreen, PrepareScreen, GearScreen, VideoScreen } from "../screens"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -26,7 +23,10 @@ import { HomeScreen } from "../screens"
  */
 export type PrimaryParamList = {
   //signIn: undefined
-  home: undefined
+  dashboard: undefined
+  prepare: undefined
+  gear: undefined
+  video: undefined
 }
 
 // Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
@@ -40,8 +40,10 @@ export function PrimaryNavigator() {
         gestureEnabled: true,
       }}
     >
-      {/* <Stack.Screen name="signIn" component={SignInScreen} /> */}
-      <Stack.Screen name="home" component={BottomTabNavigator} />
+      <Stack.Screen name="dashboard" component={HomeScreen} />
+      <Stack.Screen name="prepare" component={PrepareScreen} />
+      <Stack.Screen name="gear" component={GearScreen} />
+      <Stack.Screen name="video" component={VideoScreen} />
     </Stack.Navigator>
   )
 }

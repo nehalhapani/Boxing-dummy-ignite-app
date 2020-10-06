@@ -1,11 +1,11 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle, ImageStyle, ImageBackground, TextStyle, View, Alert } from "react-native"
+import { ViewStyle, ImageStyle, ImageBackground, TextStyle, View, FlatList } from "react-native"
 import { Screen, Header, Button } from "../../components"
 import { useNavigation } from "@react-navigation/native"
 import { useStores } from "../../models"
 import { color, spacing } from "../../theme"
-import { useIsDrawerOpen } from "@react-navigation/drawer"
+import { useIsFocused } from "@react-navigation/native"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -35,41 +35,48 @@ const BUTTON_VIEW: ViewStyle = {
 const BUTTON: ViewStyle = {
   paddingVertical: spacing[2],
 }
-
+const FIRST_FLEX: ViewStyle = {
+  flex: 1,
+  justifyContent: "center",
+}
 export const HomeScreen = observer(function HomeScreen() {
-  // const navigation = useNavigation()
-  // const isDrawerOpen = useIsDrawerOpen()
-  const { authStore } = useStores()
-  const logOut = () => {
-    authStore.removeToken()
+  const navigation = useNavigation()
+  const { categoryStore, mediaStore } = useStores()
+  const isFocused = useIsFocused()
+
+  useEffect(() => {
+    categoryStore.getCategoryItems()
+    mediaStore.setIndexForSubcategory(0)
+  }, [isFocused])
+
+  const renderItem = ({ item }) => {
+    return (
+      <View style={BUTTON}>
+        <Button
+          style={BUTTON_VIEW}
+          textStyle={TEXT_COLOR}
+          text={item.name}
+          onPress={() =>
+            navigation.navigate("prepare", {
+              id: item.id,
+              name: item.name,
+            })
+          }
+        />
+      </View>
+    )
   }
   return (
     <ImageBackground source={require("./layer2.png")} style={BACKGROUND}>
       <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
-        <Header
-          headerText={"Dashboard"}
-          rightIcon="hamBurger"
-          onRightPress={() => Alert.alert("open Drawer")}
-        />
-        <View style={{ flex: 1, justifyContent: "center" }}>
+        <Header headerText={"Dashboard"} rightIcon="hamBurger" />
+        <View style={FIRST_FLEX}>
           <View style={MAIN_VIEW}>
-            <View style={BUTTON}>
-              <Button style={BUTTON_VIEW} textStyle={TEXT_COLOR} text="PREPARE" />
-            </View>
-            <View style={BUTTON}>
-              <Button style={BUTTON_VIEW} textStyle={TEXT_COLOR} text="LEARN" />
-            </View>
-            <View style={BUTTON}>
-              <Button style={BUTTON_VIEW} textStyle={TEXT_COLOR} text="TRAIN" />
-            </View>
-            <View style={BUTTON}>
-              <Button
-                style={BUTTON_VIEW}
-                textStyle={TEXT_COLOR}
-                text="LOG OUT"
-                onPress={() => logOut()}
-              />
-            </View>
+            <FlatList
+              data={categoryStore.category}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+            />
           </View>
         </View>
       </Screen>

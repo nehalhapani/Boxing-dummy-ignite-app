@@ -8,23 +8,16 @@ import React from "react"
 
 // import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { HomeScreen, ProfileScreen } from "../screens"
+import { ProfileScreen } from "../screens"
 import { Icon, Text } from "../components"
 import { color, spacing } from "../theme"
-import {
-  Image,
-  ImageBackground,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-} from "react-native"
+import { ImageBackground, View, TouchableOpacity, SafeAreaView } from "react-native"
 import { icons } from "../components/icon/icons"
+import { PrimaryNavigator } from "./primary-navigator"
 
 export type BottomTabParamList = {
-  //signIn: undefined
-  Dashboard: undefined
-  Profile: undefined
+  primary: undefined
+  profile: undefined
 }
 
 function MyTabBar({ state, descriptors, navigation }) {
@@ -33,9 +26,6 @@ function MyTabBar({ state, descriptors, navigation }) {
       style={{
         flexDirection: "row",
         height: 92,
-
-        // alignContent: "center",
-        // backgroundColor: "yellow",
       }}
     >
       {state.routes.map((route, index) => {
@@ -48,7 +38,7 @@ function MyTabBar({ state, descriptors, navigation }) {
             : route.name
 
         const isFocused = state.index === index
-        const icon = route.name == "Dashboard" ? "home" : "profile"
+        const icon = route.name == "primary" ? "home" : "profile"
         const backgroundImage = isFocused ? icons.tabactive : icons.tabinactive
 
         const onPress = () => {
@@ -110,8 +100,8 @@ const Tab = createBottomTabNavigator<BottomTabParamList>()
 export function BottomTabNavigator() {
   return (
     <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>
-      <Tab.Screen name="Dashboard" component={HomeScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen options={{ title: "Dashboard" }} name="primary" component={PrimaryNavigator} />
+      <Tab.Screen options={{ title: "My Profile" }} name="profile" component={ProfileScreen} />
     </Tab.Navigator>
   )
 }
