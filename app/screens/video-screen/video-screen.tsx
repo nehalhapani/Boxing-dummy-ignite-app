@@ -1,10 +1,22 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle, ImageStyle, ImageBackground, View, TextStyle } from "react-native"
+import {
+  ViewStyle,
+  ImageStyle,
+  ImageBackground,
+  View,
+  TextStyle,
+  FlatList,
+  TouchableOpacity,
+} from "react-native"
 import { Screen, Header, Icon, Text } from "../../components"
+import { useStores } from "../../models"
 import { color, spacing } from "../../theme"
 import { icons } from "../../components/icon/icons"
-import Video from "react-native-video"
+import { useNavigation } from "@react-navigation/native"
+import { useIsFocused } from "@react-navigation/native"
+import YouTube from "react-native-youtube"
+import HTML from "react-native-render-html"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -28,16 +40,79 @@ const PREV_BTN: ImageStyle = {
   width: 61.3,
   height: 26.7,
 }
-const VIDE_VIEW: ViewStyle = {
-  paddingVertical: spacing[4] + spacing[1],
+const VIDEO_VIEW: ViewStyle = {
+  paddingTop: spacing[4] + spacing[1],
 }
 const SET_STYLE: TextStyle = {
   fontSize: 17,
   color: color.palette.white,
   fontWeight: "bold",
 }
+const VIDEO: ViewStyle = {
+  alignSelf: "stretch",
+  height: 200,
+  width: "100%",
+  backgroundColor: "white",
+}
+const RENDER_VIEW: ViewStyle = {
+  marginVertical: spacing[4],
+}
 
 export const VideoScreen = observer(function VideoScreen({ route }) {
+  const navigation = useNavigation()
+  const { mediaStore, categoryStore } = useStores()
+  const isFocused = useIsFocused()
+  useEffect(() => {
+    if (isFocused) {
+      console.tron.log("In useeffect")
+      getdata(route.params.id)
+    }
+  }, [])
+  console.log("parent id", route.params.parent_id)
+  console.log(" id", route.params.id)
+
+  const getdata = async (id: number) => {
+    // await categoryStore.getCategoryItems()
+    // await mediaStore.getSubCategoryItems(route.params.parent_id)
+    await mediaStore.getMediaForSubcategory(id)
+    console.tron.log(mediaStore.mediaArray)
+    //console.warn(mediaStore.mediaArray.media)
+  }
+  const renderItem = ({ item, index }) => {
+    // let video_id = item.url.match(
+    //   /(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/,
+    // )[1]
+    //console.warn(item)
+    return (
+      <View key={index} style={VIDEO_VIEW}>
+        <View style={RENDER_VIEW}>
+          <YouTube
+            apiKey={"AIzaSyCZM0JNm3Hwoa25ZYqyGjw7gX6rY3cHDYM"}
+            videoId={item.url}
+            play={false}
+            fullscreen={false}
+            loop={false}
+            controls={1}
+            modestbranding={true}
+            style={VIDEO}
+          />
+        </View>
+        <HTML
+          tagsStyles={{
+            ul: { color: "white", fontSize: 16 },
+            p: { color: "white", fontSize: 16, paddingBottom: 10 },
+            h2: { color: "white" },
+          }}
+          listsPrefixesRenderers={{
+            ul: (htmlAttribs, children, convertedCSSStyles, passProps) => {
+              return <Text style={{ color: "white", fontSize: 16, marginRight: 5 }}>+</Text>
+            },
+          }}
+          html={'<div style="color: white">' + item.description + "</div>"}
+        />
+      </View>
+    )
+  }
   return (
     <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
       <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
@@ -50,16 +125,21 @@ export const VideoScreen = observer(function VideoScreen({ route }) {
         <View style={MAIN_FLEX}>
           <View style={NAVIGATE_VIEW}>
             <View>
-              <Icon icon={"prev2"} style={PREV_BTN} />
+              <TouchableOpacity onPress={() => navigation.navigate("dashboard")}>
+                <Icon icon={"prev2"} style={PREV_BTN} />
+              </TouchableOpacity>
             </View>
             <View>
-              <Icon icon={"next"} />
+              <TouchableOpacity onPress={() => navigation.navigate("dashboard")}>
+                <Icon icon={"next"} />
+              </TouchableOpacity>
             </View>
           </View>
-          <View style={VIDE_VIEW}>
-            <Text text={"SET 1"} style={SET_STYLE} />
-            {/* <Video source={{ uri: "https://youtu.be/kq7fXo85ecU" }} /> */}
-          </View>
+          <FlatList
+            data={mediaStore.mediaArray.media}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index.toString()}
+          />
         </View>
       </Screen>
     </ImageBackground>

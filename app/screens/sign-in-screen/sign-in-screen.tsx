@@ -1,5 +1,3 @@
-//TODO - reg alphanumeric
-
 import React, { useState, useEffect, useRef } from "react"
 import { observer } from "mobx-react-lite"
 import {
@@ -19,6 +17,8 @@ import { validatePassword, validateEmail } from "../../utils/custom-validate"
 import { GoogleSignin, statusCodes } from "@react-native-community/google-signin"
 import { LoginManager } from "react-native-fbsdk"
 import { useStores } from "../../models"
+import { icons } from "../../components/icon/icons"
+
 const ROOT: ViewStyle = {
   flex: 1,
 }
@@ -62,8 +62,6 @@ const WELCOME_MSG: TextStyle = {
   fontWeight: "bold",
 }
 const BOTTOM_VIEW: ViewStyle = {
-  //flex: 1,
-  //justifyContent: "flex-end",
   paddingBottom: spacing[4],
 }
 const TEXT_COLOR: TextStyle = {
@@ -111,7 +109,6 @@ export const SignInScreen = observer(function SignInScreen() {
       webClientId: "400169882902-vcn7snnfnajehl7vj7i0hsh41e6k8aft.apps.googleusercontent.com",
       offlineAccess: true,
       forceCodeForRefreshToken: true,
-      //iosClientId: "400169882902-tj7i38lhuha95kv8htqqriam42jt7v7g.apps.googleusercontent.com",
     })
   }, [])
 
@@ -119,10 +116,7 @@ export const SignInScreen = observer(function SignInScreen() {
     try {
       await GoogleSignin.hasPlayServices()
       const userInfo = await GoogleSignin.signIn()
-      console.log("====================================")
       console.log(userInfo)
-      console.log("====================================")
-      // this.setState({ userInfo });
       authStore.setToken()
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -136,6 +130,7 @@ export const SignInScreen = observer(function SignInScreen() {
       }
     }
   }
+
   const ref_input2 = useRef(null)
 
   const USER_DATA = [
@@ -210,13 +205,13 @@ export const SignInScreen = observer(function SignInScreen() {
     )
   }
   return (
-    <ImageBackground source={require("./layer2.png")} style={BACKGROUND}>
+    <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
       <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
         <View style={MAINFLEX}>
           <View>
             <View>
               <View style={LOGO_SPACING}>
-                <Image source={require("./logo.png")} />
+                <Image source={icons["logo"]} />
               </View>
               <Text style={WELCOME_MSG} text="Welcome Back," />
               <Text style={SUB_TEXT} text="Sign in to continue" />

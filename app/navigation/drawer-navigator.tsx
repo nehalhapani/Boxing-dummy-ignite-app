@@ -53,11 +53,11 @@ const DRAWER_STYLE: ViewStyle = {
 
 function CustomDrawerContent(props) {
   const { authStore } = useStores()
-  const { categoryStore } = useStores()
+  const { categoryStore, mediaStore } = useStores()
   const navigation = useNavigation()
 
   return (
-    <DrawerContentScrollView style={{ backgroundColor: "black" }}>
+    <DrawerContentScrollView style={{ backgroundColor: "black", padding: 33.3 }}>
       <View style={MAINFLEX}>
         <View style={{ backgroundColor: "black" }}>
           <View>
@@ -77,7 +77,7 @@ function CustomDrawerContent(props) {
                 activeTintColor={color.palette.golden}
                 inactiveTintColor={color.palette.white}
                 activeBackgroundColor={color.transparent}
-                focused={categoryStore.indexForSubcategory == 0 ? true : false}
+                focused={mediaStore.indexForSubcategory == 0 ? true : false}
               />
 
               <FlatList
@@ -97,7 +97,7 @@ function CustomDrawerContent(props) {
                       activeTintColor={color.palette.golden}
                       inactiveTintColor={color.palette.white}
                       activeBackgroundColor={color.transparent}
-                      focused={categoryStore.indexForSubcategory == item.id ? true : false}
+                      focused={mediaStore.indexForSubcategory == item.id ? true : false}
                     />
                   )
                 }}

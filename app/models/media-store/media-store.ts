@@ -36,7 +36,7 @@ export const MediaStoreModel = types
         const data = yield api.getSubCategoryItems(id)
         console.log("api data ===>", data)
         self.subCategory = data.category
-        console.log("subcategory in store ^^^^===>", self.subCategory)
+        console.tron.log("subcategory in store ^^^^===>", self.subCategory)
         self.loading = false
       } catch (error) {
         console.log(error)
@@ -44,6 +44,7 @@ export const MediaStoreModel = types
       }
     }),
 
+    // extract media array from subcategory data array
     getMediaForSubcategory(idOfSubcategory: number) {
       let indexForPerticularMedia = self.subCategory.findIndex((item) => item.id == idOfSubcategory)
       self.mediaArray = self.subCategory[indexForPerticularMedia]

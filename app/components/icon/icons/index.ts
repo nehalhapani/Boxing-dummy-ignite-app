@@ -20,6 +20,7 @@ export const icons = {
   mainProfile: require("./mainProfile.png"),
   search: require("./searchProfile.png"),
   downArrow: require("./downArrow.png"),
+  play: require("./play.png"),
 }
 
 export type IconTypes = keyof typeof icons
