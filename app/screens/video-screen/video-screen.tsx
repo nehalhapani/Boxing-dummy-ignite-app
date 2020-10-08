@@ -65,30 +65,33 @@ export const VideoScreen = observer(function VideoScreen({ route }) {
   useEffect(() => {
     if (isFocused) {
       console.tron.log("In useeffect")
-      getdata(route.params.id)
+      getdata(route.params.id, route.params.parent_id)
     }
-  }, [])
+
+    return function cleanup() {
+      mediaStore.subcategoryCleanup()
+      console.tron.log("Clean Data")
+    }
+  }, [isFocused])
   console.log("parent id", route.params.parent_id)
   console.log(" id", route.params.id)
 
-  const getdata = async (id: number) => {
-    // await categoryStore.getCategoryItems()
-    // await mediaStore.getSubCategoryItems(route.params.parent_id)
+  const getdata = async (id: number, parentId) => {
+    await mediaStore.getSubCategoryItems(parentId)
+    await mediaStore.getCurrentSubCategory(parentId)
     await mediaStore.getMediaForSubcategory(id)
-    console.tron.log(mediaStore.mediaArray)
-    //console.warn(mediaStore.mediaArray.media)
   }
   const renderItem = ({ item, index }) => {
-    // let video_id = item.url.match(
-    //   /(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/,
-    // )[1]
+    let video_id = item.url.match(
+      /(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/,
+    )[1]
     //console.warn(item)
     return (
       <View key={index} style={VIDEO_VIEW}>
         <View style={RENDER_VIEW}>
           <YouTube
             apiKey={"AIzaSyCZM0JNm3Hwoa25ZYqyGjw7gX6rY3cHDYM"}
-            videoId={item.url}
+            videoId={video_id}
             play={false}
             fullscreen={false}
             loop={false}
@@ -136,7 +139,7 @@ export const VideoScreen = observer(function VideoScreen({ route }) {
             </View>
           </View>
           <FlatList
-            data={mediaStore.mediaArray.media}
+            data={mediaStore.mediaArray}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
           />

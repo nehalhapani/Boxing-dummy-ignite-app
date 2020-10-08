@@ -87,7 +87,7 @@ function CustomDrawerContent(props) {
                     <DrawerItem
                       label={item.name}
                       onPress={() =>
-                        navigation.navigate("prepare", {
+                        navigation.navigate("subCategory", {
                           id: item.id,
                           name: item.name,
                         })

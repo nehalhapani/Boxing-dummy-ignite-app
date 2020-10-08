@@ -2523,6 +2523,21 @@
     "@types/history" "*"
     "@types/react" "*"
 
+"@types/react-native-snap-carousel@^3.8.2":
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/@types/react-native-snap-carousel/-/react-native-snap-carousel-3.8.2.tgz#31fb91530198183c658db0d23935ca79850419f5"
+  integrity sha512-ItvLo19gQstxcir6wIXJxwohxdYj9t/lXv+MXfqhwMSYaR+Xa3vOP7b6TYQCe9GqDPH3sEgEg/uH6CLV+fhcWA==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+
+"@types/react-native@*":
+  version "0.63.25"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.63.25.tgz#a08bbe17a75cce993f52655a8fe75f30bf77e965"
+  integrity sha512-cRm+1iQecewpFYOArYJoM1qGd0JpFJ6f97KqIy9H2GawAdWkgyarSk8CBy4SMt2WOtPkysCu2EG7UwIT3vNeaA==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-native@^0.63.2":
   version "0.63.22"
   resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.63.22.tgz#5babb88b73c892e3f23b7c18bf83c320cf872f69"

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
 import {
   ViewStyle,
@@ -8,14 +8,14 @@ import {
   View,
   Image,
   TouchableOpacity,
+  Dimensions,
 } from "react-native"
 import { Screen, Header, Icon, Text } from "../../components"
 import { color, spacing } from "../../theme"
 import { useStores } from "../../models"
 import { icons } from "../../components/icon/icons"
 import { useIsFocused } from "@react-navigation/native"
-import { useNavigation } from "@react-navigation/native"
-import Swiper from "react-native-swiper"
+import Carousel, { Pagination } from "react-native-snap-carousel"
 import HTML from "react-native-render-html"
 
 const ROOT: ViewStyle = {
@@ -29,11 +29,11 @@ const BACKGROUND: ImageStyle = {
 }
 const MAIN_FLEX: ViewStyle = {
   flex: 1,
-  paddingHorizontal: 33.3,
   paddingVertical: spacing[3] + spacing[2],
 }
 const NAVIGATE_VIEW: ViewStyle = {
   flexDirection: "row",
+  paddingHorizontal: 33.3,
   justifyContent: "space-between",
 }
 const DETAIL_VIEW: ViewStyle = {
@@ -49,11 +49,12 @@ const PREV_BTN: ImageStyle = {
   width: 61.3,
   height: 26.7,
 }
-const DOTSTYLE_SWIPER: ImageStyle = {
+const DOTSTYLE_SWIPER: ViewStyle = {
   height: 13.3,
   width: 13.3,
   borderRadius: 13.3,
   marginLeft: spacing[4],
+  backgroundColor: color.palette.white,
 }
 const IMG_SET: ImageStyle = {
   height: "100%",
@@ -66,25 +67,58 @@ const TEXT_SET: ViewStyle = {
   alignItems: "center",
 }
 
+const SLIDER_WIDTH = Dimensions.get("window").width
+const ITEM_WIDTH = SLIDER_WIDTH - 67
+
 export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
+  const swiper_ref = useRef()
+  const [activeSLide, setActiveSlide] = useState(1)
   const { mediaStore } = useStores()
-  const navigation = useNavigation()
   const isFocused = useIsFocused()
   useEffect(() => {
     if (isFocused) {
       console.tron.log("In useeffect")
-      getdata(route.params.id)
+      getdata(route.params.id, route.params.parent_id)
+    }
+    return function cleanup() {
+      mediaStore.subcategoryCleanup()
+      console.tron.log("In cleanup")
     }
   }, [isFocused])
 
-  const getdata = async (id: number) => {
-    await mediaStore.getSubCategoryItems(route.params.parent_id)
+  const getdata = async (id: number, parentId) => {
+    console.log(id, parentId)
+    await mediaStore.getSubCategoryItems(parentId)
+    await mediaStore.getCurrentSubCategory(parentId)
     await mediaStore.getMediaForSubcategory(id)
-    console.tron.log(mediaStore.mediaArray)
+
+    console.log("mediaArray", mediaStore.mediaArray)
   }
-  const renderview = mediaStore.mediaArray.media.map((item, key) => {
+
+  const pagination = () => {
+    // const { entries, activeSlide } = this.state
     return (
-      <View style={DETAIL_VIEW}>
+      <Pagination
+        dotsLength={mediaStore.mediaArray.length}
+        activeDotIndex={activeSLide}
+        containerStyle={{ backgroundColor: color.transparent }}
+        dotStyle={{
+          height: 13.3,
+          width: 13.3,
+          borderRadius: 13.3,
+          marginLeft: spacing[4],
+          backgroundColor: color.palette.white,
+        }}
+        dotColor={color.palette.golden}
+        inactiveDotColor={color.palette.white}
+        inactiveDotOpacity={1}
+        inactiveDotScale={1}
+      />
+    )
+  }
+  const renderItem = ({ item, index }) => {
+    return (
+      <View key={index} style={DETAIL_VIEW}>
         <View style={{ flex: 5 }}>
           <Image source={{ uri: item.url }} style={IMG_SET} />
         </View>
@@ -94,8 +128,7 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
         </View>
       </View>
     )
-  })
-  //console.warn(mediaStore)
+  }
 
   return (
     <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
@@ -113,16 +146,18 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
             </View>
           </View>
           <View style={{ flex: 1 }}>
-            <Swiper
-              showsButtons={false}
+            <Carousel
+              ref={swiper_ref}
+              data={mediaStore.mediaArray}
+              renderItem={renderItem}
+              sliderWidth={SLIDER_WIDTH}
+              itemWidth={ITEM_WIDTH}
+              inactiveSlideOpacity={0}
+              inactiveSlideShift={0}
               loop={false}
-              dotStyle={DOTSTYLE_SWIPER}
-              activeDotStyle={DOTSTYLE_SWIPER}
-              dotColor={color.palette.white}
-              activeDotColor={color.palette.golden}
-            >
-              {renderview}
-            </Swiper>
+              onSnapToItem={(index) => setActiveSlide(index)}
+            />
+            {pagination()}
           </View>
         </View>
       </Screen>

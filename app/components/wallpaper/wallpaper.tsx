@@ -2,8 +2,9 @@ import React from "react"
 import { Image } from "react-native"
 import { presets } from "./wallpaper.presets"
 import { WallpaperProps } from "./wallpaper.props"
+import { icons } from "../icon/icons"
 
-const defaultImage = require("../icon/icons/layer2.png")
+const defaultImage = icons["backgroundImage"]
 
 /**
  * For your text displaying needs.

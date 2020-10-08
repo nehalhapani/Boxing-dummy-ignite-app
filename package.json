@@ -30,6 +30,7 @@
     "@react-navigation/bottom-tabs": "^5.9.1",
     "@react-navigation/drawer": "^5.9.2",
     "@react-navigation/native": "^5.7.5",
+    "@types/react-native-snap-carousel": "^3.8.2",
     "apisauce": "1.1.2",
     "firebase": "^7.21.1",
     "i18n-js": "^3.0.11",

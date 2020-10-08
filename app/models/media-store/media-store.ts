@@ -10,51 +10,69 @@ api.setup()
 export const MediaStoreModel = types
   .model("MediaStore")
   .props({
-    mediaArray: types.optional(types.frozen(), null),
-    loading: false,
-    subCategory: types.optional(types.frozen(), null),
+    allSubCategoryMedia: types.optional(types.array(types.frozen()), []),
+    subCategory: types.optional(types.frozen(), []),
+    mediaArray: types.optional(types.frozen(), []),
     indexForSubcategory: types.optional(types.integer, 0),
+    loading: false,
   })
+
   .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
-    getMediaImage: flow(function* getMediaImage(id: number) {
-      try {
-        self.loading = true
-        const data = yield api.getMediaImage(id)
-        console.log("api image data ===>", data)
-        self.mediaArray = data.category
-        console.log("img in store ===>", self.mediaArray)
-        self.loading = false
-      } catch (error) {
-        console.log(error)
-        self.loading = false
-      }
-    }),
     getSubCategoryItems: flow(function* getSubCategoryItems(id: number) {
       try {
         self.loading = true
         const data = yield api.getSubCategoryItems(id)
-        console.log("api data ===>", data)
-        self.subCategory = data.category
-        console.tron.log("subcategory in store ^^^^===>", self.subCategory)
+        console.tron.log("api data ===>", data)
+
+        // check index in array and push/relplace data object
+        let indexInAllMedia = findArrayObject(self.allSubCategoryMedia, id)
+        if (indexInAllMedia == -1) {
+          self.allSubCategoryMedia.push({ parent_id: id, data: data.category })
+          console.tron.log("all media", self.allSubCategoryMedia)
+        } else {
+          self.allSubCategoryMedia[indexInAllMedia] = { parent_id: id, data: data.category }
+        }
+        console.tron.log("all media", self.allSubCategoryMedia)
         self.loading = false
       } catch (error) {
-        console.log(error)
+        console.tron.log(error)
         self.loading = false
       }
     }),
 
-    // extract media array from subcategory data array
+    // get currently opened subCategory from all category array
+    getCurrentSubCategory(parent_id: number) {
+      let currentMediaIndex = findArrayObject(self.allSubCategoryMedia, parent_id)
+      console.tron.log(currentMediaIndex, parent_id)
+      self.subCategory = self.allSubCategoryMedia[currentMediaIndex].data
+      console.tron.log("sub category data", self.subCategory)
+    },
+
+    // get media of currently open subCategory
     getMediaForSubcategory(idOfSubcategory: number) {
       let indexForPerticularMedia = self.subCategory.findIndex((item) => item.id == idOfSubcategory)
-      self.mediaArray = self.subCategory[indexForPerticularMedia]
+      self.mediaArray = self.subCategory[indexForPerticularMedia].media
+      console.tron.log("media", self.mediaArray)
+    },
+
+    subcategoryCleanup() {
+      self.mediaArray = []
     },
 
     setIndexForSubcategory(index: number) {
       self.indexForSubcategory = index
     },
-  })) // eslint-disable-line @typescript-eslint/no-unused-vars
-
+  }))
+// find index of subcategory
+function findArrayObject(array, parentId) {
+  for (var i = 0; i < array.length; i += 1) {
+    if (array[i].parent_id == parentId) {
+      return i
+    }
+  }
+  return -1
+}
 /**
   * Un-comment the following to omit model attributes from your snapshots (and from async storage).
   * Useful for sensitive data like passwords, or transitive state like whether a modal is open.

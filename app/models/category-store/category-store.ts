@@ -12,10 +12,6 @@ export const CategoryStoreModel = types
   .props({
     category: types.optional(types.frozen(), {}),
     loading: false,
-    // indexForSubcategory: types.optional(types.integer, 0),
-    // subCategory: types.optional(types.frozen(), null),
-    //mediaImage: types.optional(types.frozen(), null),
-    // categoryId: types.optional(types.integer, {}),
   })
   .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
@@ -29,38 +25,6 @@ export const CategoryStoreModel = types
         self.loading = false
       }
     }),
-
-    // getSubCategoryItems: flow(function* getSubCategoryItems(id: number) {
-    //   try {
-    //     self.loading = true
-    //     const data = yield api.getSubCategoryItems(id)
-    //     console.log("api data ===>", data)
-    //     self.subCategory = data.category
-    //     console.log("subcategory in store ===>", self.subCategory)
-    //     self.loading = false
-    //   } catch (error) {
-    //     console.log(error)
-    //     self.loading = false
-    //   }
-    // }),
-
-    // getMediaImage: flow(function* getMediaImage(id: number) {
-    //   try {
-    //     self.loading = true
-    //     const data = yield api.getMediaImage(id)
-    //     console.log("api image data ===>", data)
-    //     self.mediaImage = data.category
-    //     console.log("img in store ===>", self.mediaImage)
-    //     self.loading = false
-    //   } catch (error) {
-    //     console.log(error)
-    //     self.loading = false
-    //   }
-    // }),
-
-    // setIndexForSubcategory(index: number) {
-    //   self.indexForSubcategory = index
-    // },
   }))
 
 /**

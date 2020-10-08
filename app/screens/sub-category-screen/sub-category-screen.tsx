@@ -47,14 +47,13 @@ const BUTTON: ViewStyle = {
 const ICON_STYLE: ImageStyle = {
   borderWidth: 3,
   borderColor: color.palette.golden,
-  borderRadius: 40,
+  borderRadius: 67,
   height: 67,
   width: 67,
 }
 
 export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) {
   const navigation = useNavigation()
-  console.log("navigation", navigation)
   const isFocused = useIsFocused()
   const { mediaStore } = useStores()
   useEffect(() => {
@@ -62,16 +61,14 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) 
   }, [route.params.id, isFocused])
 
   const getdata = async (id: number) => {
-    await mediaStore.getSubCategoryItems(route.params.id)
-    await mediaStore.setIndexForSubcategory(route.params.id)
-    console.tron.log(mediaStore.mediaArray)
+    await mediaStore.getSubCategoryItems(id)
+    await mediaStore.getCurrentSubCategory(id)
+    await mediaStore.setIndexForSubcategory(id)
   }
 
-  const renderItem = ({ item }) => {
-    console.log("item ===>", item)
-
+  const renderItem = ({ item, index }) => {
     return (
-      <View style={BUTTON}>
+      <View key={index} style={BUTTON}>
         <Image source={{ uri: item.icon }} style={ICON_STYLE} />
         <Button
           style={BUTTON_VIEW}
