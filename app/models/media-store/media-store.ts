@@ -1,9 +1,6 @@
 import { Instance, SnapshotOut, types, flow } from "mobx-state-tree"
 import { Api } from "../../services/api"
 
-/**
- * Model description here for TypeScript hints.
- */
 const api = new Api()
 api.setup()
 
@@ -14,60 +11,99 @@ export const MediaStoreModel = types
     subCategory: types.optional(types.frozen(), []),
     mediaArray: types.optional(types.frozen(), []),
     indexForSubcategory: types.optional(types.integer, 0),
+    recentData: types.optional(types.frozen(), []),
     loading: false,
   })
 
   .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
     getSubCategoryItems: flow(function* getSubCategoryItems(id: number) {
+      console.tron.log("ID FROM VIDEO", id)
       try {
         self.loading = true
         const data = yield api.getSubCategoryItems(id)
-        console.tron.log("api data ===>", data)
 
         // check index in array and push/relplace data object
         let indexInAllMedia = findArrayObject(self.allSubCategoryMedia, id)
         if (indexInAllMedia == -1) {
           self.allSubCategoryMedia.push({ parent_id: id, data: data.category })
-          console.tron.log("all media", self.allSubCategoryMedia)
         } else {
           self.allSubCategoryMedia[indexInAllMedia] = { parent_id: id, data: data.category }
         }
-        console.tron.log("all media", self.allSubCategoryMedia)
         self.loading = false
       } catch (error) {
-        console.tron.log(error)
         self.loading = false
       }
     }),
 
+    getRecentData(parentId, subcategoryId) {
+      let AllDataIndex = findArrayObject(self.allSubCategoryMedia, parentId)
+      let recentDataParentIndex = self.recentData.findIndex((x) => x.parent_id == parentId)
+      let subIndex = self.allSubCategoryMedia[AllDataIndex].data.findIndex(
+        (x) => x.id == subcategoryId,
+      )
+
+      console.tron.log("IDS", AllDataIndex, recentDataParentIndex, subIndex)
+      if (recentDataParentIndex == -1) {
+        self.recentData = self.recentData.concat({
+          parent_id: parentId,
+          children: [self.allSubCategoryMedia[AllDataIndex].data[subIndex]],
+        })
+      } else {
+        let NewArray = self.recentData[recentDataParentIndex].children
+        let indexofRepeated = findRepeatedIndex(
+          self.recentData[recentDataParentIndex].children,
+          subcategoryId,
+        )
+        console.tron.log("IDS SUB", indexofRepeated)
+
+        if (indexofRepeated == -1) {
+          let data = NewArray.concat(self.allSubCategoryMedia[AllDataIndex].data[subIndex])
+          console.tron.log("DATA", data)
+          self.recentData[recentDataParentIndex].children = data
+        } else {
+          self.recentData[recentDataParentIndex].children[indexofRepeated] =
+            self.allSubCategoryMedia[AllDataIndex].data[subIndex]
+        }
+      }
+      console.tron.log("RECENT", self.recentData)
+    },
+
     // get currently opened subCategory from all category array
     getCurrentSubCategory(parent_id: number) {
-      let currentMediaIndex = findArrayObject(self.allSubCategoryMedia, parent_id)
-      console.tron.log(currentMediaIndex, parent_id)
-      self.subCategory = self.allSubCategoryMedia[currentMediaIndex].data
-      console.tron.log("sub category data", self.subCategory)
+      let currentSubcategoryIndex = findArrayObject(self.allSubCategoryMedia, parent_id)
+      self.subCategory = self.allSubCategoryMedia[currentSubcategoryIndex].data
     },
 
     // get media of currently open subCategory
-    getMediaForSubcategory(idOfSubcategory: number) {
+    getMediaForSubcategory(idOfSubcategory: number, parent_id: number) {
       let indexForPerticularMedia = self.subCategory.findIndex((item) => item.id == idOfSubcategory)
       self.mediaArray = self.subCategory[indexForPerticularMedia].media
-      console.tron.log("media", self.mediaArray)
+      console.log(indexForPerticularMedia)
     },
 
     subcategoryCleanup() {
       self.mediaArray = []
     },
 
+    // set index for active drawer item
     setIndexForSubcategory(index: number) {
       self.indexForSubcategory = index
     },
   }))
+
 // find index of subcategory
 function findArrayObject(array, parentId) {
   for (var i = 0; i < array.length; i += 1) {
     if (array[i].parent_id == parentId) {
+      return i
+    }
+  }
+  return -1
+}
+function findRepeatedIndex(array, subIndex) {
+  for (var i = 0; i < array.length; i += 1) {
+    if (array[i].id == subIndex) {
       return i
     }
   }

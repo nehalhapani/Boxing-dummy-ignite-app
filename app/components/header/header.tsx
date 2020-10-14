@@ -18,6 +18,7 @@ const ROOT: ViewStyle = {
   justifyContent: "flex-start",
   borderBottomWidth: 0.3,
   borderBottomColor: "rgba(255, 255, 255, 0.4)",
+  zIndex: 1,
 }
 const TITLE: TextStyle = { textAlign: "center", fontSize: 24 }
 const TITLE_MIDDLE: ViewStyle = { flex: 1, justifyContent: "center" }

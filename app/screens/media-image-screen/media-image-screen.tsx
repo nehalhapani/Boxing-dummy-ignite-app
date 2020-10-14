@@ -6,17 +6,19 @@ import {
   ImageBackground,
   TextStyle,
   View,
-  Image,
-  TouchableOpacity,
   Dimensions,
+  TouchableOpacity,
+  Alert,
 } from "react-native"
-import { Screen, Header, Icon, Text } from "../../components"
+import { Screen, Header, Icon, Text, Navigate } from "../../components"
 import { color, spacing } from "../../theme"
 import { useStores } from "../../models"
+import { useNavigation } from "@react-navigation/native"
 import { icons } from "../../components/icon/icons"
 import { useIsFocused } from "@react-navigation/native"
 import Carousel, { Pagination } from "react-native-snap-carousel"
 import HTML from "react-native-render-html"
+import FastImage from "react-native-fast-image"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -29,52 +31,35 @@ const BACKGROUND: ImageStyle = {
 }
 const MAIN_FLEX: ViewStyle = {
   flex: 1,
-  paddingVertical: spacing[3] + spacing[2],
-}
-const NAVIGATE_VIEW: ViewStyle = {
-  flexDirection: "row",
-  paddingHorizontal: 33.3,
-  justifyContent: "space-between",
+  paddingTop: 13.3,
+  paddingBottom: 34,
 }
 const DETAIL_VIEW: ViewStyle = {
-  paddingTop: spacing[5] + spacing[1],
+  paddingTop: 26.7,
   flex: 1,
 }
 const TITLE: TextStyle = {
-  paddingTop: spacing[5] + spacing[1],
+  paddingTop: 26.3,
   fontSize: 20,
   fontWeight: "bold",
 }
-const PREV_BTN: ImageStyle = {
-  width: 61.3,
-  height: 26.7,
-}
-const DOTSTYLE_SWIPER: ViewStyle = {
-  height: 13.3,
-  width: 13.3,
-  borderRadius: 13.3,
-  marginLeft: spacing[4],
-  backgroundColor: color.palette.white,
-}
-const IMG_SET: ImageStyle = {
-  height: "100%",
-  width: "100%",
-  resizeMode: "contain",
-}
+
 const TEXT_SET: ViewStyle = {
   flex: 5,
   justifyContent: "flex-start",
   alignItems: "center",
 }
 
-const SLIDER_WIDTH = Dimensions.get("window").width
-const ITEM_WIDTH = SLIDER_WIDTH - 67
-
 export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
   const swiper_ref = useRef()
-  const [activeSLide, setActiveSlide] = useState(1)
+  const [activeSLide, setActiveSlide] = useState<number>(0)
   const { mediaStore } = useStores()
+
   const isFocused = useIsFocused()
+  const navigation = useNavigation()
+
+  const SLIDER_WIDTH = Dimensions.get("window").width
+  const ITEM_WIDTH = SLIDER_WIDTH - 67
   useEffect(() => {
     if (isFocused) {
       console.tron.log("In useeffect")
@@ -84,19 +69,19 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
       mediaStore.subcategoryCleanup()
       console.tron.log("In cleanup")
     }
-  }, [isFocused])
+  }, [route.params.id])
 
   const getdata = async (id: number, parentId) => {
     console.log(id, parentId)
     await mediaStore.getSubCategoryItems(parentId)
     await mediaStore.getCurrentSubCategory(parentId)
-    await mediaStore.getMediaForSubcategory(id)
+    await mediaStore.getMediaForSubcategory(id, parentId)
+    await mediaStore.getRecentData(parentId, id)
 
     console.log("mediaArray", mediaStore.mediaArray)
   }
 
   const pagination = () => {
-    // const { entries, activeSlide } = this.state
     return (
       <Pagination
         dotsLength={mediaStore.mediaArray.length}
@@ -120,7 +105,14 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
     return (
       <View key={index} style={DETAIL_VIEW}>
         <View style={{ flex: 5 }}>
-          <Image source={{ uri: item.url }} style={IMG_SET} />
+          <FastImage
+            source={{
+              uri: item.url,
+              priority: FastImage.priority.normal,
+            }}
+            style={{ height: "100%", width: "100%" }}
+            resizeMode={FastImage.resizeMode.contain}
+          />
         </View>
         <View style={TEXT_SET}>
           <Text text={item.caption} style={TITLE} />
@@ -135,15 +127,8 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
       <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
         <Header headerText={route.params.name} rightIcon="hamBurger" leftIcon="back" />
         <View style={MAIN_FLEX}>
-          <View style={NAVIGATE_VIEW}>
-            <View>
-              <Icon icon={"prev2"} style={PREV_BTN} />
-            </View>
-            <View>
-              <TouchableOpacity>
-                <Icon icon={"next"} />
-              </TouchableOpacity>
-            </View>
+          <View style={{ paddingHorizontal: 33.3 }}>
+            <Navigate id={route.params.id} parent_id={route.params.parent_id} />
           </View>
           <View style={{ flex: 1 }}>
             <Carousel

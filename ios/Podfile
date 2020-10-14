@@ -11,7 +11,9 @@ target 'BoxingProject' do
   pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
   pod 'Firebase/Analytics'
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
-
+  # source 'https://github.com/CocoaPods/Specs.git'
+  # source 'https://cdn.cocoapods.org/'
+  # source 'https://cocoapods-cdn.netlify.app/'
   target 'BoxingProjectTests' do
     inherit! :complete
     # Pods for testing

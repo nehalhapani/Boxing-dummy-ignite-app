@@ -42,7 +42,8 @@ const BACKGROUND: ImageStyle = {
   resizeMode: "cover",
 }
 const MAINFLEX: ViewStyle = {
-  padding: spacing[4] + spacing[4],
+  paddingHorizontal: 33.3,
+  paddingBottom: 30,
   flex: 1,
   justifyContent: "space-between",
 }
@@ -55,7 +56,8 @@ const EMAIL_INPUT: TextStyle = {
   borderStartColor: color.palette.white,
 }
 const LOGO_SPACING: ViewStyle = {
-  paddingVertical: spacing[4] + spacing[1],
+  paddingVertical: 19,
+  paddingTop: 30,
 }
 const WELCOME_MSG: TextStyle = {
   fontSize: 30,
@@ -223,6 +225,7 @@ export const SignInScreen = observer(function SignInScreen() {
                 <TextInput
                   style={EMAIL_INPUT}
                   value={username}
+                  autoCapitalize="none"
                   returnKeyType={"next"}
                   placeholder={"Enter Email Here"}
                   placeholderTextColor={color.palette.offWhite}

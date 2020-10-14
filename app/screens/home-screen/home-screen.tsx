@@ -4,7 +4,7 @@ import { ViewStyle, ImageStyle, ImageBackground, TextStyle, View, FlatList } fro
 import { Screen, Header, Button } from "../../components"
 import { useNavigation } from "@react-navigation/native"
 import { useStores } from "../../models"
-import { color, spacing } from "../../theme"
+import { color } from "../../theme"
 import { useIsFocused } from "@react-navigation/native"
 import { icons } from "../../components/icon/icons"
 
@@ -28,13 +28,13 @@ const MAIN_VIEW: ViewStyle = {
 const BUTTON_VIEW: ViewStyle = {
   justifyContent: "center",
   alignItems: "center",
-  paddingVertical: 20.7,
+  paddingVertical: 21.3,
   backgroundColor: color.transparent,
   borderWidth: 1,
   borderColor: color.palette.white,
 }
 const BUTTON: ViewStyle = {
-  paddingVertical: spacing[2],
+  paddingVertical: 8,
 }
 const FIRST_FLEX: ViewStyle = {
   flex: 1,
@@ -50,9 +50,9 @@ export const HomeScreen = observer(function HomeScreen() {
     mediaStore.setIndexForSubcategory(0)
   }, [isFocused])
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item, index }) => {
     return (
-      <View style={BUTTON}>
+      <View key={index} style={BUTTON}>
         <Button
           style={BUTTON_VIEW}
           textStyle={TEXT_COLOR}

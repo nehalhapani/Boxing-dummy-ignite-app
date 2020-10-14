@@ -9,9 +9,10 @@ import {
   View,
   FlatList,
   Image,
+  TouchableOpacity,
 } from "react-native"
-import { Screen, Header, Button } from "../../components"
-import { color, spacing } from "../../theme"
+import { Screen, Header, Text } from "../../components"
+import { color } from "../../theme"
 import { icons } from "../../components/icon/icons"
 import { useStores } from "../../models"
 import { useIsFocused } from "@react-navigation/native"
@@ -30,18 +31,15 @@ const TEXT_COLOR: TextStyle = {
   fontSize: 20,
   letterSpacing: 0.5,
   textTransform: "capitalize",
+  alignSelf: "center",
+  paddingLeft: 18,
 }
 const MAIN_VIEW: ViewStyle = {
   paddingHorizontal: 33.3,
 }
-const BUTTON_VIEW: ViewStyle = {
-  justifyContent: "center",
-  alignItems: "center",
-  paddingVertical: 20.7,
-  backgroundColor: color.transparent,
-}
+
 const BUTTON: ViewStyle = {
-  paddingVertical: spacing[5],
+  paddingVertical: 12,
   flexDirection: "row",
 }
 const ICON_STYLE: ImageStyle = {
@@ -69,25 +67,19 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) 
   const renderItem = ({ item, index }) => {
     return (
       <View key={index} style={BUTTON}>
-        <Image source={{ uri: item.icon }} style={ICON_STYLE} />
-        <Button
-          style={BUTTON_VIEW}
-          text={item.name}
-          textStyle={TEXT_COLOR}
+        <TouchableOpacity
+          style={{ flexDirection: "row" }}
           onPress={() =>
-            item.type == "Video"
-              ? navigation.navigate("video", {
-                  id: item.id,
-                  parent_id: item.parent_id,
-                  name: item.name,
-                })
-              : navigation.navigate("image", {
-                  id: item.id,
-                  parent_id: item.parent_id,
-                  name: item.name,
-                })
+            navigation.navigate(item.type == "Image" ? "image" : "video", {
+              id: item.id,
+              parent_id: item.parent_id,
+              name: item.name,
+            })
           }
-        />
+        >
+          <Image source={{ uri: item.icon }} style={ICON_STYLE} />
+          <Text text={item.name} style={TEXT_COLOR} />
+        </TouchableOpacity>
       </View>
     )
   }

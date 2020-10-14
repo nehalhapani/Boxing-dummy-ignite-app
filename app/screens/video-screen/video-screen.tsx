@@ -7,9 +7,9 @@ import {
   View,
   TextStyle,
   FlatList,
-  TouchableOpacity,
+  Alert,
 } from "react-native"
-import { Screen, Header, Icon, Text } from "../../components"
+import { Screen, Header, Navigate, Text } from "../../components"
 import { useStores } from "../../models"
 import { color, spacing } from "../../theme"
 import { icons } from "../../components/icon/icons"
@@ -30,23 +30,10 @@ const BACKGROUND: ImageStyle = {
 const MAIN_FLEX: ViewStyle = {
   flex: 1,
   paddingHorizontal: 33.3,
-  paddingVertical: spacing[3] + spacing[2],
-}
-const NAVIGATE_VIEW: ViewStyle = {
-  flexDirection: "row",
-  justifyContent: "space-between",
-}
-const PREV_BTN: ImageStyle = {
-  width: 61.3,
-  height: 26.7,
+  paddingVertical: 13,
 }
 const VIDEO_VIEW: ViewStyle = {
-  paddingTop: spacing[4] + spacing[1],
-}
-const SET_STYLE: TextStyle = {
-  fontSize: 17,
-  color: color.palette.white,
-  fontWeight: "bold",
+  paddingTop: spacing[1],
 }
 const VIDEO: ViewStyle = {
   alignSelf: "stretch",
@@ -58,39 +45,51 @@ const RENDER_VIEW: ViewStyle = {
   marginVertical: spacing[4],
 }
 
+const PREV_VIEW: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+  borderWidth: 1,
+  borderColor: color.palette.white,
+  paddingHorizontal: 10,
+  paddingVertical: 8.7,
+  backgroundColor: color.transparent,
+}
+
 export const VideoScreen = observer(function VideoScreen({ route }) {
   const navigation = useNavigation()
-  const { mediaStore, categoryStore } = useStores()
+  const { mediaStore } = useStores()
   const isFocused = useIsFocused()
   useEffect(() => {
     if (isFocused) {
       console.tron.log("In useeffect")
       getdata(route.params.id, route.params.parent_id)
     }
-
     return function cleanup() {
       mediaStore.subcategoryCleanup()
       console.tron.log("Clean Data")
     }
-  }, [isFocused])
+  }, [route.params.id])
   console.log("parent id", route.params.parent_id)
   console.log(" id", route.params.id)
 
   const getdata = async (id: number, parentId) => {
     await mediaStore.getSubCategoryItems(parentId)
     await mediaStore.getCurrentSubCategory(parentId)
-    await mediaStore.getMediaForSubcategory(id)
+    await mediaStore.getMediaForSubcategory(id, parentId)
+    await mediaStore.getRecentData(parentId, id)
   }
+
   const renderItem = ({ item, index }) => {
+    console.tron.log("VIDEO", item)
     let video_id = item.url.match(
       /(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/,
     )[1]
-    //console.warn(item)
     return (
       <View key={index} style={VIDEO_VIEW}>
         <View style={RENDER_VIEW}>
           <YouTube
-            apiKey={"AIzaSyCZM0JNm3Hwoa25ZYqyGjw7gX6rY3cHDYM"}
+            // apiKey={"AIzaSyCZM0JNm3Hwoa25ZYqyGjw7gX6rY3cHDYM"}
             videoId={video_id}
             play={false}
             fullscreen={false}
@@ -116,6 +115,7 @@ export const VideoScreen = observer(function VideoScreen({ route }) {
       </View>
     )
   }
+
   return (
     <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
       <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
@@ -126,18 +126,7 @@ export const VideoScreen = observer(function VideoScreen({ route }) {
           titleStyle={{ textTransform: "capitalize" }}
         />
         <View style={MAIN_FLEX}>
-          <View style={NAVIGATE_VIEW}>
-            <View>
-              <TouchableOpacity onPress={() => navigation.navigate("dashboard")}>
-                <Icon icon={"prev2"} style={PREV_BTN} />
-              </TouchableOpacity>
-            </View>
-            <View>
-              <TouchableOpacity onPress={() => navigation.navigate("dashboard")}>
-                <Icon icon={"next"} />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <Navigate id={route.params.id} parent_id={route.params.parent_id} />
           <FlatList
             data={mediaStore.mediaArray}
             renderItem={renderItem}
