@@ -1,19 +1,10 @@
 import React, { useEffect } from "react"
 import { observer } from "mobx-react-lite"
-import {
-  ViewStyle,
-  ImageStyle,
-  ImageBackground,
-  View,
-  TextStyle,
-  FlatList,
-  Alert,
-} from "react-native"
+import { ViewStyle, ImageStyle, ImageBackground, View, FlatList } from "react-native"
 import { Screen, Header, Navigate, Text } from "../../components"
 import { useStores } from "../../models"
 import { color, spacing } from "../../theme"
 import { icons } from "../../components/icon/icons"
-import { useNavigation } from "@react-navigation/native"
 import { useIsFocused } from "@react-navigation/native"
 import YouTube from "react-native-youtube"
 import HTML from "react-native-render-html"
@@ -57,7 +48,6 @@ const PREV_VIEW: ViewStyle = {
 }
 
 export const VideoScreen = observer(function VideoScreen({ route }) {
-  const navigation = useNavigation()
   const { mediaStore } = useStores()
   const isFocused = useIsFocused()
   useEffect(() => {
@@ -77,6 +67,8 @@ export const VideoScreen = observer(function VideoScreen({ route }) {
     await mediaStore.getSubCategoryItems(parentId)
     await mediaStore.getCurrentSubCategory(parentId)
     await mediaStore.getMediaForSubcategory(id, parentId)
+    mediaStore.setIndexForSubcategory(parentId)
+
     await mediaStore.getRecentData(parentId, id)
   }
 
@@ -89,7 +81,7 @@ export const VideoScreen = observer(function VideoScreen({ route }) {
       <View key={index} style={VIDEO_VIEW}>
         <View style={RENDER_VIEW}>
           <YouTube
-            // apiKey={"AIzaSyCZM0JNm3Hwoa25ZYqyGjw7gX6rY3cHDYM"}
+            apiKey={"AIzaSyCZM0JNm3Hwoa25ZYqyGjw7gX6rY3cHDYM"}
             videoId={video_id}
             play={false}
             fullscreen={false}

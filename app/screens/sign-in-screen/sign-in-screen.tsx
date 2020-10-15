@@ -15,7 +15,7 @@ import { Screen, Text, Button } from "../../components"
 import { color, spacing } from "../../theme"
 import { validatePassword, validateEmail } from "../../utils/custom-validate"
 import { GoogleSignin, statusCodes } from "@react-native-community/google-signin"
-import { LoginManager } from "react-native-fbsdk"
+import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from "react-native-fbsdk"
 import { useStores } from "../../models"
 import { icons } from "../../components/icon/icons"
 
@@ -192,12 +192,21 @@ export const SignInScreen = observer(function SignInScreen() {
     }
   }
   const loginWIthFacebook = () => {
-    LoginManager.logInWithPermissions(["public_profile"]).then(
+    LoginManager.logInWithPermissions(["public_profile", "email"]).then(
       function (result) {
         if (result.isCancelled) {
           console.log("Login cancelled")
         } else {
           authStore.setToken()
+          AccessToken.getCurrentAccessToken().then((data) => {
+            const infoRequest = new GraphRequest(
+              "/me?fields=name,picture,email",
+              null,
+              _responseInfoCallback,
+            )
+            // Start the graph request.
+            new GraphRequestManager().addRequest(infoRequest).start()
+          })
           console.log("Login success with permissions: " + result.grantedPermissions.toString())
         }
       },
@@ -205,6 +214,13 @@ export const SignInScreen = observer(function SignInScreen() {
         console.log("Login fail with error: " + error)
       },
     )
+  }
+  const _responseInfoCallback = (error, result) => {
+    if (error) {
+      console.log("Error fetching data: " + error.toString())
+    } else {
+      console.log("Result Name: " + result)
+    }
   }
   return (
     <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>

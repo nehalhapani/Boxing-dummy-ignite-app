@@ -9,6 +9,8 @@ import {
   Animated,
   FlatList,
   Dimensions,
+  Image,
+  Platform,
 } from "react-native"
 import { Screen, Header, Text, Icon } from "../../components"
 import { color } from "../../theme"
@@ -16,7 +18,8 @@ import { icons } from "../../components/icon/icons"
 import { useStores } from "../../models"
 import { useIsFocused } from "@react-navigation/native"
 import Accordion from "react-native-collapsible/Accordion"
-import FastImage from "react-native-fast-image"
+// import WebImage from "react-native-web-image"
+// import FastImage from "react-native-fast-image"
 import SearchInput, { createFilter } from "react-native-search-filter"
 const KEYS_TO_FILTERS = ["title", "data"]
 const VIEW_MAX_HEIGHT = 263
@@ -43,8 +46,8 @@ const MAIN_FLEX: ViewStyle = {
 }
 const ICON_STYLE: ImageStyle = {
   borderWidth: 3,
+  borderRadius: IMAGE_WIDTH / 2,
   borderColor: color.palette.golden,
-  borderRadius: 116.7,
 }
 const PROFILE_NAME: TextStyle = {
   paddingVertical: 10,
@@ -144,7 +147,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   })
   const setProfileImg = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
-    outputRange: [WINDOW_WIDTH / 2 - IMAGE_WIDTH / 2, 33.3],
+    outputRange: [(WINDOW_WIDTH - IMAGE_WIDTH) / 2, 33.3],
     extrapolate: "clamp",
   })
   const marginBottomProfileText = scrollY.interpolate({
@@ -154,12 +157,12 @@ export const ProfileScreen = observer(function ProfileScreen() {
   })
   const paddingTopForImage = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
-    outputRange: [31, 26.5],
+    outputRange: [30, (VIEW_MIN_HEIGHT - IMAGE_WIDTH) / 2],
     extrapolate: "clamp",
   })
   const topText = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
-    outputRange: [150, 35],
+    outputRange: [150, 30],
     extrapolate: "clamp",
   })
   const leftText = scrollY.interpolate({
@@ -214,10 +217,9 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 ListEmptyComponent={() => {
                   return (
                     <View style={SECOND_SUBCATEGORYVIEW}>
-                      <FastImage
+                      <Image
                         source={{
                           uri: null,
-                          priority: FastImage.priority.normal,
                         }}
                         style={{
                           marginRight: 16,
@@ -228,7 +230,6 @@ export const ProfileScreen = observer(function ProfileScreen() {
                           borderRadius: 64,
                           backgroundColor: "white",
                         }}
-                        resizeMode={FastImage.resizeMode.contain}
                       />
                     </View>
                   )
@@ -236,21 +237,19 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 renderItem={({ item, index }: any) => {
                   return (
                     <View key={index} style={SECOND_SUBCATEGORYVIEW}>
-                      <FastImage
+                      <Image
                         source={{
                           uri: item.type == "Image" ? item.url : item.video_cover,
-                          priority: FastImage.priority.normal,
                         }}
                         style={{
                           marginRight: 16,
                           height: 64.7,
                           width: 64.3,
                           borderWidth: 2,
+                          borderRadius: IMAGE_WIDTH / 2,
                           borderColor: color.palette.golden,
-                          borderRadius: 64,
                           backgroundColor: "white",
                         }}
-                        resizeMode={FastImage.resizeMode.contain}
                       />
                     </View>
                   )
@@ -264,74 +263,92 @@ export const ProfileScreen = observer(function ProfileScreen() {
   }
   const filteredData = recentlyViewedData.filter(createFilter(searchItem, KEYS_TO_FILTERS))
   return (
-    <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
-      <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
-        <Header headerText={"Profile"} />
-        <Animated.View
-          style={{
-            height: translateY,
-            position: "absolute",
-            top: 100,
-            left: 0,
-            right: 0,
-          }}
-        >
-          <Animated.View
-            style={{ position: "absolute", left: setProfileImg, paddingTop: paddingTopForImage }}
-          >
-            <Icon icon={"mainProfile"} style={ICON_STYLE} />
-          </Animated.View>
+    <View style={{ flex: 1 }}>
+      <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
+        <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
+          <Header headerText={"Profile"} />
           <Animated.View
             style={{
+              height: translateY,
               position: "absolute",
-              bottom: marginBottomProfileText,
-              left: leftText,
+              top: Platform.OS == "ios" ? 100 : 65,
+              left: 0,
               right: 0,
-              top: topText,
             }}
           >
-            <Animated.Text style={[PROFILE_NAME, { minWidth }]} numberOfLines={1}>
-              {"Luke Johnson"}
-            </Animated.Text>
-            <Animated.Text style={[TEXT_IDENTITY, { minWidth }]} numberOfLines={1}>
-              {"LukeMJohnson@gmail.com"}
-            </Animated.Text>
-            <Animated.Text style={[TEXT_IDENTITY, { minWidth }]} numberOfLines={1}>
-              {"7th, March, 1986"}
-            </Animated.Text>
-          </Animated.View>
-        </Animated.View>
-        <View style={{ flexGrow: 1, marginTop: VIEW_MIN_HEIGHT }}>
-          <Animated.ScrollView
-            scrollEventThrottle={16}
-            onScroll={(e) => {
-              scrollY.setValue(e.nativeEvent.contentOffset.y)
-            }}
-          >
-            <View style={MAIN_FLEX}>
-              <Text text={"Saved Category"} style={SAVED_CATEGORY} />
-              <View style={DIRECTION_ROW}>
-                <SearchInput
-                  style={EMAIL_INPUT}
-                  inputViewStyles={EMAIL_INPUT}
-                  placeholderTextColor={color.palette.brownGray}
-                  placeholder={"Search categories"}
-                  onChangeText={(searchItem) => setSearchItem(searchItem)}
-                  fuzzy={true}
-                />
-                <Icon icon={"search"} style={SEARCH} />
-              </View>
-              <Accordion
-                sections={filteredData}
-                activeSections={activeSection}
-                renderHeader={renderHeader}
-                renderContent={renderContent}
-                onChange={(activeSections) => setActiveSection(activeSections)}
+            <Animated.View
+              style={{
+                position: "absolute",
+                left: setProfileImg,
+                top: paddingTopForImage,
+              }}
+            >
+              <Image
+                source={icons.mainProfile}
+                style={{
+                  borderRadius: IMAGE_WIDTH / 2,
+                  borderColor: color.palette.golden,
+                  borderWidth: 3,
+                }}
               />
-            </View>
-          </Animated.ScrollView>
-        </View>
-      </Screen>
-    </ImageBackground>
+              {/* <Icon
+              icon={"mainProfile"}
+              style={{ borderRadius: 30, borderColor: color.palette.golden, borderWidth: 1 }}
+            /> */}
+            </Animated.View>
+            <Animated.View
+              style={{
+                position: "absolute",
+                bottom: marginBottomProfileText,
+                left: leftText,
+                right: 0,
+                top: topText,
+              }}
+            >
+              <Animated.Text style={[PROFILE_NAME, { minWidth }]} numberOfLines={1}>
+                {"Luke Johnson"}
+              </Animated.Text>
+              <Animated.Text style={[TEXT_IDENTITY, { minWidth }]} numberOfLines={1}>
+                {"LukeMJohnson@gmail.com"}
+              </Animated.Text>
+              <Animated.Text style={[TEXT_IDENTITY, { minWidth }]} numberOfLines={1}>
+                {"7th, March, 1986"}
+              </Animated.Text>
+            </Animated.View>
+          </Animated.View>
+          <View style={{ flexGrow: 1, marginTop: VIEW_MIN_HEIGHT }}>
+            <Animated.ScrollView
+              overScrollMode="never"
+              scrollEventThrottle={16}
+              onScroll={(e) => {
+                scrollY.setValue(e.nativeEvent.contentOffset.y)
+              }}
+            >
+              <View style={MAIN_FLEX}>
+                <Text text={"Saved Category"} style={SAVED_CATEGORY} />
+                <View style={DIRECTION_ROW}>
+                  <SearchInput
+                    style={EMAIL_INPUT}
+                    inputViewStyles={EMAIL_INPUT}
+                    placeholderTextColor={color.palette.brownGray}
+                    placeholder={"Search categories"}
+                    onChangeText={(searchItem) => setSearchItem(searchItem)}
+                    fuzzy={true}
+                  />
+                  <Icon icon={"search"} style={SEARCH} />
+                </View>
+                <Accordion
+                  sections={filteredData}
+                  activeSections={activeSection}
+                  renderHeader={renderHeader}
+                  renderContent={renderContent}
+                  onChange={(activeSections) => setActiveSection(activeSections)}
+                />
+              </View>
+            </Animated.ScrollView>
+          </View>
+        </Screen>
+      </ImageBackground>
+    </View>
   )
 })

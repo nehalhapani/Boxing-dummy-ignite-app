@@ -25,7 +25,7 @@ function MyTabBar({ state, descriptors, navigation }) {
     <View
       style={{
         flexDirection: "row",
-        height: 92,
+        height: "10.3%",
       }}
     >
       {state.routes.map((route, index) => {
@@ -72,7 +72,10 @@ function MyTabBar({ state, descriptors, navigation }) {
             <ImageBackground
               source={backgroundImage}
               resizeMode="stretch"
-              style={{ width: "100%", height: isFocused ? 108 : 92 }}
+              style={{
+                width: "100%",
+                height: isFocused ? "122%" : "100%",
+              }}
             >
               <View style={{ flex: 1, justifyContent: "center" }}>
                 <SafeAreaView style={{ flex: 1 }}>
@@ -80,7 +83,7 @@ function MyTabBar({ state, descriptors, navigation }) {
                     style={{
                       justifyContent: "center",
                       alignItems: "center",
-                      marginTop: isFocused ? spacing[5] : spacing[2],
+                      marginTop: isFocused ? 26 : 4,
                     }}
                   >
                     <Icon icon={icon} style={{ marginVertical: spacing[2] }} />

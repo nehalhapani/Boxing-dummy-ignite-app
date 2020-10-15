@@ -46,9 +46,15 @@ export const HomeScreen = observer(function HomeScreen() {
   const isFocused = useIsFocused()
 
   useEffect(() => {
-    categoryStore.getCategoryItems()
-    mediaStore.setIndexForSubcategory(0)
+    if (isFocused) {
+      getRecentData()
+    }
   }, [isFocused])
+
+  const getRecentData = async () => {
+    await categoryStore.getCategoryItems()
+    await mediaStore.setIndexForSubcategory(0)
+  }
 
   const renderItem = ({ item, index }) => {
     return (

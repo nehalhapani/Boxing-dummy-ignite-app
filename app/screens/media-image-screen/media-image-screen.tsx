@@ -7,6 +7,7 @@ import {
   TextStyle,
   View,
   Dimensions,
+  Image,
   TouchableOpacity,
   Alert,
 } from "react-native"
@@ -18,7 +19,9 @@ import { icons } from "../../components/icon/icons"
 import { useIsFocused } from "@react-navigation/native"
 import Carousel, { Pagination } from "react-native-snap-carousel"
 import HTML from "react-native-render-html"
-import FastImage from "react-native-fast-image"
+// import WebImage from "react-native-web-image"
+// import FastImage from "react-native-fast-image"
+// import CachedImage from "react-native-image-cache-wrapper"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -77,6 +80,7 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
     await mediaStore.getCurrentSubCategory(parentId)
     await mediaStore.getMediaForSubcategory(id, parentId)
     await mediaStore.getRecentData(parentId, id)
+    mediaStore.setIndexForSubcategory(parentId)
 
     console.log("mediaArray", mediaStore.mediaArray)
   }
@@ -101,17 +105,18 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
       />
     )
   }
+
   const renderItem = ({ item, index }) => {
     return (
       <View key={index} style={DETAIL_VIEW}>
         <View style={{ flex: 5 }}>
-          <FastImage
+          <Image
             source={{
               uri: item.url,
-              priority: FastImage.priority.normal,
+              // priority: FastImage.priority.normal,
             }}
-            style={{ height: "100%", width: "100%" }}
-            resizeMode={FastImage.resizeMode.contain}
+            // resizeMode={FastImage.resizeMode.contain}
+            style={{ height: "100%", width: "100%", resizeMode: "contain" }}
           />
         </View>
         <View style={TEXT_SET}>

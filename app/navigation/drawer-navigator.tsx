@@ -1,4 +1,3 @@
-//TODO : set logout
 import React, { useEffect } from "react"
 import {
   createDrawerNavigator,
@@ -17,9 +16,9 @@ export type DrawerParamList = {
   bottomTab: undefined
 }
 const MAINFLEX: ViewStyle = {
-  justifyContent: "space-between",
-  backgroundColor: "white",
+  backgroundColor: "red",
   flex: 1,
+  justifyContent: "space-between",
 }
 const LOGO_SPACING: ViewStyle = {
   paddingVertical: 1,
@@ -57,65 +56,65 @@ function CustomDrawerContent(props) {
   const navigation = useNavigation()
 
   return (
-    <DrawerContentScrollView style={{ backgroundColor: "black", padding: 33.3 }}>
-      <View style={MAINFLEX}>
-        <View style={{ backgroundColor: "black" }}>
+    <DrawerContentScrollView
+      style={{ backgroundColor: "black", padding: 33.3 }}
+      contentContainerStyle={{ flex: 1, justifyContent: "space-between" }}
+    >
+      <View style={{ backgroundColor: "black" }}>
+        <View>
+          <View style={LOGO_SPACING}>
+            <Image source={icons.logo} style={LOGO_SIZE} />
+          </View>
+          <Text style={BOXING} text="BOXING" />
+          <Text style={SUB_TEXT} text="BY TATVASOFT" />
+        </View>
+        <View style={LINK_VIEW}>
           <View>
-            <View style={LOGO_SPACING}>
-              <Image source={icons.logo} style={LOGO_SIZE} />
-            </View>
-            <Text style={BOXING} text="BOXING" />
-            <Text style={SUB_TEXT} text="BY TATVASOFT" />
-          </View>
-          <View style={LINK_VIEW}>
-            <View>
-              <DrawerItem
-                label="DASHBOARD"
-                onPress={() => navigation.navigate("dashboard")}
-                style={DRAWER_STYLE}
-                labelStyle={labelStyle}
-                activeTintColor={color.palette.golden}
-                inactiveTintColor={color.palette.white}
-                activeBackgroundColor={color.transparent}
-                focused={mediaStore.indexForSubcategory == 0 ? true : false}
-              />
-
-              <FlatList
-                data={categoryStore.category}
-                renderItem={({ item, index }: any) => {
-                  return (
-                    <DrawerItem
-                      label={item.name}
-                      onPress={() =>
-                        navigation.navigate("subCategory", {
-                          id: item.id,
-                          name: item.name,
-                        })
-                      }
-                      style={DRAWER_STYLE}
-                      labelStyle={labelStyle}
-                      activeTintColor={color.palette.golden}
-                      inactiveTintColor={color.palette.white}
-                      activeBackgroundColor={color.transparent}
-                      focused={mediaStore.indexForSubcategory == item.id ? true : false}
-                    />
-                  )
-                }}
-                keyExtractor={(item, index) => index.toString()}
-              />
-            </View>
+            <DrawerItem
+              label="DASHBOARD"
+              onPress={() => navigation.navigate("dashboard")}
+              style={DRAWER_STYLE}
+              labelStyle={labelStyle}
+              activeTintColor={color.palette.golden}
+              inactiveTintColor={color.palette.white}
+              activeBackgroundColor={color.transparent}
+              focused={mediaStore.indexForSubcategory == 0 ? true : false}
+            />
+            <FlatList
+              data={categoryStore.category}
+              renderItem={({ item, index }: any) => {
+                return (
+                  <DrawerItem
+                    label={item.name}
+                    onPress={() =>
+                      navigation.navigate("subCategory", {
+                        id: item.id,
+                        name: item.name,
+                      })
+                    }
+                    style={DRAWER_STYLE}
+                    labelStyle={labelStyle}
+                    activeTintColor={color.palette.golden}
+                    inactiveTintColor={color.palette.white}
+                    activeBackgroundColor={color.transparent}
+                    focused={mediaStore.indexForSubcategory == item.id ? true : false}
+                  />
+                )
+              }}
+              keyExtractor={(item, index) => index.toString()}
+            />
           </View>
         </View>
-        <View style={{ backgroundColor: "black" }}>
-          <DrawerItem
-            label="LOG OUT"
-            onPress={() => authStore.removeToken()}
-            style={DRAWER_STYLE}
-            labelStyle={labelStyle}
-            activeTintColor={color.palette.golden}
-            inactiveTintColor={color.palette.white}
-          />
-        </View>
+      </View>
+      <View style={{ backgroundColor: "black" }}>
+        <DrawerItem
+          label="LOG OUT"
+          onPress={() => authStore.removeToken()}
+          style={DRAWER_STYLE}
+          labelStyle={labelStyle}
+          activeTintColor={color.palette.golden}
+          inactiveTintColor={color.palette.white}
+        />
       </View>
     </DrawerContentScrollView>
   )
