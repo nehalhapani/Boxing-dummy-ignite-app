@@ -10,6 +10,7 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native"
 import { Screen, Header, Icon, Text, Navigate } from "../../components"
 import { color, spacing } from "../../theme"
@@ -20,7 +21,7 @@ import { useIsFocused } from "@react-navigation/native"
 import Carousel, { Pagination } from "react-native-snap-carousel"
 import HTML from "react-native-render-html"
 // import WebImage from "react-native-web-image"
-// import FastImage from "react-native-fast-image"
+import FastImage from "react-native-fast-image"
 // import CachedImage from "react-native-image-cache-wrapper"
 
 const ROOT: ViewStyle = {
@@ -52,6 +53,15 @@ const TEXT_SET: ViewStyle = {
   justifyContent: "flex-start",
   alignItems: "center",
 }
+const INDICATOR: ViewStyle = {
+  justifyContent: "center",
+  alignItems: "center",
+  position: "absolute",
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 0,
+}
 
 export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
   const swiper_ref = useRef()
@@ -65,24 +75,19 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
   const ITEM_WIDTH = SLIDER_WIDTH - 67
   useEffect(() => {
     if (isFocused) {
-      console.tron.log("In useeffect")
       getdata(route.params.id, route.params.parent_id)
     }
     return function cleanup() {
       mediaStore.subcategoryCleanup()
-      console.tron.log("In cleanup")
     }
   }, [route.params.id])
 
   const getdata = async (id: number, parentId) => {
-    console.log(id, parentId)
     await mediaStore.getSubCategoryItems(parentId)
     await mediaStore.getCurrentSubCategory(parentId)
     await mediaStore.getMediaForSubcategory(id, parentId)
     await mediaStore.getRecentData(parentId, id)
     mediaStore.setIndexForSubcategory(parentId)
-
-    console.log("mediaArray", mediaStore.mediaArray)
   }
 
   const pagination = () => {
@@ -110,13 +115,14 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
     return (
       <View key={index} style={DETAIL_VIEW}>
         <View style={{ flex: 5 }}>
-          <Image
+          <FastImage
             source={{
               uri: item.url,
-              // priority: FastImage.priority.normal,
+              priority: FastImage.priority.normal,
             }}
             // resizeMode={FastImage.resizeMode.contain}
-            style={{ height: "100%", width: "100%", resizeMode: "contain" }}
+            style={{ height: "100%", width: "100%" }}
+            resizeMode={FastImage.resizeMode.contain}
           />
         </View>
         <View style={TEXT_SET}>
@@ -136,6 +142,9 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
             <Navigate id={route.params.id} parent_id={route.params.parent_id} />
           </View>
           <View style={{ flex: 1 }}>
+            {mediaStore.loading && (
+              <ActivityIndicator color={color.palette.white} style={INDICATOR} />
+            )}
             <Carousel
               ref={swiper_ref}
               data={mediaStore.mediaArray}

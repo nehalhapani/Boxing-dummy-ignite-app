@@ -23,6 +23,7 @@ import {
   useNavigationPersistence,
 } from "./navigation"
 import { RootStore, RootStoreProvider, setupRootStore } from "./models"
+import SplashScreen from "react-native-splash-screen"
 
 // This puts screens in a native ViewController or Activity. If you want fully native
 // stack navigation, use `createNativeStackNavigator` in place of `createStackNavigator`:
@@ -51,6 +52,7 @@ function App() {
     ;(async () => {
       setupRootStore().then(setRootStore)
     })()
+    SplashScreen.hide()
   }, [])
 
   // Before we show the app, we have to wait for our state to be ready.

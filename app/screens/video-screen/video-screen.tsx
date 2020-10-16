@@ -1,13 +1,25 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle, ImageStyle, ImageBackground, View, FlatList } from "react-native"
+import {
+  ViewStyle,
+  ImageStyle,
+  ImageBackground,
+  View,
+  FlatList,
+  ActivityIndicator,
+  Dimensions,
+} from "react-native"
 import { Screen, Header, Navigate, Text } from "../../components"
 import { useStores } from "../../models"
 import { color, spacing } from "../../theme"
 import { icons } from "../../components/icon/icons"
 import { useIsFocused } from "@react-navigation/native"
 import YouTube from "react-native-youtube"
+import Spinner from "react-native-spinkit"
 import HTML from "react-native-render-html"
+import { load } from "../../utils/storage"
+
+const WINDOW_WIDTH = Dimensions.get("window").width
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -36,33 +48,28 @@ const RENDER_VIEW: ViewStyle = {
   marginVertical: spacing[4],
 }
 
-const PREV_VIEW: ViewStyle = {
-  flexDirection: "row",
+const INDICATOR: ViewStyle = {
   justifyContent: "center",
   alignItems: "center",
-  borderWidth: 1,
-  borderColor: color.palette.white,
-  paddingHorizontal: 10,
-  paddingVertical: 8.7,
-  backgroundColor: color.transparent,
+  position: "absolute",
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 0,
 }
 
 export const VideoScreen = observer(function VideoScreen({ route }) {
   const { mediaStore } = useStores()
+  const [loading, setLoading] = useState(true)
   const isFocused = useIsFocused()
   useEffect(() => {
     if (isFocused) {
-      console.tron.log("In useeffect")
       getdata(route.params.id, route.params.parent_id)
     }
     return function cleanup() {
       mediaStore.subcategoryCleanup()
-      console.tron.log("Clean Data")
     }
   }, [route.params.id])
-  console.log("parent id", route.params.parent_id)
-  console.log(" id", route.params.id)
-
   const getdata = async (id: number, parentId) => {
     await mediaStore.getSubCategoryItems(parentId)
     await mediaStore.getCurrentSubCategory(parentId)
@@ -73,7 +80,6 @@ export const VideoScreen = observer(function VideoScreen({ route }) {
   }
 
   const renderItem = ({ item, index }) => {
-    console.tron.log("VIDEO", item)
     let video_id = item.url.match(
       /(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/,
     )[1]
@@ -89,7 +95,15 @@ export const VideoScreen = observer(function VideoScreen({ route }) {
             controls={1}
             modestbranding={true}
             style={VIDEO}
+            onReady={() => setLoading(false)}
+            onChangeState={() => setLoading(false)}
           />
+          {loading && (
+            <View style={INDICATOR}>
+              <Text text={"Video is loading..."} style={{ color: color.palette.golden }} />
+              <Spinner type={"CircleFlip"} color={color.palette.golden} />
+            </View>
+          )}
         </View>
         <HTML
           tagsStyles={{
@@ -119,6 +133,9 @@ export const VideoScreen = observer(function VideoScreen({ route }) {
         />
         <View style={MAIN_FLEX}>
           <Navigate id={route.params.id} parent_id={route.params.parent_id} />
+          {mediaStore.loading && (
+            <ActivityIndicator color={color.palette.white} style={INDICATOR} />
+          )}
           <FlatList
             data={mediaStore.mediaArray}
             renderItem={renderItem}

@@ -17,7 +17,7 @@ const isIos = Platform.OS === "ios"
 
 const MAIN: ViewStyle = {
   flex: 1,
-  backgroundColor: color.background,
+  backgroundColor: color.transparent,
 }
 
 function ScreenWithoutScrolling(props: ScreenProps) {
@@ -35,7 +35,7 @@ function ScreenWithoutScrolling(props: ScreenProps) {
       behavior={isIos ? "padding" : null}
       keyboardVerticalOffset={offsets[props.keyboardOffset || "none"]}
     >
-      <StatusBar barStyle={props.statusBar || "light-content"} />
+      <StatusBar barStyle={props.statusBar || "light-content"} backgroundColor={color.background} />
       <View style={[preset.inner, style, insetStyle]}>{props.children}</View>
     </KeyboardAvoidingView>
   )
@@ -45,7 +45,7 @@ function ScreenWithScrolling(props: ScreenProps) {
   const insets = useSafeArea()
   const preset = presets.scroll
   const style = props.style || {}
-  const backgroundStyle = props.backgroundColor ? { backgroundColor: props.backgroundColor } : {}
+  const backgroundStyle = { backgroundColor: color.transparentOpacity }
   const insetStyle = { paddingTop: props.unsafe ? 0 : insets.top }
 
   return (
@@ -56,7 +56,10 @@ function ScreenWithScrolling(props: ScreenProps) {
         behavior={isIos ? "padding" : null}
         keyboardVerticalOffset={offsets[props.keyboardOffset || "none"]}
       >
-        <StatusBar barStyle={props.statusBar || "light-content"} />
+        <StatusBar
+          barStyle={props.statusBar || "light-content"}
+          backgroundColor={color.background}
+        />
         <View style={[preset.outer, backgroundStyle, insetStyle]}>
           <ScrollView
             style={[preset.outer, backgroundStyle]}

@@ -1,6 +1,14 @@
 import React, { useEffect } from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle, ImageStyle, ImageBackground, TextStyle, View, FlatList } from "react-native"
+import {
+  ViewStyle,
+  ImageStyle,
+  ImageBackground,
+  TextStyle,
+  View,
+  FlatList,
+  ActivityIndicator,
+} from "react-native"
 import { Screen, Header, Button } from "../../components"
 import { useNavigation } from "@react-navigation/native"
 import { useStores } from "../../models"
@@ -21,6 +29,7 @@ const TEXT_COLOR: TextStyle = {
   color: "#FEFEFE",
   fontSize: 15.3,
   letterSpacing: 3.07,
+  // fontFamily: "SFProText-Regular",
 }
 const MAIN_VIEW: ViewStyle = {
   paddingHorizontal: 33.3,
@@ -40,18 +49,26 @@ const FIRST_FLEX: ViewStyle = {
   flex: 1,
   justifyContent: "center",
 }
+const INDICATOR: ViewStyle = {
+  justifyContent: "center",
+  alignItems: "center",
+  position: "absolute",
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 0,
+}
+
 export const HomeScreen = observer(function HomeScreen() {
   const navigation = useNavigation()
   const { categoryStore, mediaStore } = useStores()
   const isFocused = useIsFocused()
 
   useEffect(() => {
-    if (isFocused) {
-      getRecentData()
-    }
+    getCategoryData()
   }, [isFocused])
 
-  const getRecentData = async () => {
+  const getCategoryData = async () => {
     await categoryStore.getCategoryItems()
     await mediaStore.setIndexForSubcategory(0)
   }
@@ -65,7 +82,6 @@ export const HomeScreen = observer(function HomeScreen() {
           text={item.name}
           onPress={() =>
             navigation.navigate("subCategory", {
-              // pass parent id and subCategory name for next screen
               id: item.id,
               name: item.name,
             })
@@ -80,6 +96,9 @@ export const HomeScreen = observer(function HomeScreen() {
         <Header headerText={"Dashboard"} rightIcon="hamBurger" />
         <View style={FIRST_FLEX}>
           <View style={MAIN_VIEW}>
+            {categoryStore.loading && (
+              <ActivityIndicator color={color.palette.white} style={INDICATOR} />
+            )}
             <FlatList
               data={categoryStore.category}
               renderItem={renderItem}

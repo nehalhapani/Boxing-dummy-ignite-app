@@ -9,8 +9,8 @@ import {
   Animated,
   FlatList,
   Dimensions,
-  Image,
   Platform,
+  ActivityIndicator,
 } from "react-native"
 import { Screen, Header, Text, Icon } from "../../components"
 import { color } from "../../theme"
@@ -18,8 +18,7 @@ import { icons } from "../../components/icon/icons"
 import { useStores } from "../../models"
 import { useIsFocused } from "@react-navigation/native"
 import Accordion from "react-native-collapsible/Accordion"
-// import WebImage from "react-native-web-image"
-// import FastImage from "react-native-fast-image"
+import FastImage from "react-native-fast-image"
 import SearchInput, { createFilter } from "react-native-search-filter"
 const KEYS_TO_FILTERS = ["title", "data"]
 const VIEW_MAX_HEIGHT = 263
@@ -57,6 +56,7 @@ const PROFILE_NAME: TextStyle = {
   fontWeight: "500",
   color: color.palette.white,
   alignSelf: "flex-start",
+  textTransform: "capitalize",
 }
 const TEXT_IDENTITY: TextStyle = {
   fontSize: 17,
@@ -131,10 +131,19 @@ const SECOND_SUBCATEGORYVIEW: ViewStyle = {
   flexDirection: "row",
   paddingBottom: 6,
 }
+const INDICATOR: ViewStyle = {
+  justifyContent: "center",
+  alignItems: "center",
+  position: "absolute",
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 0,
+}
 
 export const ProfileScreen = observer(function ProfileScreen() {
   const [activeSection, setActiveSection] = useState([])
-  const { mediaStore, categoryStore } = useStores()
+  const { mediaStore, categoryStore, authStore } = useStores()
   const [recentlyViewedData, setRecentlyViewedData] = useState([])
   const [searchItem, setSearchItem] = useState("")
   const isFocused = useIsFocused()
@@ -217,9 +226,10 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 ListEmptyComponent={() => {
                   return (
                     <View style={SECOND_SUBCATEGORYVIEW}>
-                      <Image
+                      <FastImage
                         source={{
                           uri: null,
+                          priority: FastImage.priority.normal,
                         }}
                         style={{
                           marginRight: 16,
@@ -227,9 +237,10 @@ export const ProfileScreen = observer(function ProfileScreen() {
                           width: 64.3,
                           borderWidth: 2,
                           borderColor: color.palette.golden,
-                          borderRadius: 64,
+                          borderRadius: IMAGE_WIDTH / 2,
                           backgroundColor: "white",
                         }}
+                        resizeMode={FastImage.resizeMode.contain}
                       />
                     </View>
                   )
@@ -237,9 +248,10 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 renderItem={({ item, index }: any) => {
                   return (
                     <View key={index} style={SECOND_SUBCATEGORYVIEW}>
-                      <Image
+                      <FastImage
                         source={{
                           uri: item.type == "Image" ? item.url : item.video_cover,
+                          priority: FastImage.priority.normal,
                         }}
                         style={{
                           marginRight: 16,
@@ -250,6 +262,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
                           borderColor: color.palette.golden,
                           backgroundColor: "white",
                         }}
+                        resizeMode={FastImage.resizeMode.contain}
                       />
                     </View>
                   )
@@ -261,12 +274,16 @@ export const ProfileScreen = observer(function ProfileScreen() {
       </View>
     )
   }
+
   const filteredData = recentlyViewedData.filter(createFilter(searchItem, KEYS_TO_FILTERS))
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
         <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
           <Header headerText={"Profile"} />
+          {mediaStore.loading && (
+            <ActivityIndicator color={color.palette.white} style={INDICATOR} />
+          )}
           <Animated.View
             style={{
               height: translateY,
@@ -283,18 +300,22 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 top: paddingTopForImage,
               }}
             >
-              <Image
-                source={icons.mainProfile}
+              <FastImage
+                source={
+                  authStore.userData == ""
+                    ? icons.profile
+                    : { uri: authStore.userData.profileImage }
+                }
                 style={{
                   borderRadius: IMAGE_WIDTH / 2,
                   borderColor: color.palette.golden,
                   borderWidth: 3,
+                  height: IMAGE_WIDTH,
+                  width: IMAGE_WIDTH,
+                  backgroundColor: color.palette.white,
                 }}
+                resizeMode={FastImage.resizeMode.contain}
               />
-              {/* <Icon
-              icon={"mainProfile"}
-              style={{ borderRadius: 30, borderColor: color.palette.golden, borderWidth: 1 }}
-            /> */}
             </Animated.View>
             <Animated.View
               style={{
@@ -306,13 +327,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
               }}
             >
               <Animated.Text style={[PROFILE_NAME, { minWidth }]} numberOfLines={1}>
-                {"Luke Johnson"}
+                {authStore.userData == "" ? "Test UserName" : authStore.userData.profileName}
               </Animated.Text>
               <Animated.Text style={[TEXT_IDENTITY, { minWidth }]} numberOfLines={1}>
-                {"LukeMJohnson@gmail.com"}
+                {authStore.userData == "" ? "test@gmail.com" : authStore.userData.profileEmail}
               </Animated.Text>
               <Animated.Text style={[TEXT_IDENTITY, { minWidth }]} numberOfLines={1}>
-                {"7th, March, 1986"}
+                {"23th, oct, 1998"}
               </Animated.Text>
             </Animated.View>
           </Animated.View>

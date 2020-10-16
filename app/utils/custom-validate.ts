@@ -24,7 +24,7 @@ const validateEmail = (email) => {
 const validatePassword = (password) => {
   // var regPassword = /^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
   var regAlphanumeric = /\w+/
-  var regSpecialChar = /[*@!#%&()^~{}]+/
+  var regSpecialChar = /[*$@!#%&()^~{}]+/
 
   let errors = []
   if (password.length == 0) {

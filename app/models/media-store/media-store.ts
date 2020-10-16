@@ -18,7 +18,6 @@ export const MediaStoreModel = types
   .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
     getSubCategoryItems: flow(function* getSubCategoryItems(id: number) {
-      console.tron.log("ID FROM VIDEO", id)
       try {
         self.loading = true
         const data = yield api.getSubCategoryItems(id)
@@ -37,13 +36,13 @@ export const MediaStoreModel = types
     }),
 
     getRecentData(parentId, subcategoryId) {
+      self.loading = true
+
       let AllDataIndex = findArrayObject(self.allSubCategoryMedia, parentId)
       let recentDataParentIndex = self.recentData.findIndex((x) => x.parent_id == parentId)
       let subIndex = self.allSubCategoryMedia[AllDataIndex].data.findIndex(
         (x) => x.id == subcategoryId,
       )
-
-      console.tron.log("IDS", AllDataIndex, recentDataParentIndex, subIndex)
       if (recentDataParentIndex == -1) {
         self.recentData = self.recentData.concat({
           parent_id: parentId,
@@ -55,31 +54,31 @@ export const MediaStoreModel = types
           self.recentData[recentDataParentIndex].children,
           subcategoryId,
         )
-        console.tron.log("IDS SUB", indexofRepeated)
-
         if (indexofRepeated == -1) {
           let data = NewArray.concat(self.allSubCategoryMedia[AllDataIndex].data[subIndex])
-          console.tron.log("DATA", data)
           self.recentData[recentDataParentIndex].children = data
         } else {
           self.recentData[recentDataParentIndex].children[indexofRepeated] =
             self.allSubCategoryMedia[AllDataIndex].data[subIndex]
         }
       }
-      console.tron.log("RECENT", self.recentData)
+      self.loading = false
     },
 
     // get currently opened subCategory from all category array
     getCurrentSubCategory(parent_id: number) {
+      self.loading = true
       let currentSubcategoryIndex = findArrayObject(self.allSubCategoryMedia, parent_id)
       self.subCategory = self.allSubCategoryMedia[currentSubcategoryIndex].data
+      self.loading = false
     },
 
     // get media of currently open subCategory
     getMediaForSubcategory(idOfSubcategory: number, parent_id: number) {
+      self.loading = true
       let indexForPerticularMedia = self.subCategory.findIndex((item) => item.id == idOfSubcategory)
       self.mediaArray = self.subCategory[indexForPerticularMedia].media
-      console.log(indexForPerticularMedia)
+      self.loading = false
     },
 
     subcategoryCleanup() {

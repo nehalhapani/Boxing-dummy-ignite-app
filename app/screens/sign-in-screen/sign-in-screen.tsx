@@ -118,8 +118,14 @@ export const SignInScreen = observer(function SignInScreen() {
     try {
       await GoogleSignin.hasPlayServices()
       const userInfo = await GoogleSignin.signIn()
-      console.log(userInfo)
+      console.tron.log("UserData", userInfo)
+      let profileData = {
+        profileImage: userInfo.user.photo,
+        profileName: userInfo.user.name,
+        profileEmail: userInfo.user.email,
+      }
       authStore.setToken()
+      authStore.setUserData(profileData)
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow
@@ -135,10 +141,7 @@ export const SignInScreen = observer(function SignInScreen() {
 
   const ref_input2 = useRef(null)
 
-  const USER_DATA = [
-    { username: "nehal@gmail.com", password: "nehal@12345" },
-    { username: "test@gmail.com", password: "test@12345" },
-  ]
+  const USER_DATA = [{ username: "test@gmail.com", password: "test@12345" }]
   const ValidateForm = () => {
     setRuntimeUsername(true)
     let isUsernameError = UsernameValidate(username)
@@ -197,17 +200,24 @@ export const SignInScreen = observer(function SignInScreen() {
         if (result.isCancelled) {
           console.log("Login cancelled")
         } else {
-          authStore.setToken()
+          console.log("Login success with permissions: " + result.grantedPermissions.toString())
           AccessToken.getCurrentAccessToken().then((data) => {
             const infoRequest = new GraphRequest(
-              "/me?fields=name,picture,email",
-              null,
+              "/me",
+              {
+                accessToken: data.accessToken.toString(),
+                parameters: {
+                  fields: {
+                    string: "email,name,last_name,picture",
+                  },
+                },
+              },
               _responseInfoCallback,
             )
+
             // Start the graph request.
             new GraphRequestManager().addRequest(infoRequest).start()
           })
-          console.log("Login success with permissions: " + result.grantedPermissions.toString())
         }
       },
       function (error) {
@@ -219,7 +229,15 @@ export const SignInScreen = observer(function SignInScreen() {
     if (error) {
       console.log("Error fetching data: " + error.toString())
     } else {
-      console.log("Result Name: " + result)
+      console.tron.log(result)
+      let profileData = {
+        profileImage: result.picture.data.url,
+        profileName: result.name,
+        profileEmail: result.email,
+      }
+
+      authStore.setUserData(profileData)
+      authStore.setToken()
     }
   }
   return (

@@ -10,6 +10,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native"
 import { Screen, Header, Text } from "../../components"
 import { color } from "../../theme"
@@ -48,6 +49,15 @@ const ICON_STYLE: ImageStyle = {
   borderRadius: 67,
   height: 67,
   width: 67,
+}
+const INDICATOR: ViewStyle = {
+  justifyContent: "center",
+  alignItems: "center",
+  position: "absolute",
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 0,
 }
 
 export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) {
@@ -94,6 +104,9 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) 
         />
         <View style={{ flex: 1, justifyContent: "center" }}>
           <View style={MAIN_VIEW}>
+            {mediaStore.loading && (
+              <ActivityIndicator color={color.palette.white} style={INDICATOR} />
+            )}
             <FlatList
               data={mediaStore.subCategory}
               renderItem={renderItem}

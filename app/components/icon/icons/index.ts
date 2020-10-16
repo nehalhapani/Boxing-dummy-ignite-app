@@ -22,6 +22,7 @@ export const icons = {
   downArrow: require("./downArrow.png"),
   play: require("./play.png"),
   recentView: require("./profileImg1.png"),
+  profilePlaceholder: require("./profielPlaceholder.jpg"),
 }
 
 export type IconTypes = keyof typeof icons

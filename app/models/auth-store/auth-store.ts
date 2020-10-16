@@ -7,14 +7,23 @@ export const AuthStoreModel = types
   .model("AuthStore")
   .props({
     isTokenSet: types.optional(types.boolean, false),
+    userData: types.optional(types.frozen(), []),
+    loading: types.optional(types.boolean, false),
   })
   .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
     setToken() {
       self.isTokenSet = true
     },
+
+    setUserData(data) {
+      self.loading = true
+      self.userData = data
+      self.loading = false
+    },
     removeToken() {
       self.isTokenSet = false
+      self.userData = []
     },
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 
