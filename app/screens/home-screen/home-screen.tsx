@@ -8,6 +8,8 @@ import {
   View,
   FlatList,
   ActivityIndicator,
+  BackHandler,
+  Alert,
 } from "react-native"
 import { Screen, Header, Button } from "../../components"
 import { useNavigation } from "@react-navigation/native"
@@ -66,6 +68,20 @@ export const HomeScreen = observer(function HomeScreen() {
 
   useEffect(() => {
     getCategoryData()
+    const backAction = () => {
+      Alert.alert("Hold on!", "Are you sure you want to go back?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "YES", onPress: () => BackHandler.exitApp() },
+      ])
+      return true
+    }
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction)
+
+    return () => backHandler.remove()
   }, [isFocused])
 
   const getCategoryData = async () => {

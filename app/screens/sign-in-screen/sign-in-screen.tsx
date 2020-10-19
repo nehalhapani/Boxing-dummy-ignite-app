@@ -10,6 +10,7 @@ import {
   Alert,
   ImageStyle,
   Keyboard,
+  Animated,
 } from "react-native"
 import { Screen, Text, Button } from "../../components"
 import { color, spacing } from "../../theme"
@@ -57,7 +58,7 @@ const EMAIL_INPUT: TextStyle = {
 }
 const LOGO_SPACING: ViewStyle = {
   paddingVertical: 19,
-  paddingTop: 30,
+  paddingTop: 40,
 }
 const WELCOME_MSG: TextStyle = {
   fontSize: 30,
@@ -106,6 +107,7 @@ export const SignInScreen = observer(function SignInScreen() {
   const [runtimeUserame, setRuntimeUsername] = useState(false)
   const [passwordError, setPasswordError] = useState([])
   const [password, setPassword] = useState("")
+
   useEffect(() => {
     GoogleSignin.configure({
       webClientId: "400169882902-vcn7snnfnajehl7vj7i0hsh41e6k8aft.apps.googleusercontent.com",
@@ -256,6 +258,7 @@ export const SignInScreen = observer(function SignInScreen() {
             <View style={INPUT_VIEW}>
               <View style={INPUT_SUB_VIEW}>
                 <Text style={NAME_TEXT} text="Email Address" />
+
                 <TextInput
                   style={EMAIL_INPUT}
                   value={username}
@@ -267,6 +270,7 @@ export const SignInScreen = observer(function SignInScreen() {
                   blurOnSubmit={false}
                   onChangeText={(username) => handleEmailError(username)}
                 />
+
                 <View>
                   <Text style={ERROR_STYLE} text={userNameError} />
                 </View>

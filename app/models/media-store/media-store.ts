@@ -65,6 +65,41 @@ export const MediaStoreModel = types
       self.loading = false
     },
 
+    // getRecentData(parentId, subCategoryId, mediaId) {
+    //   console.tron.log("START", self.recentData)
+    //   console.tron.log("A", parentId, subCategoryId, mediaId)
+    //   self.loading = true
+    //   let AllDataIndex = findArrayObject(self.allSubCategoryMedia, parentId)
+    //   let recentDataParentIndex = self.recentData.findIndex((x) => x.parent_id == parentId)
+    //   let subIndex = self.allSubCategoryMedia[AllDataIndex].data.findIndex(
+    //     (x) => x.id == subCategoryId,
+    //   )
+    //   let mediaIndex = self.allSubCategoryMedia[AllDataIndex].data[subIndex].media.findIndex(
+    //     (x) => x.id == mediaId,
+    //   )
+    //   console.tron.log("B", AllDataIndex, recentDataParentIndex, subIndex, mediaIndex)
+    //   if (recentDataParentIndex == -1) {
+    //     self.recentData = self.recentData.concat({
+    //       parent_id: parentId,
+    //       children: [self.allSubCategoryMedia[AllDataIndex].data[subIndex].media[mediaIndex]],
+    //     })
+    //     console.tron.log("C", self.recentData)
+    //   } else {
+    //     let NewArray = self.recentData[recentDataParentIndex].children
+    //     let indexofRepeated = findRepeatedIndex(NewArray, subCategoryId)
+    //     if (indexofRepeated == -1) {
+    //       let data = NewArray.concat(
+    //         self.allSubCategoryMedia[AllDataIndex].data[subIndex].media[mediaIndex],
+    //       )
+    //       self.recentData[recentDataParentIndex].children = data
+    //     } else {
+    //       self.recentData[recentDataParentIndex].children[indexofRepeated].media =
+    //         self.allSubCategoryMedia[AllDataIndex].data[subIndex].media[mediaIndex]
+    //     }
+    //   }
+    //   self.loading = false
+    // },
+
     // get currently opened subCategory from all category array
     getCurrentSubCategory(parent_id: number) {
       self.loading = true

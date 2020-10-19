@@ -11,11 +11,14 @@ import {
   Dimensions,
   Platform,
   ActivityIndicator,
+  TouchableOpacity,
+  Alert,
 } from "react-native"
 import { Screen, Header, Text, Icon } from "../../components"
 import { color } from "../../theme"
 import { icons } from "../../components/icon/icons"
 import { useStores } from "../../models"
+import { useNavigation, CommonActions } from "@react-navigation/native"
 import { useIsFocused } from "@react-navigation/native"
 import Accordion from "react-native-collapsible/Accordion"
 import FastImage from "react-native-fast-image"
@@ -40,13 +43,8 @@ const MAIN_FLEX: ViewStyle = {
   paddingHorizontal: 33.3,
   backgroundColor: "rgba(0,0,0,0.3)",
   flex: 1,
-  paddingBottom: 30,
+  paddingBottom: 100,
   marginTop: SCROLL_DISTANCE,
-}
-const ICON_STYLE: ImageStyle = {
-  borderWidth: 3,
-  borderRadius: IMAGE_WIDTH / 2,
-  borderColor: color.palette.golden,
 }
 const PROFILE_NAME: TextStyle = {
   paddingVertical: 10,
@@ -140,13 +138,29 @@ const INDICATOR: ViewStyle = {
   top: 0,
   bottom: 0,
 }
+const DELETE_IMAGE: ImageStyle = {
+  position: "absolute",
+  right: 0,
+  top: 0,
+  zIndex: 1,
+  padding: 5,
+  backgroundColor: color.palette.angry,
+  borderRadius: 9,
+}
+const ICON_DELETE: ImageStyle = {
+  height: 10,
+  width: 10,
+}
 
 export const ProfileScreen = observer(function ProfileScreen() {
   const [activeSection, setActiveSection] = useState([])
   const { mediaStore, categoryStore, authStore } = useStores()
   const [recentlyViewedData, setRecentlyViewedData] = useState([])
   const [searchItem, setSearchItem] = useState("")
+  const [toggle, setToggle] = useState(false)
+
   const isFocused = useIsFocused()
+  const navigation = useNavigation()
 
   const scrollY = new Animated.Value(0)
   const translateY = scrollY.interpolate({
@@ -190,7 +204,11 @@ export const ProfileScreen = observer(function ProfileScreen() {
       getRecentData()
     }
   }, [isFocused])
-
+  useEffect(() => {
+    if (isFocused) {
+      getRecentData()
+    }
+  }, [toggle])
   const getRecentData = () => {
     let recentlyViewedData = []
     categoryStore.category.forEach((element) => {
@@ -202,7 +220,6 @@ export const ProfileScreen = observer(function ProfileScreen() {
     })
     setRecentlyViewedData(recentlyViewedData)
   }
-
   const renderHeader = (item, index, isExpanded) => {
     return (
       <View key={index} style={isExpanded ? ACTIVE_BUTTON_VIEW : BUTTON_VIEW}>
@@ -212,10 +229,42 @@ export const ProfileScreen = observer(function ProfileScreen() {
     )
   }
 
-  const renderContent = (item, index) => {
+  const removeItemConfirmation = (array, subCategoryId) => {
+    Alert.alert("DELETE", "Are you want to delete this item ?", [
+      {
+        text: "Cancel",
+        onPress: () => null,
+        style: "cancel",
+      },
+      {
+        text: "YES",
+        onPress: () => {
+          removeItem(array, subCategoryId)
+          setToggle(!toggle)
+        },
+      },
+    ])
+  }
+  const removeItem = (array, subCategoryId) => {
+    console.tron.log("before", array, subCategoryId)
+    let index = array.content.findIndex((x) => x.id == subCategoryId)
+    array.content.splice(index, 1)
+  }
+  // const removeItem = (array, subCategoryId, mediaId) => {
+  //   console.tron.log("before", array, subCategoryId)
+  //   console.warn("AA")
+  //   let subCategory_index = array.content.findIndex((x) => x.id == subCategoryId)
+  //   console.warn("BB", subCategory_index)
+  //   let index = array.content[subCategory_index].media.findIndex((x) => x.id == mediaId)
+  //   console.warn("CC", index)
+  //   array.content[subCategory_index].media.splice(index, 1)
+  //   console.tron.log("After", array)
+  // }
+
+  const renderContent = (data, index) => {
     return (
       <View key={index}>
-        {item.content.map((element, key) => {
+        {data.content.map((element, key) => {
           return (
             <View>
               <Text key={key} text={element.name} style={SUBCATEGORY_MEDIATYPE} />
@@ -223,48 +272,94 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 data={element.media}
                 keyExtractor={(item, index) => index.toString()}
                 horizontal={true}
-                ListEmptyComponent={() => {
+                ListEmptyComponent={(item, index) => {
                   return (
-                    <View style={SECOND_SUBCATEGORYVIEW}>
-                      <FastImage
-                        source={{
-                          uri: null,
-                          priority: FastImage.priority.normal,
+                    <TouchableOpacity
+                      style={{ marginRight: 16 }}
+                      onPress={() => {
+                        mediaStore.subcategoryCleanup()
+                        navigation.dispatch(
+                          CommonActions.navigate("video", {
+                            id: element.id,
+                            parent_id: element.parent_id,
+                            name: element.name,
+                          }),
+                        )
+                      }}
+                    >
+                      <TouchableOpacity
+                        style={DELETE_IMAGE}
+                        onPress={() => {
+                          removeItemConfirmation(data, element.id)
                         }}
-                        style={{
-                          marginRight: 16,
-                          height: 64.7,
-                          width: 64.3,
-                          borderWidth: 2,
-                          borderColor: color.palette.golden,
-                          borderRadius: IMAGE_WIDTH / 2,
-                          backgroundColor: "white",
-                        }}
-                        resizeMode={FastImage.resizeMode.contain}
-                      />
-                    </View>
+                      >
+                        <Icon icon="delete" style={ICON_DELETE} />
+                      </TouchableOpacity>
+                      <View style={SECOND_SUBCATEGORYVIEW}>
+                        <FastImage
+                          source={{
+                            uri: null,
+                            priority: FastImage.priority.normal,
+                          }}
+                          style={{
+                            height: 64.7,
+                            width: 64.3,
+                            borderWidth: 2,
+                            borderColor: color.palette.golden,
+                            borderRadius: IMAGE_WIDTH / 2,
+                            backgroundColor: "white",
+                          }}
+                          resizeMode={FastImage.resizeMode.contain}
+                        />
+                      </View>
+                    </TouchableOpacity>
                   )
                 }}
                 renderItem={({ item, index }: any) => {
                   return (
-                    <View key={index} style={SECOND_SUBCATEGORYVIEW}>
-                      <FastImage
-                        source={{
-                          uri: item.type == "Image" ? item.url : item.video_cover,
-                          priority: FastImage.priority.normal,
+                    <TouchableOpacity
+                      key={index}
+                      style={{
+                        marginRight: 16,
+                      }}
+                      onPress={() => {
+                        mediaStore.subcategoryCleanup()
+                        navigation.dispatch(
+                          CommonActions.navigate(item.type == "Image" ? "image" : "video", {
+                            id: element.id,
+                            parent_id: element.parent_id,
+                            name: element.name,
+                          }),
+                        )
+                      }}
+                    >
+                      <TouchableOpacity
+                        style={DELETE_IMAGE}
+                        onPress={() => {
+                          removeItemConfirmation(data, element.id)
                         }}
-                        style={{
-                          marginRight: 16,
-                          height: 64.7,
-                          width: 64.3,
-                          borderWidth: 2,
-                          borderRadius: IMAGE_WIDTH / 2,
-                          borderColor: color.palette.golden,
-                          backgroundColor: "white",
-                        }}
-                        resizeMode={FastImage.resizeMode.contain}
-                      />
-                    </View>
+                      >
+                        <Icon icon="delete" style={ICON_DELETE} />
+                      </TouchableOpacity>
+                      <View>
+                        <FastImage
+                          source={{
+                            uri: item.type == "Image" ? item.url : item.video_cover,
+                            priority: FastImage.priority.normal,
+                          }}
+                          style={{
+                            height: 64.7,
+                            width: 64.3,
+                            borderWidth: 2,
+                            borderRadius: IMAGE_WIDTH / 2,
+                            borderColor: color.palette.golden,
+                            backgroundColor: "white",
+                            zIndex: 0,
+                          }}
+                          resizeMode={FastImage.resizeMode.contain}
+                        />
+                      </View>
+                    </TouchableOpacity>
                   )
                 }}
               />
@@ -274,8 +369,17 @@ export const ProfileScreen = observer(function ProfileScreen() {
       </View>
     )
   }
-
+  // const filterSearch = (text) => {
+  //   const newData = recentlyViewedData.filter(function (item) {
+  //     const itemData = item.title.toUpperCase()
+  //     const textData = text.toUpperCase()
+  //     return itemData.indexOf(textData) > -1
+  //   })
+  //   setText(text)
+  //   filteredData.push(newData)
+  // }
   const filteredData = recentlyViewedData.filter(createFilter(searchItem, KEYS_TO_FILTERS))
+
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>

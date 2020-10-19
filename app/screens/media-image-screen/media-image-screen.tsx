@@ -7,22 +7,16 @@ import {
   TextStyle,
   View,
   Dimensions,
-  Image,
-  TouchableOpacity,
-  Alert,
   ActivityIndicator,
 } from "react-native"
-import { Screen, Header, Icon, Text, Navigate } from "../../components"
+import { Screen, Header, Text, Navigate } from "../../components"
 import { color, spacing } from "../../theme"
 import { useStores } from "../../models"
-import { useNavigation } from "@react-navigation/native"
 import { icons } from "../../components/icon/icons"
 import { useIsFocused } from "@react-navigation/native"
 import Carousel, { Pagination } from "react-native-snap-carousel"
 import HTML from "react-native-render-html"
-// import WebImage from "react-native-web-image"
 import FastImage from "react-native-fast-image"
-// import CachedImage from "react-native-image-cache-wrapper"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -69,7 +63,6 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
   const { mediaStore } = useStores()
 
   const isFocused = useIsFocused()
-  const navigation = useNavigation()
 
   const SLIDER_WIDTH = Dimensions.get("window").width
   const ITEM_WIDTH = SLIDER_WIDTH - 67
@@ -83,6 +76,7 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
   }, [route.params.id])
 
   const getdata = async (id: number, parentId) => {
+    await mediaStore.subcategoryCleanup()
     await mediaStore.getSubCategoryItems(parentId)
     await mediaStore.getCurrentSubCategory(parentId)
     await mediaStore.getMediaForSubcategory(id, parentId)
@@ -112,6 +106,7 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
   }
 
   const renderItem = ({ item, index }) => {
+    // mediaStore.getRecentData(route.params.parent_id, route.params.id, item.id)
     return (
       <View key={index} style={DETAIL_VIEW}>
         <View style={{ flex: 5 }}>
@@ -120,7 +115,6 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
               uri: item.url,
               priority: FastImage.priority.normal,
             }}
-            // resizeMode={FastImage.resizeMode.contain}
             style={{ height: "100%", width: "100%" }}
             resizeMode={FastImage.resizeMode.contain}
           />

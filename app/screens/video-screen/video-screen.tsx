@@ -7,7 +7,6 @@ import {
   View,
   FlatList,
   ActivityIndicator,
-  Dimensions,
 } from "react-native"
 import { Screen, Header, Navigate, Text } from "../../components"
 import { useStores } from "../../models"
@@ -17,9 +16,6 @@ import { useIsFocused } from "@react-navigation/native"
 import YouTube from "react-native-youtube"
 import Spinner from "react-native-spinkit"
 import HTML from "react-native-render-html"
-import { load } from "../../utils/storage"
-
-const WINDOW_WIDTH = Dimensions.get("window").width
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -69,7 +65,7 @@ export const VideoScreen = observer(function VideoScreen({ route }) {
     return function cleanup() {
       mediaStore.subcategoryCleanup()
     }
-  }, [route.params.id])
+  }, [route.params.id, isFocused])
   const getdata = async (id: number, parentId) => {
     await mediaStore.getSubCategoryItems(parentId)
     await mediaStore.getCurrentSubCategory(parentId)
