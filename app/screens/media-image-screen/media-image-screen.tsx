@@ -73,7 +73,7 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
     return function cleanup() {
       mediaStore.subcategoryCleanup()
     }
-  }, [route.params.id])
+  }, [route.params.id, isFocused])
 
   const getdata = async (id: number, parentId) => {
     await mediaStore.subcategoryCleanup()
@@ -81,6 +81,8 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
     await mediaStore.getCurrentSubCategory(parentId)
     await mediaStore.getMediaForSubcategory(id, parentId)
     await mediaStore.getRecentData(parentId, id)
+    await mediaStore.setViewdMediaArray(activeSLide + 1)
+
     mediaStore.setIndexForSubcategory(parentId)
   }
 
@@ -106,7 +108,6 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
   }
 
   const renderItem = ({ item, index }) => {
-    // mediaStore.getRecentData(route.params.parent_id, route.params.id, item.id)
     return (
       <View key={index} style={DETAIL_VIEW}>
         <View style={{ flex: 5 }}>
@@ -148,7 +149,10 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
               inactiveSlideOpacity={0}
               inactiveSlideShift={0}
               loop={false}
-              onSnapToItem={(index) => setActiveSlide(index)}
+              onSnapToItem={(index) => {
+                setActiveSlide(index)
+                mediaStore.setViewdMediaArray(index + 1)
+              }}
             />
             {pagination()}
           </View>

@@ -23,7 +23,8 @@ import { useIsFocused } from "@react-navigation/native"
 import Accordion from "react-native-collapsible/Accordion"
 import FastImage from "react-native-fast-image"
 import SearchInput, { createFilter } from "react-native-search-filter"
-const KEYS_TO_FILTERS = ["title", "data"]
+import { and } from "ramda"
+// const KEYS_TO_FILTERS = ["title", {recentlyViewedData.content.name}]
 const VIEW_MAX_HEIGHT = 263
 const VIEW_MIN_HEIGHT = 163
 const SCROLL_DISTANCE = VIEW_MAX_HEIGHT - VIEW_MIN_HEIGHT
@@ -151,6 +152,11 @@ const ICON_DELETE: ImageStyle = {
   height: 10,
   width: 10,
 }
+const TEXT_EMPLTY_ELEMENT: TextStyle = {
+  textAlign: "left",
+  paddingTop: 2,
+  padding: 10,
+}
 
 export const ProfileScreen = observer(function ProfileScreen() {
   const [activeSection, setActiveSection] = useState([])
@@ -158,9 +164,11 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const [recentlyViewedData, setRecentlyViewedData] = useState([])
   const [searchItem, setSearchItem] = useState("")
   const [toggle, setToggle] = useState(false)
+  const [filterData, setFilterData] = useState([])
 
   const isFocused = useIsFocused()
   const navigation = useNavigation()
+  const KEYS_TO_FILTERS = ["title"]
 
   const scrollY = new Animated.Value(0)
   const translateY = scrollY.interpolate({
@@ -214,11 +222,23 @@ export const ProfileScreen = observer(function ProfileScreen() {
     categoryStore.category.forEach((element) => {
       mediaStore.recentData.forEach((recentItem) => {
         if (recentItem.parent_id == element.id) {
-          recentlyViewedData.push({ title: element.name, content: recentItem.children })
+          let seenMediaArray = []
+          recentItem.children.forEach((recentMediaElement) => {
+            let mediaChildren = recentMediaElement.media.filter((item) => {
+              return mediaStore.seenMedia.indexOf(item.id) > -1
+            })
+            let dataOfChildMedia = recentMediaElement
+            if (mediaChildren.length != 0) {
+              dataOfChildMedia.media = mediaChildren
+              seenMediaArray.push(dataOfChildMedia)
+            }
+          })
+          recentlyViewedData.push({ title: element.name, content: seenMediaArray })
         }
       })
     })
     setRecentlyViewedData(recentlyViewedData)
+    setFilterData(filterData)
   }
   const renderHeader = (item, index, isExpanded) => {
     return (
@@ -229,7 +249,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
     )
   }
 
-  const removeItemConfirmation = (array, subCategoryId) => {
+  const removeItemConfirmation = (mediaId) => {
     Alert.alert("DELETE", "Are you want to delete this item ?", [
       {
         text: "Cancel",
@@ -237,31 +257,50 @@ export const ProfileScreen = observer(function ProfileScreen() {
         style: "cancel",
       },
       {
-        text: "YES",
+        text: "OK",
         onPress: () => {
-          removeItem(array, subCategoryId)
+          removeItem(mediaId)
           setToggle(!toggle)
         },
       },
     ])
   }
-  const removeItem = (array, subCategoryId) => {
-    console.tron.log("before", array, subCategoryId)
-    let index = array.content.findIndex((x) => x.id == subCategoryId)
-    array.content.splice(index, 1)
+  const removeItem = (mediaId) => {
+    mediaStore.removeViewedMediaArray(mediaId)
   }
-  // const removeItem = (array, subCategoryId, mediaId) => {
-  //   console.tron.log("before", array, subCategoryId)
-  //   console.warn("AA")
-  //   let subCategory_index = array.content.findIndex((x) => x.id == subCategoryId)
-  //   console.warn("BB", subCategory_index)
-  //   let index = array.content[subCategory_index].media.findIndex((x) => x.id == mediaId)
-  //   console.warn("CC", index)
-  //   array.content[subCategory_index].media.splice(index, 1)
-  //   console.tron.log("After", array)
-  // }
+  const searchAction = (searchItem) => {
+    if (searchItem == "") {
+      setFilterData(recentlyViewedData)
+    } else {
+      const KEYS = ["content.name"]
+      var filteredData = recentlyViewedData.filter(createFilter(searchItem, KEYS_TO_FILTERS))
+
+      if (filteredData.length == 0) {
+        let temp = recentlyViewedData.filter(createFilter(searchItem, KEYS))
+        let newMedia = temp.map((item) => {
+          return {
+            ...item,
+            content: item.content.filter((element) =>
+              element.name.toString().toLowerCase().includes(searchItem.toLowerCase()),
+            ),
+          }
+        })
+        filteredData = newMedia
+        setActiveSection([0])
+        console.tron.log("Temp", newMedia)
+        setFilterData(filteredData)
+      } else {
+        setFilterData(filteredData)
+      }
+    }
+  }
 
   const renderContent = (data, index) => {
+    {
+      if (data.content.length == 0) {
+        return <Text text="No Data Found!" style={TEXT_EMPLTY_ELEMENT} />
+      }
+    }
     return (
       <View key={index}>
         {data.content.map((element, key) => {
@@ -276,21 +315,21 @@ export const ProfileScreen = observer(function ProfileScreen() {
                   return (
                     <TouchableOpacity
                       style={{ marginRight: 16 }}
-                      onPress={() => {
-                        mediaStore.subcategoryCleanup()
-                        navigation.dispatch(
-                          CommonActions.navigate("video", {
-                            id: element.id,
-                            parent_id: element.parent_id,
-                            name: element.name,
-                          }),
-                        )
-                      }}
+                      // onPress={() => {
+                      //   mediaStore.subcategoryCleanup()
+                      //   navigation.dispatch(
+                      //     CommonActions.navigate("video", {
+                      //       id: element.id,
+                      //       parent_id: element.parent_id,
+                      //       name: element.name,
+                      //     }),
+                      //   )
+                      // }}
                     >
                       <TouchableOpacity
                         style={DELETE_IMAGE}
                         onPress={() => {
-                          removeItemConfirmation(data, element.id)
+                          removeItemConfirmation(item.id)
                         }}
                       >
                         <Icon icon="delete" style={ICON_DELETE} />
@@ -322,21 +361,21 @@ export const ProfileScreen = observer(function ProfileScreen() {
                       style={{
                         marginRight: 16,
                       }}
-                      onPress={() => {
-                        mediaStore.subcategoryCleanup()
-                        navigation.dispatch(
-                          CommonActions.navigate(item.type == "Image" ? "image" : "video", {
-                            id: element.id,
-                            parent_id: element.parent_id,
-                            name: element.name,
-                          }),
-                        )
-                      }}
+                      // onPress={() => {
+                      //   mediaStore.subcategoryCleanup()
+                      //   navigation.dispatch(
+                      //     CommonActions.navigate(item.type == "Image" ? "image" : "video", {
+                      //       id: element.id,
+                      //       parent_id: element.parent_id,
+                      //       name: element.name,
+                      //     }),
+                      //   )
+                      // }}
                     >
                       <TouchableOpacity
                         style={DELETE_IMAGE}
                         onPress={() => {
-                          removeItemConfirmation(data, element.id)
+                          removeItemConfirmation(item.id)
                         }}
                       >
                         <Icon icon="delete" style={ICON_DELETE} />
@@ -369,16 +408,6 @@ export const ProfileScreen = observer(function ProfileScreen() {
       </View>
     )
   }
-  // const filterSearch = (text) => {
-  //   const newData = recentlyViewedData.filter(function (item) {
-  //     const itemData = item.title.toUpperCase()
-  //     const textData = text.toUpperCase()
-  //     return itemData.indexOf(textData) > -1
-  //   })
-  //   setText(text)
-  //   filteredData.push(newData)
-  // }
-  const filteredData = recentlyViewedData.filter(createFilter(searchItem, KEYS_TO_FILTERS))
 
   return (
     <View style={{ flex: 1 }}>
@@ -457,13 +486,16 @@ export const ProfileScreen = observer(function ProfileScreen() {
                     inputViewStyles={EMAIL_INPUT}
                     placeholderTextColor={color.palette.brownGray}
                     placeholder={"Search categories"}
-                    onChangeText={(searchItem) => setSearchItem(searchItem)}
+                    onChangeText={(searchItem) => searchAction(searchItem)}
                     fuzzy={true}
+                    autoCorrect={false}
+                    throttle={200}
+                    caseSensitive={false}
                   />
                   <Icon icon={"search"} style={SEARCH} />
                 </View>
                 <Accordion
-                  sections={filteredData}
+                  sections={filterData}
                   activeSections={activeSection}
                   renderHeader={renderHeader}
                   renderContent={renderContent}

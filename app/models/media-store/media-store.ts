@@ -12,6 +12,7 @@ export const MediaStoreModel = types
     mediaArray: types.optional(types.frozen(), []),
     indexForSubcategory: types.optional(types.integer, 0),
     recentData: types.optional(types.frozen(), []),
+    seenMedia: types.optional(types.array(types.frozen()), []),
     loading: false,
   })
 
@@ -36,8 +37,6 @@ export const MediaStoreModel = types
     }),
 
     getRecentData(parentId, subcategoryId) {
-      self.loading = true
-
       let AllDataIndex = findArrayObject(self.allSubCategoryMedia, parentId)
       let recentDataParentIndex = self.recentData.findIndex((x) => x.parent_id == parentId)
       let subIndex = self.allSubCategoryMedia[AllDataIndex].data.findIndex(
@@ -62,58 +61,29 @@ export const MediaStoreModel = types
             self.allSubCategoryMedia[AllDataIndex].data[subIndex]
         }
       }
-      self.loading = false
     },
 
-    // getRecentData(parentId, subCategoryId, mediaId) {
-    //   console.tron.log("START", self.recentData)
-    //   console.tron.log("A", parentId, subCategoryId, mediaId)
-    //   self.loading = true
-    //   let AllDataIndex = findArrayObject(self.allSubCategoryMedia, parentId)
-    //   let recentDataParentIndex = self.recentData.findIndex((x) => x.parent_id == parentId)
-    //   let subIndex = self.allSubCategoryMedia[AllDataIndex].data.findIndex(
-    //     (x) => x.id == subCategoryId,
-    //   )
-    //   let mediaIndex = self.allSubCategoryMedia[AllDataIndex].data[subIndex].media.findIndex(
-    //     (x) => x.id == mediaId,
-    //   )
-    //   console.tron.log("B", AllDataIndex, recentDataParentIndex, subIndex, mediaIndex)
-    //   if (recentDataParentIndex == -1) {
-    //     self.recentData = self.recentData.concat({
-    //       parent_id: parentId,
-    //       children: [self.allSubCategoryMedia[AllDataIndex].data[subIndex].media[mediaIndex]],
-    //     })
-    //     console.tron.log("C", self.recentData)
-    //   } else {
-    //     let NewArray = self.recentData[recentDataParentIndex].children
-    //     let indexofRepeated = findRepeatedIndex(NewArray, subCategoryId)
-    //     if (indexofRepeated == -1) {
-    //       let data = NewArray.concat(
-    //         self.allSubCategoryMedia[AllDataIndex].data[subIndex].media[mediaIndex],
-    //       )
-    //       self.recentData[recentDataParentIndex].children = data
-    //     } else {
-    //       self.recentData[recentDataParentIndex].children[indexofRepeated].media =
-    //         self.allSubCategoryMedia[AllDataIndex].data[subIndex].media[mediaIndex]
-    //     }
-    //   }
-    //   self.loading = false
-    // },
+    setViewdMediaArray(mediaId: number) {
+      if (self.seenMedia.indexOf(mediaId) === -1) {
+        self.seenMedia.push(mediaId)
+        console.tron.log("set", self.seenMedia)
+      }
+    },
+    removeViewedMediaArray(mediaId: number) {
+      self.seenMedia.remove(mediaId)
+      console.tron.log("REMOVE", self.seenMedia)
+    },
 
     // get currently opened subCategory from all category array
     getCurrentSubCategory(parent_id: number) {
-      self.loading = true
       let currentSubcategoryIndex = findArrayObject(self.allSubCategoryMedia, parent_id)
       self.subCategory = self.allSubCategoryMedia[currentSubcategoryIndex].data
-      self.loading = false
     },
 
     // get media of currently open subCategory
     getMediaForSubcategory(idOfSubcategory: number, parent_id: number) {
-      self.loading = true
       let indexForPerticularMedia = self.subCategory.findIndex((item) => item.id == idOfSubcategory)
       self.mediaArray = self.subCategory[indexForPerticularMedia].media
-      self.loading = false
     },
 
     subcategoryCleanup() {

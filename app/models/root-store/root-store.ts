@@ -1,5 +1,4 @@
 import { MediaStoreModel } from "../media-store/media-store"
-import { SubCategoryStoreModel } from "../sub-category-store/sub-category-store"
 import { CategoryStoreModel } from "../category-store/category-store"
 import { AuthStoreModel } from "../auth-store/auth-store"
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
@@ -10,7 +9,6 @@ import { Instance, SnapshotOut, types } from "mobx-state-tree"
 // prettier-ignore
 export const RootStoreModel = types.model("RootStore").props({
   mediaStore: types.optional(MediaStoreModel, {}),
-  subCategoryStore: types.optional(SubCategoryStoreModel, {}),
   categoryStore: types.optional(CategoryStoreModel, {}),
   authStore: types.optional(AuthStoreModel, {}),
 

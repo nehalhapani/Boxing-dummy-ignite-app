@@ -76,6 +76,7 @@ export const VideoScreen = observer(function VideoScreen({ route }) {
   }
 
   const renderItem = ({ item, index }) => {
+    mediaStore.setViewdMediaArray(item.id)
     let video_id = item.url.match(
       /(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/,
     )[1]

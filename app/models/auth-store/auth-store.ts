@@ -17,9 +17,7 @@ export const AuthStoreModel = types
     },
 
     setUserData(data) {
-      self.loading = true
       self.userData = data
-      self.loading = false
     },
     removeToken() {
       self.isTokenSet = false
