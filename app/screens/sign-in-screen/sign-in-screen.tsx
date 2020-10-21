@@ -11,6 +11,7 @@ import {
   ImageStyle,
   Keyboard,
   Animated,
+  KeyboardAvoidingView,
 } from "react-native"
 import { Screen, Text, Button } from "../../components"
 import { color, spacing } from "../../theme"
@@ -22,6 +23,7 @@ import { icons } from "../../components/icon/icons"
 
 const ROOT: ViewStyle = {
   flex: 1,
+  paddingTop: 33,
 }
 const BUTTONVIEW_SIGNIN: ViewStyle = {
   justifyContent: "center",
@@ -66,6 +68,8 @@ const WELCOME_MSG: TextStyle = {
 }
 const BOTTOM_VIEW: ViewStyle = {
   paddingBottom: spacing[4],
+  paddingHorizontal: 33.3,
+  marginBottom: 20,
 }
 const TEXT_COLOR: TextStyle = {
   color: "#FEFEFE",
@@ -244,7 +248,7 @@ export const SignInScreen = observer(function SignInScreen() {
   }
   return (
     <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
-      <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
+      <KeyboardAvoidingView style={ROOT}>
         <View style={MAINFLEX}>
           <View>
             <View>
@@ -303,27 +307,26 @@ export const SignInScreen = observer(function SignInScreen() {
               </View>
             </View>
           </View>
-
-          <View style={BOTTOM_VIEW}>
-            <View style={FB_BUTTON}>
-              <Button
-                style={BUTTONVIEW_FACEBOOK}
-                textStyle={TEXT_COLOR}
-                text="Login with Facebook"
-                onPress={() => loginWIthFacebook()}
-              />
-            </View>
-            <View style={FB_BUTTON}>
-              <Button
-                style={BUTTONVIEW_GOOGLE}
-                textStyle={TEXT_COLOR}
-                text="Login with Gmail"
-                onPress={() => signIn()}
-              />
-            </View>
-          </View>
         </View>
-      </Screen>
+      </KeyboardAvoidingView>
+      <View style={BOTTOM_VIEW}>
+        <View style={FB_BUTTON}>
+          <Button
+            style={BUTTONVIEW_FACEBOOK}
+            textStyle={TEXT_COLOR}
+            text="Login with Facebook"
+            onPress={() => loginWIthFacebook()}
+          />
+        </View>
+        <View style={FB_BUTTON}>
+          <Button
+            style={BUTTONVIEW_GOOGLE}
+            textStyle={TEXT_COLOR}
+            text="Login with Gmail"
+            onPress={() => signIn()}
+          />
+        </View>
+      </View>
     </ImageBackground>
   )
 })

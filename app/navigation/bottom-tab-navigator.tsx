@@ -11,7 +11,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { ProfileScreen } from "../screens"
 import { Icon, Text } from "../components"
 import { color, spacing } from "../theme"
-import { ImageBackground, View, TouchableOpacity, SafeAreaView } from "react-native"
+import { ImageBackground, View, TouchableOpacity, SafeAreaView, Platform } from "react-native"
 import { icons } from "../components/icon/icons"
 import { PrimaryNavigator } from "./primary-navigator"
 
@@ -65,6 +65,7 @@ function MyTabBar({ state, descriptors, navigation }) {
             accessibilityRole="button"
             accessibilityLabel={options.tabBarAccessibilityLabel}
             testID={options.tabBarTestID}
+            activeOpacity={1}
             onPress={onPress}
             onLongPress={onLongPress}
             style={{ flex: 1, backgroundColor: color.transparent, justifyContent: "flex-end" }}
@@ -77,13 +78,12 @@ function MyTabBar({ state, descriptors, navigation }) {
                 height: isFocused ? "122%" : "100%",
               }}
             >
-              <View style={{ flex: 1, justifyContent: "center" }}>
-                <SafeAreaView style={{ flex: 1 }}>
+              <View style={{ flex: 1 }}>
+                <SafeAreaView style={{ flex: 1, justifyContent: "flex-end" }}>
                   <View
                     style={{
-                      justifyContent: "center",
                       alignItems: "center",
-                      marginTop: isFocused ? 26 : 4,
+                      marginBottom: Platform.OS == "ios" ? 0 : 10,
                     }}
                   >
                     <Icon icon={icon} style={{ marginVertical: spacing[2] }} />

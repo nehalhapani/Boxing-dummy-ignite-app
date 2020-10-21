@@ -75,7 +75,7 @@ export const HomeScreen = observer(function HomeScreen() {
           onPress: () => null,
           style: "cancel",
         },
-        { text: "YES", onPress: () => BackHandler.exitApp() },
+        { text: "YES", style: "destructive", onPress: () => BackHandler.exitApp() },
       ])
       return true
     }

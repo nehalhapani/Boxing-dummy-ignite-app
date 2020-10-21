@@ -238,7 +238,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
       })
     })
     setRecentlyViewedData(recentlyViewedData)
-    setFilterData(filterData)
+    setFilterData(recentlyViewedData)
   }
   const renderHeader = (item, index, isExpanded) => {
     return (
@@ -262,6 +262,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
           removeItem(mediaId)
           setToggle(!toggle)
         },
+        style: "destructive",
       },
     ])
   }
@@ -274,6 +275,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
     } else {
       const KEYS = ["content.name"]
       var filteredData = recentlyViewedData.filter(createFilter(searchItem, KEYS_TO_FILTERS))
+      setActiveSection([0])
 
       if (filteredData.length == 0) {
         let temp = recentlyViewedData.filter(createFilter(searchItem, KEYS))
