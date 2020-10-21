@@ -9,14 +9,16 @@ import {
   Dimensions,
   ActivityIndicator,
 } from "react-native"
-import { Screen, Header, Text, Navigate } from "../../components"
-import { color, spacing } from "../../theme"
-import { useStores } from "../../models"
-import { icons } from "../../components/icon/icons"
 import { useIsFocused } from "@react-navigation/native"
+
 import Carousel, { Pagination } from "react-native-snap-carousel"
 import HTML from "react-native-render-html"
 import FastImage from "react-native-fast-image"
+
+import { icons } from "../../components/icon/icons"
+import { Screen, Header, Text, Navigate } from "../../components"
+import { useStores } from "../../models"
+import { color, spacing } from "../../theme"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -41,7 +43,6 @@ const TITLE: TextStyle = {
   fontSize: 20,
   fontWeight: "bold",
 }
-
 const TEXT_SET: ViewStyle = {
   flex: 5,
   justifyContent: "flex-start",
@@ -56,12 +57,25 @@ const INDICATOR: ViewStyle = {
   top: 0,
   bottom: 0,
 }
+const FLEX_STYLE_IMGVIEW: ViewStyle = {
+  flex: 5,
+}
+const FLEX_STYLE_IMGDETAILVIEW: ViewStyle = {
+  flex: 1,
+}
+const NAVIGATE_COMPONENT_PADDING: ViewStyle = {
+  paddingHorizontal: 33.3,
+}
+interface MediaImageScreenProps {
+  route
+}
 
-export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
+export const MediaImageScreen = observer(function MediaImageScreen({
+  route,
+}: MediaImageScreenProps) {
   const swiper_ref = useRef()
   const [activeSLide, setActiveSlide] = useState<number>(0)
   const { mediaStore } = useStores()
-
   const isFocused = useIsFocused()
 
   const SLIDER_WIDTH = Dimensions.get("window").width
@@ -82,7 +96,6 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
     await mediaStore.getMediaForSubcategory(id, parentId)
     await mediaStore.getRecentData(parentId, id)
     await mediaStore.setViewdMediaArray(activeSLide + 1)
-
     mediaStore.setIndexForSubcategory(parentId)
   }
 
@@ -110,7 +123,7 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
   const renderItem = ({ item, index }) => {
     return (
       <View key={index} style={DETAIL_VIEW}>
-        <View style={{ flex: 5 }}>
+        <View style={FLEX_STYLE_IMGVIEW}>
           <FastImage
             source={{
               uri: item.url,
@@ -133,10 +146,10 @@ export const MediaImageScreen = observer(function MediaImageScreen({ route }) {
       <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
         <Header headerText={route.params.name} rightIcon="hamBurger" leftIcon="back" />
         <View style={MAIN_FLEX}>
-          <View style={{ paddingHorizontal: 33.3 }}>
+          <View style={NAVIGATE_COMPONENT_PADDING}>
             <Navigate id={route.params.id} parent_id={route.params.parent_id} />
           </View>
-          <View style={{ flex: 1 }}>
+          <View style={FLEX_STYLE_IMGDETAILVIEW}>
             {mediaStore.loading && (
               <ActivityIndicator color={color.palette.white} style={INDICATOR} />
             )}

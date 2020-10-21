@@ -3,19 +3,22 @@ import { observer } from "mobx-react-lite"
 import {
   ViewStyle,
   ImageStyle,
+  TextStyle,
   ImageBackground,
   View,
   FlatList,
   ActivityIndicator,
 } from "react-native"
-import { Screen, Header, Navigate, Text } from "../../components"
-import { useStores } from "../../models"
-import { color, spacing } from "../../theme"
-import { icons } from "../../components/icon/icons"
 import { useIsFocused } from "@react-navigation/native"
+
 import YouTube from "react-native-youtube"
 import Spinner from "react-native-spinkit"
 import HTML from "react-native-render-html"
+
+import { color, spacing } from "../../theme"
+import { icons } from "../../components/icon/icons"
+import { Screen, Header, Navigate, Text } from "../../components"
+import { useStores } from "../../models"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -43,7 +46,15 @@ const VIDEO: ViewStyle = {
 const RENDER_VIEW: ViewStyle = {
   marginVertical: spacing[4],
 }
-
+const STYLE_EMPTY_VIEW: ViewStyle = {
+  flex: 1,
+  justifyContent: "flex-end",
+}
+const STYLE_EMPTY_TEXT: TextStyle = {
+  alignSelf: "center",
+  fontSize: 16,
+  fontWeight: "bold",
+}
 const INDICATOR: ViewStyle = {
   justifyContent: "center",
   alignItems: "center",
@@ -54,7 +65,11 @@ const INDICATOR: ViewStyle = {
   bottom: 0,
 }
 
-export const VideoScreen = observer(function VideoScreen({ route }) {
+interface VideoScreenProps {
+  route
+}
+
+export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenProps) {
   const { mediaStore } = useStores()
   const [loading, setLoading] = useState(true)
   const isFocused = useIsFocused()
@@ -71,12 +86,12 @@ export const VideoScreen = observer(function VideoScreen({ route }) {
     await mediaStore.getCurrentSubCategory(parentId)
     await mediaStore.getMediaForSubcategory(id, parentId)
     mediaStore.setIndexForSubcategory(parentId)
-
     await mediaStore.getRecentData(parentId, id)
   }
 
   const renderItem = ({ item, index }) => {
     mediaStore.setViewdMediaArray(item.id)
+
     let video_id = item.url.match(
       /(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/,
     )[1]
@@ -84,7 +99,7 @@ export const VideoScreen = observer(function VideoScreen({ route }) {
       <View key={index} style={VIDEO_VIEW}>
         <View style={RENDER_VIEW}>
           <YouTube
-            apiKey={"AIzaSyCZM0JNm3Hwoa25ZYqyGjw7gX6rY3cHDYM"}
+            apiKey="AIzaSyCZM0JNm3Hwoa25ZYqyGjw7gX6rY3cHDYM"
             videoId={video_id}
             play={false}
             fullscreen={false}
@@ -132,6 +147,11 @@ export const VideoScreen = observer(function VideoScreen({ route }) {
           <Navigate id={route.params.id} parent_id={route.params.parent_id} />
           {mediaStore.loading && (
             <ActivityIndicator color={color.palette.white} style={INDICATOR} />
+          )}
+          {route.params.screenType == "None" && (
+            <View style={STYLE_EMPTY_VIEW}>
+              <Text text={"No Data Found !"} style={STYLE_EMPTY_TEXT} />
+            </View>
           )}
           <FlatList
             data={mediaStore.mediaArray}

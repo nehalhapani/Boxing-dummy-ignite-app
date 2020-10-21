@@ -60,7 +60,6 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
     }
     return -1
   }
-  console.tron.log("ZZZZZ", mediaStore.allSubCategoryMedia)
   const nextClicked = async () => {
     let index = findArrayObject(mediaStore.allSubCategoryMedia, parent_id)
     let lastSubcategoryIndex = mediaStore.allSubCategoryMedia.findIndex((x) => x.parent_id == 3)
@@ -82,6 +81,7 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
                 id: mediaStore.allSubCategoryMedia[newIndex].data[0].id,
                 parent_id: mediaStore.allSubCategoryMedia[newIndex].data[0].parent_id,
                 name: mediaStore.allSubCategoryMedia[newIndex].data[0].name,
+                screenType: mediaStore.allSubCategoryMedia[newIndex].data[0].type,
               },
             ),
           )
@@ -99,6 +99,7 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
                 id: mediaStore.allSubCategoryMedia[index].data[subCategoryId + 1].id,
                 parent_id: mediaStore.allSubCategoryMedia[index].data[subCategoryId + 1].parent_id,
                 name: mediaStore.allSubCategoryMedia[index].data[subCategoryId + 1].name,
+                screenType: mediaStore.allSubCategoryMedia[index].data[subCategoryId + 1].type,
               },
             ),
           )
@@ -110,7 +111,6 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
   const prevClicked = async () => {
     let index = findArrayObject(mediaStore.allSubCategoryMedia, parent_id)
     let subCategoryIndex = mediaStore.allSubCategoryMedia.findIndex((x) => x.parent_id == 1)
-    console.tron.log("BBB", mediaStore.allSubCategoryMedia)
     for (var i = 0; i < mediaStore.allSubCategoryMedia[index].data.length; i += 1) {
       if (mediaStore.allSubCategoryMedia[index].data[i].id == id) {
         if (index == subCategoryIndex && i == 0) {
@@ -140,6 +140,10 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
                   mediaStore.allSubCategoryMedia[newIndex].data[
                     mediaStore.allSubCategoryMedia[newIndex].data.length - 1
                   ].name,
+                screenType:
+                  mediaStore.allSubCategoryMedia[newIndex].data[
+                    mediaStore.allSubCategoryMedia[newIndex].data.length - 1
+                  ].type,
               },
             ),
           )
@@ -157,6 +161,7 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
                 id: mediaStore.allSubCategoryMedia[index].data[subCategoryId - 1].id,
                 parent_id: mediaStore.allSubCategoryMedia[index].data[subCategoryId - 1].parent_id,
                 name: mediaStore.allSubCategoryMedia[index].data[subCategoryId - 1].name,
+                screenType: mediaStore.allSubCategoryMedia[index].data[subCategoryId - 1].type,
               },
             ),
           )

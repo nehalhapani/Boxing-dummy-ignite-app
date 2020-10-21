@@ -18,6 +18,7 @@ export const MediaStoreModel = types
 
   .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
+    // api call for sub category data
     getSubCategoryItems: flow(function* getSubCategoryItems(id: number) {
       try {
         self.loading = true
@@ -36,27 +37,34 @@ export const MediaStoreModel = types
       }
     }),
 
+    // set array for recently Viewed media
     getRecentData(parentId, subcategoryId) {
       let AllDataIndex = findArrayObject(self.allSubCategoryMedia, parentId)
       let recentDataParentIndex = self.recentData.findIndex((x) => x.parent_id == parentId)
       let subIndex = self.allSubCategoryMedia[AllDataIndex].data.findIndex(
         (x) => x.id == subcategoryId,
       )
+      // push data with parent id - if no data found for parent-id in array
       if (recentDataParentIndex == -1) {
         self.recentData = self.recentData.concat({
           parent_id: parentId,
           children: [self.allSubCategoryMedia[AllDataIndex].data[subIndex]],
         })
-      } else {
+      }
+      // parent found in array -> find index for that parent child
+      else {
         let NewArray = self.recentData[recentDataParentIndex].children
         let indexofRepeated = findRepeatedIndex(
           self.recentData[recentDataParentIndex].children,
           subcategoryId,
         )
+        // concat new child in parent if child not found
         if (indexofRepeated == -1) {
           let data = NewArray.concat(self.allSubCategoryMedia[AllDataIndex].data[subIndex])
           self.recentData[recentDataParentIndex].children = data
-        } else {
+        }
+        // replace child if found
+        else {
           self.recentData[recentDataParentIndex].children[indexofRepeated] =
             self.allSubCategoryMedia[AllDataIndex].data[subIndex]
         }
@@ -66,12 +74,10 @@ export const MediaStoreModel = types
     setViewdMediaArray(mediaId: number) {
       if (self.seenMedia.indexOf(mediaId) === -1) {
         self.seenMedia.push(mediaId)
-        console.tron.log("set", self.seenMedia)
       }
     },
     removeViewedMediaArray(mediaId: number) {
       self.seenMedia.remove(mediaId)
-      console.tron.log("REMOVE", self.seenMedia)
     },
 
     // get currently opened subCategory from all category array

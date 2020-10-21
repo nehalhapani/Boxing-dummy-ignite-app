@@ -14,23 +14,26 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native"
-import { Screen, Header, Text, Icon } from "../../components"
-import { color } from "../../theme"
-import { icons } from "../../components/icon/icons"
-import { useStores } from "../../models"
-import { useNavigation, CommonActions } from "@react-navigation/native"
 import { useIsFocused } from "@react-navigation/native"
+
 import Accordion from "react-native-collapsible/Accordion"
 import FastImage from "react-native-fast-image"
 import SearchInput, { createFilter } from "react-native-search-filter"
-import { and } from "ramda"
-// const KEYS_TO_FILTERS = ["title", {recentlyViewedData.content.name}]
+
+import { color } from "../../theme"
+import { icons } from "../../components/icon/icons"
+import { Screen, Header, Text, Icon } from "../../components"
+import { useStores } from "../../models"
+
 const VIEW_MAX_HEIGHT = 263
 const VIEW_MIN_HEIGHT = 163
 const SCROLL_DISTANCE = VIEW_MAX_HEIGHT - VIEW_MIN_HEIGHT
 const WINDOW_WIDTH = Dimensions.get("window").width
 const IMAGE_WIDTH = 116.7
 
+const MAIN: ViewStyle = {
+  flex: 1,
+}
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
   flex: 1,
@@ -157,17 +160,18 @@ const TEXT_EMPLTY_ELEMENT: TextStyle = {
   paddingTop: 2,
   padding: 10,
 }
+const VIEW_MARGIN_IMG: TextStyle = {
+  marginRight: 16,
+}
 
 export const ProfileScreen = observer(function ProfileScreen() {
   const [activeSection, setActiveSection] = useState([])
   const { mediaStore, categoryStore, authStore } = useStores()
   const [recentlyViewedData, setRecentlyViewedData] = useState([])
-  const [searchItem, setSearchItem] = useState("")
   const [toggle, setToggle] = useState(false)
   const [filterData, setFilterData] = useState([])
 
   const isFocused = useIsFocused()
-  const navigation = useNavigation()
   const KEYS_TO_FILTERS = ["title"]
 
   const scrollY = new Animated.Value(0)
@@ -316,7 +320,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 ListEmptyComponent={(item, index) => {
                   return (
                     <TouchableOpacity
-                      style={{ marginRight: 16 }}
+                      style={VIEW_MARGIN_IMG}
                       // onPress={() => {
                       //   mediaStore.subcategoryCleanup()
                       //   navigation.dispatch(
@@ -360,9 +364,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
                   return (
                     <TouchableOpacity
                       key={index}
-                      style={{
-                        marginRight: 16,
-                      }}
+                      style={VIEW_MARGIN_IMG}
                       // onPress={() => {
                       //   mediaStore.subcategoryCleanup()
                       //   navigation.dispatch(
@@ -412,7 +414,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={MAIN}>
       <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
         <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
           <Header headerText={"Profile"} />

@@ -15,6 +15,7 @@ export const CategoryStoreModel = types
   })
   .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
+    // api call for main category items
     getCategoryItems: flow(function* getCategoryItems() {
       try {
         self.loading = true

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react"
 import { observer } from "mobx-react-lite"
-import { useNavigation } from "@react-navigation/native"
 import {
   ViewStyle,
   ImageStyle,
@@ -12,11 +11,13 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native"
-import { Screen, Header, Text } from "../../components"
+import { useNavigation } from "@react-navigation/native"
+import { useIsFocused } from "@react-navigation/native"
+
 import { color } from "../../theme"
 import { icons } from "../../components/icon/icons"
+import { Screen, Header, Text } from "../../components"
 import { useStores } from "../../models"
-import { useIsFocused } from "@react-navigation/native"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -50,6 +51,13 @@ const ICON_STYLE: ImageStyle = {
   height: 67,
   width: 67,
 }
+const VIEW_DIRECTION: ViewStyle = {
+  flexDirection: "row",
+}
+const VIEW_ABOVE_MAIN: ViewStyle = {
+  flex: 1,
+  justifyContent: "center",
+}
 const INDICATOR: ViewStyle = {
   justifyContent: "center",
   alignItems: "center",
@@ -59,8 +67,12 @@ const INDICATOR: ViewStyle = {
   top: 0,
   bottom: 0,
 }
-
-export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) {
+interface SubCategoryScreenProps {
+  route
+}
+export const SubCategoryScreen = observer(function SubCategoryScreen({
+  route,
+}: SubCategoryScreenProps) {
   const navigation = useNavigation()
   const isFocused = useIsFocused()
   const { mediaStore } = useStores()
@@ -78,12 +90,13 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) 
     return (
       <View key={index} style={BUTTON}>
         <TouchableOpacity
-          style={{ flexDirection: "row" }}
+          style={VIEW_DIRECTION}
           onPress={() =>
             navigation.navigate(item.type == "Image" ? "image" : "video", {
               id: item.id,
               parent_id: item.parent_id,
               name: item.name,
+              screenType: item.type,
             })
           }
         >
@@ -102,7 +115,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) 
           leftIcon="back"
           titleStyle={{ textTransform: "capitalize" }}
         />
-        <View style={{ flex: 1, justifyContent: "center" }}>
+        <View style={VIEW_ABOVE_MAIN}>
           <View style={MAIN_VIEW}>
             {mediaStore.loading && (
               <ActivityIndicator color={color.palette.white} style={INDICATOR} />

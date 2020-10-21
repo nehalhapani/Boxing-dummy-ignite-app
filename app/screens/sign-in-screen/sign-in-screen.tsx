@@ -10,16 +10,16 @@ import {
   Alert,
   ImageStyle,
   Keyboard,
-  Animated,
   KeyboardAvoidingView,
 } from "react-native"
-import { Screen, Text, Button } from "../../components"
-import { color, spacing } from "../../theme"
-import { validatePassword, validateEmail } from "../../utils/custom-validate"
 import { GoogleSignin, statusCodes } from "@react-native-community/google-signin"
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from "react-native-fbsdk"
-import { useStores } from "../../models"
+
+import { color, spacing } from "../../theme"
 import { icons } from "../../components/icon/icons"
+import { Text, Button } from "../../components"
+import { useStores } from "../../models"
+import { validatePassword, validateEmail } from "../../utils/custom-validate"
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -220,7 +220,6 @@ export const SignInScreen = observer(function SignInScreen() {
               },
               _responseInfoCallback,
             )
-
             // Start the graph request.
             new GraphRequestManager().addRequest(infoRequest).start()
           })

@@ -11,12 +11,13 @@ import {
   BackHandler,
   Alert,
 } from "react-native"
-import { Screen, Header, Button } from "../../components"
+import { useIsFocused } from "@react-navigation/native"
 import { useNavigation } from "@react-navigation/native"
+
+import { icons } from "../../components/icon/icons"
+import { Screen, Header, Button } from "../../components"
 import { useStores } from "../../models"
 import { color } from "../../theme"
-import { useIsFocused } from "@react-navigation/native"
-import { icons } from "../../components/icon/icons"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -31,7 +32,6 @@ const TEXT_COLOR: TextStyle = {
   color: "#FEFEFE",
   fontSize: 15.3,
   letterSpacing: 3.07,
-  // fontFamily: "SFProText-Regular",
 }
 const MAIN_VIEW: ViewStyle = {
   paddingHorizontal: 33.3,

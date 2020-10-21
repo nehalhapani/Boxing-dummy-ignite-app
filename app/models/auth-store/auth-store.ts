@@ -12,13 +12,17 @@ export const AuthStoreModel = types
   })
   .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
+    // set logged user token
     setToken() {
       self.isTokenSet = true
     },
 
+    // set logged user detail
     setUserData(data) {
       self.userData = data
     },
+
+    // remove token , user details on logout
     removeToken() {
       self.isTokenSet = false
       self.userData = []
