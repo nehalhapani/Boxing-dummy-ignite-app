@@ -48,11 +48,9 @@ const BACKGROUND: ImageStyle = {
 }
 const MAIN_FLEX: ViewStyle = {
   paddingHorizontal: 33.3,
-  height: WINDOW_HEIGHT - VIEW_MAX_HEIGHT,
+  minHeight: WINDOW_HEIGHT - SCROLL_DISTANCE - 260,
   backgroundColor: "rgba(0,0,0,0.3)",
-  flex: 1,
-  // paddingBottom: 200,
-  marginBottom: "11%",
+  paddingBottom: 27,
   marginTop: SCROLL_DISTANCE,
 }
 const PROFILE_NAME: TextStyle = {
@@ -78,7 +76,7 @@ const SAVED_CATEGORY: TextStyle = {
   paddingTop: 27,
   paddingBottom: 18,
 }
-const EMAIL_INPUT: TextStyle = {
+const SEARCH_INPUT: TextStyle = {
   height: 40,
   borderColor: "gray",
   fontSize: 16,
@@ -485,35 +483,35 @@ export const ProfileScreen = observer(function ProfileScreen() {
           </Animated.View>
           <View style={{ flexGrow: 1, marginTop: VIEW_MIN_HEIGHT }}>
             <Animated.ScrollView
+              style={{ flex: 1 }}
+              bounces={false}
               overScrollMode="never"
               scrollEventThrottle={16}
               onScroll={(e) => {
                 scrollY.setValue(e.nativeEvent.contentOffset.y)
               }}
             >
-              <ScrollView>
-                <View style={MAIN_FLEX}>
-                  <Text text={"Saved Category"} style={SAVED_CATEGORY} />
-                  <View style={DIRECTION_ROW}>
-                    <TextInput
-                      value={searchText}
-                      style={EMAIL_INPUT}
-                      placeholderTextColor={color.palette.brownGray}
-                      placeholder={"Search categories"}
-                      onChangeText={(searchItem) => searchAction(searchItem)}
-                      autoCorrect={false}
-                    />
-                    <Icon icon={"search"} style={SEARCH} />
-                  </View>
-                  <Accordion
-                    sections={filterData}
-                    activeSections={activeSection}
-                    renderHeader={renderHeader}
-                    renderContent={renderContent}
-                    onChange={(activeSections) => setActiveSection(activeSections)}
+              <View style={MAIN_FLEX}>
+                <Text text={"Saved Category"} style={SAVED_CATEGORY} />
+                <View style={DIRECTION_ROW}>
+                  <TextInput
+                    value={searchText}
+                    style={SEARCH_INPUT}
+                    placeholderTextColor={color.palette.brownGray}
+                    placeholder={"Search categories"}
+                    onChangeText={(searchItem) => searchAction(searchItem)}
+                    autoCorrect={false}
                   />
+                  <Icon icon={"search"} style={SEARCH} />
                 </View>
-              </ScrollView>
+                <Accordion
+                  sections={filterData}
+                  activeSections={activeSection}
+                  renderHeader={renderHeader}
+                  renderContent={renderContent}
+                  onChange={(activeSections) => setActiveSection(activeSections)}
+                />
+              </View>
             </Animated.ScrollView>
           </View>
         </Screen>

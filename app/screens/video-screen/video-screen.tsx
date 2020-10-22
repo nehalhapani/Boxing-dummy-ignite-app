@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { observer } from "mobx-react-lite"
 import {
   ViewStyle,
@@ -8,10 +8,11 @@ import {
   View,
   FlatList,
   ActivityIndicator,
+  Alert,
 } from "react-native"
 import { useIsFocused } from "@react-navigation/native"
 
-import YouTube from "react-native-youtube"
+import YoutubePlayer, { InitialPlayerParams } from "react-native-youtube-iframe"
 import Spinner from "react-native-spinkit"
 import HTML from "react-native-render-html"
 
@@ -36,12 +37,6 @@ const MAIN_FLEX: ViewStyle = {
 }
 const VIDEO_VIEW: ViewStyle = {
   paddingTop: spacing[1],
-}
-const VIDEO: ViewStyle = {
-  alignSelf: "stretch",
-  height: 200,
-  width: "100%",
-  backgroundColor: "white",
 }
 const RENDER_VIEW: ViewStyle = {
   marginVertical: spacing[4],
@@ -72,6 +67,7 @@ interface VideoScreenProps {
 export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenProps) {
   const { mediaStore } = useStores()
   const [loading, setLoading] = useState(true)
+  const [videoPlay, setVideoPlay] = useState(false)
   const isFocused = useIsFocused()
   useEffect(() => {
     if (isFocused) {
@@ -89,6 +85,17 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
     await mediaStore.getRecentData(parentId, id)
   }
 
+  const videoParams: InitialPlayerParams = {
+    controls: true,
+    modestbranding: false,
+    loop: false,
+    rel: false,
+  }
+  const videoStateChange = useCallback((state) => {
+    if (state === "ended") {
+      setVideoPlay(false)
+    }
+  }, [])
   const renderItem = ({ item, index }) => {
     mediaStore.setViewdMediaArray(item.id)
 
@@ -98,17 +105,13 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
     return (
       <View key={index} style={VIDEO_VIEW}>
         <View style={RENDER_VIEW}>
-          <YouTube
-            apiKey="AIzaSyCZM0JNm3Hwoa25ZYqyGjw7gX6rY3cHDYM"
+          <YoutubePlayer
             videoId={video_id}
-            play={false}
-            fullscreen={false}
-            loop={false}
-            controls={1}
-            modestbranding={true}
-            style={VIDEO}
+            play={videoPlay}
+            height={200}
+            initialPlayerParams={videoParams}
             onReady={() => setLoading(false)}
-            onChangeState={() => setLoading(false)}
+            onChangeState={videoStateChange}
           />
           {loading && (
             <View style={INDICATOR}>

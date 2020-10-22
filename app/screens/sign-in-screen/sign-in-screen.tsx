@@ -12,6 +12,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   StatusBar,
+  Platform,
 } from "react-native"
 import { GoogleSignin, statusCodes } from "@react-native-community/google-signin"
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from "react-native-fbsdk"
@@ -22,15 +23,19 @@ import { Text, Button } from "../../components"
 import { useStores } from "../../models"
 import { validatePassword, validateEmail } from "../../utils/custom-validate"
 import { ScrollView } from "react-native-gesture-handler"
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen"
 
 const ROOT: ViewStyle = {
   flex: 1,
-  paddingTop: 33,
+  paddingTop: hp("4.3%"),
 }
 const BUTTONVIEW_SIGNIN: ViewStyle = {
   justifyContent: "center",
   alignItems: "center",
-  paddingVertical: 20.7,
+  paddingVertical: hp("2%"),
   backgroundColor: color.palette.golden,
 }
 const BUTTONVIEW_FACEBOOK: ViewStyle = {
@@ -48,13 +53,13 @@ const BACKGROUND: ImageStyle = {
 }
 const MAINFLEX: ViewStyle = {
   paddingHorizontal: 33.3,
-  paddingBottom: 30,
+  paddingBottom: 5,
   flex: 1,
   justifyContent: "space-between",
   backgroundColor: color.transparent,
 }
 const EMAIL_INPUT: TextStyle = {
-  height: 50,
+  height: hp("6%"),
   borderColor: "gray",
   fontSize: 16,
   color: color.palette.white,
@@ -62,24 +67,24 @@ const EMAIL_INPUT: TextStyle = {
   borderStartColor: color.palette.white,
 }
 const LOGO_SPACING: ViewStyle = {
-  paddingVertical: 19,
-  paddingTop: 30,
+  paddingVertical: hp("2"),
+  paddingTop: hp("3"),
 }
 const WELCOME_MSG: TextStyle = {
   fontSize: 30,
   fontWeight: "bold",
 }
 const BOTTOM_VIEW: ViewStyle = {
-  paddingBottom: spacing[4],
+  paddingBottom: hp("1.7%"),
   paddingHorizontal: 33.3,
-  marginBottom: 20,
+  marginBottom: hp("2.1%"),
 }
 const TEXT_COLOR: TextStyle = {
   color: "#FEFEFE",
   fontSize: 15,
 }
 const BUTTON: ViewStyle = {
-  paddingTop: 33,
+  paddingTop: hp("3.5%"),
   paddingBottom: 6,
 }
 const SIGN_IN_TEXT: TextStyle = {
@@ -88,10 +93,10 @@ const SIGN_IN_TEXT: TextStyle = {
   letterSpacing: 3.07,
 }
 const INPUT_VIEW: ViewStyle = {
-  paddingTop: 30,
+  paddingTop: hp("3%"),
 }
 const INPUT_SUB_VIEW: ViewStyle = {
-  paddingVertical: 7.5,
+  paddingVertical: hp("0.8"),
 }
 const SUB_TEXT: TextStyle = {
   fontSize: 17,
@@ -102,10 +107,10 @@ const NAME_TEXT: TextStyle = {
 const ERROR_STYLE: TextStyle = {
   color: color.palette.angry,
   fontSize: 12,
-  paddingTop: 9,
+  paddingTop: hp("1%"),
 }
 const FB_BUTTON: ViewStyle = {
-  paddingVertical: 6,
+  paddingVertical: hp("0.7"),
 }
 export const SignInScreen = observer(function SignInScreen() {
   const { authStore } = useStores()
@@ -200,6 +205,9 @@ export const SignInScreen = observer(function SignInScreen() {
     }
   }
   const loginWIthFacebook = () => {
+    if (Platform.OS === "android") {
+      LoginManager.setLoginBehavior("web_only")
+    }
     LoginManager.logInWithPermissions(["public_profile", "email"]).then(
       function (result) {
         if (result.isCancelled) {
