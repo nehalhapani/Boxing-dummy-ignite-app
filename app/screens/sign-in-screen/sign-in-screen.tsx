@@ -21,6 +21,7 @@ import { icons } from "../../components/icon/icons"
 import { Text, Button } from "../../components"
 import { useStores } from "../../models"
 import { validatePassword, validateEmail } from "../../utils/custom-validate"
+import { ScrollView } from "react-native-gesture-handler"
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -241,65 +242,65 @@ export const SignInScreen = observer(function SignInScreen() {
     <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
       <StatusBar barStyle={"light-content"} backgroundColor={"black"} />
       <KeyboardAvoidingView style={ROOT}>
-        <View style={MAINFLEX}>
-          <View>
+        <ScrollView>
+          <View style={MAINFLEX}>
             <View>
-              <View style={LOGO_SPACING}>
-                <Image source={icons["logo"]} />
-              </View>
-              <Text style={WELCOME_MSG} text="Welcome Back," />
-              <Text style={SUB_TEXT} text="Sign in to continue" />
-            </View>
-
-            <View style={INPUT_VIEW}>
-              <View style={INPUT_SUB_VIEW}>
-                <Text style={NAME_TEXT} text="Email Address" />
-
-                <TextInput
-                  style={EMAIL_INPUT}
-                  value={username}
-                  autoCapitalize="none"
-                  returnKeyType={"next"}
-                  placeholder={"Enter Email Here"}
-                  placeholderTextColor={color.palette.offWhite}
-                  onSubmitEditing={() => ref_input2.current.focus()}
-                  blurOnSubmit={false}
-                  onChangeText={(username) => handleEmailError(username)}
-                />
-
-                <View>
-                  <Text style={ERROR_STYLE} text={userNameError} />
+              <View>
+                <View style={LOGO_SPACING}>
+                  <Image source={icons["logo"]} />
                 </View>
+                <Text style={WELCOME_MSG} text="Welcome Back," />
+                <Text style={SUB_TEXT} text="Sign in to continue" />
               </View>
-              <View style={INPUT_SUB_VIEW}>
-                <Text style={NAME_TEXT} text="Password" />
-                <TextInput
-                  secureTextEntry={true}
-                  style={EMAIL_INPUT}
-                  value={password}
-                  placeholder={"Enter Password Here"}
-                  placeholderTextColor={color.palette.offWhite}
-                  returnKeyType="done"
-                  ref={ref_input2}
-                  onSubmitEditing={() => Keyboard.dismiss()}
-                  onChangeText={(password) => handlePasswordError(password)}
-                />
 
-                {passwordError.map((item, key) => (
-                  <Text text={item} key={key} style={ERROR_STYLE} />
-                ))}
-              </View>
-              <View style={BUTTON}>
-                <Button
-                  style={BUTTONVIEW_SIGNIN}
-                  textStyle={SIGN_IN_TEXT}
-                  text="SIGN IN"
-                  onPress={() => ValidateForm()}
-                />
+              <View style={INPUT_VIEW}>
+                <View style={INPUT_SUB_VIEW}>
+                  <Text style={NAME_TEXT} text="Email Address" />
+                  <TextInput
+                    style={EMAIL_INPUT}
+                    value={username}
+                    autoCapitalize="none"
+                    returnKeyType={"next"}
+                    placeholder={"Enter Email Here"}
+                    placeholderTextColor={color.palette.offWhite}
+                    onSubmitEditing={() => ref_input2.current.focus()}
+                    blurOnSubmit={false}
+                    onChangeText={(username) => handleEmailError(username)}
+                  />
+                  <View>
+                    <Text style={ERROR_STYLE} text={userNameError} />
+                  </View>
+                </View>
+                <View style={INPUT_SUB_VIEW}>
+                  <Text style={NAME_TEXT} text="Password" />
+                  <TextInput
+                    secureTextEntry={true}
+                    style={EMAIL_INPUT}
+                    value={password}
+                    placeholder={"Enter Password Here"}
+                    placeholderTextColor={color.palette.offWhite}
+                    returnKeyType="done"
+                    ref={ref_input2}
+                    onSubmitEditing={() => Keyboard.dismiss()}
+                    onChangeText={(password) => handlePasswordError(password)}
+                  />
+
+                  {passwordError.map((item, key) => (
+                    <Text text={item} key={key} style={ERROR_STYLE} />
+                  ))}
+                </View>
+                <View style={BUTTON}>
+                  <Button
+                    style={BUTTONVIEW_SIGNIN}
+                    textStyle={SIGN_IN_TEXT}
+                    text="SIGN IN"
+                    onPress={() => ValidateForm()}
+                  />
+                </View>
               </View>
             </View>
           </View>
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
       <View style={BOTTOM_VIEW}>
         <View style={FB_BUTTON}>

@@ -1,5 +1,5 @@
-import * as React from "react"
-import { TextStyle, View, ViewStyle, ImageStyle, TouchableOpacity, Alert } from "react-native"
+import React, { useState } from "react"
+import { TextStyle, View, ViewStyle, ImageStyle, TouchableOpacity } from "react-native"
 import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
 import { color } from "../../theme"
@@ -26,7 +26,13 @@ const PREV_VIEW: ViewStyle = {
   paddingHorizontal: 10,
   paddingVertical: 8.7,
   backgroundColor: color.transparent,
+  opacity: 1,
 }
+const DISABLE_PREV_VIEW: ViewStyle = {
+  ...PREV_VIEW,
+  opacity: 0.3,
+}
+
 const TEXT_PREV: TextStyle = {
   fontSize: 12,
   paddingLeft: 10.7,
@@ -41,6 +47,11 @@ const NEXT_VIEW: ViewStyle = {
   ...PREV_VIEW,
   backgroundColor: color.palette.golden,
   borderColor: color.transparent,
+  opacity: 1,
+}
+const DISABLE_NEXT_VIEW: ViewStyle = {
+  ...NEXT_VIEW,
+  opacity: 0.3,
 }
 export interface NavigateProps {
   id?: number
@@ -50,6 +61,9 @@ export interface NavigateProps {
 export const Navigate = observer(function Navigate(props: NavigateProps) {
   const { mediaStore } = useStores()
   const navigation = useNavigation()
+  const [btnDisable, setBtnDisable] = useState(false)
+  const [nextBtnDisable, setNextBtnDisable] = useState(false)
+
   const { id, parent_id } = props
 
   function findArrayObject(array, parentId) {
@@ -69,8 +83,9 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
           index == lastSubcategoryIndex &&
           i == mediaStore.allSubCategoryMedia[index].data.length - 1
         ) {
-          Alert.alert("Nothing Here")
+          setNextBtnDisable(true)
         } else if (i == mediaStore.allSubCategoryMedia[index].data.length - 1) {
+          setNextBtnDisable(false)
           await mediaStore.getSubCategoryItems(parent_id + 1)
           mediaStore.subcategoryCleanup()
           let newIndex = findArrayObject(mediaStore.allSubCategoryMedia, parent_id + 1)
@@ -86,6 +101,7 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
             ),
           )
         } else {
+          setNextBtnDisable(false)
           let subCategoryId = mediaStore.allSubCategoryMedia[index].data.findIndex(
             (x) => x.id == id,
           )
@@ -114,9 +130,9 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
     for (var i = 0; i < mediaStore.allSubCategoryMedia[index].data.length; i += 1) {
       if (mediaStore.allSubCategoryMedia[index].data[i].id == id) {
         if (index == subCategoryIndex && i == 0) {
-          mediaStore.subcategoryCleanup()
-          Alert.alert("Nothing Here")
+          setBtnDisable(true)
         } else if (i == 0) {
+          setBtnDisable(false)
           mediaStore.subcategoryCleanup()
           await mediaStore.getSubCategoryItems(parent_id - 1)
           let newIndex = findArrayObject(mediaStore.allSubCategoryMedia, parent_id - 1)
@@ -148,6 +164,7 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
             ),
           )
         } else {
+          setBtnDisable(false)
           mediaStore.subcategoryCleanup()
           let subCategoryId = mediaStore.allSubCategoryMedia[index].data.findIndex(
             (x) => x.id == id,
@@ -172,11 +189,19 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
 
   return (
     <View style={NAVIGATE_VIEW}>
-      <TouchableOpacity style={PREV_VIEW} onPress={() => prevClicked()}>
+      <TouchableOpacity
+        style={btnDisable ? DISABLE_PREV_VIEW : PREV_VIEW}
+        disabled={btnDisable}
+        onPress={() => prevClicked()}
+      >
         <Icon icon={"back"} style={PREV_BTN} />
         <Text text={"PREV"} style={TEXT_PREV} />
       </TouchableOpacity>
-      <TouchableOpacity style={NEXT_VIEW} onPress={() => nextClicked()}>
+      <TouchableOpacity
+        style={nextBtnDisable ? DISABLE_NEXT_VIEW : NEXT_VIEW}
+        disabled={nextBtnDisable}
+        onPress={() => nextClicked()}
+      >
         <Text text={"NEXT"} style={TEXT_NEXT} />
         <Icon icon={"back"} style={NEXT_BTN} />
       </TouchableOpacity>

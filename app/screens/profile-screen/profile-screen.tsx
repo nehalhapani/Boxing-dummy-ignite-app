@@ -51,10 +51,9 @@ const MAIN_FLEX: ViewStyle = {
   height: WINDOW_HEIGHT - VIEW_MAX_HEIGHT,
   backgroundColor: "rgba(0,0,0,0.3)",
   flex: 1,
-  paddingBottom: 200,
-  // marginBottom:'',
+  // paddingBottom: 200,
+  marginBottom: "11%",
   marginTop: SCROLL_DISTANCE,
-  // backgroundColor: "red",
 }
 const PROFILE_NAME: TextStyle = {
   paddingVertical: 10,
