@@ -11,6 +11,7 @@ public class MainActivity extends ReactActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    // TextView tvx=(TextView)findViewById(R.id.tv);
     SplashScreen.show(this);
     super.onCreate(savedInstanceState);
   }

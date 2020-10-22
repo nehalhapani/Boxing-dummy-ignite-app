@@ -1,10 +1,10 @@
-import React, { useEffect } from "react"
+import React from "react"
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItem,
 } from "@react-navigation/drawer"
-import { View, ViewStyle, TextStyle, Image, ImageStyle, FlatList } from "react-native"
+import { View, ViewStyle, TextStyle, Image, ImageStyle, FlatList, Alert } from "react-native"
 import { Text } from "../components"
 import { icons } from "../components/icon/icons"
 import { useNavigation } from "@react-navigation/native"
@@ -15,10 +15,10 @@ import { color } from "../theme"
 export type DrawerParamList = {
   bottomTab: undefined
 }
-const MAINFLEX: ViewStyle = {
-  backgroundColor: "red",
-  flex: 1,
-  justifyContent: "space-between",
+
+const MAIN: ViewStyle = {
+  backgroundColor: "black",
+  padding: 33.3,
 }
 const LOGO_SPACING: ViewStyle = {
   paddingVertical: 1,
@@ -55,9 +55,26 @@ function CustomDrawerContent(props) {
   const { categoryStore, mediaStore } = useStores()
   const navigation = useNavigation()
 
+  const removeTokenConfirmation = () => {
+    Alert.alert("LOG OUT", "Are you want to Logout from app ?", [
+      {
+        text: "Cancel",
+        onPress: () => null,
+        style: "cancel",
+      },
+      {
+        text: "Logout",
+        onPress: () => {
+          authStore.removeToken()
+        },
+        style: "destructive",
+      },
+    ])
+  }
+
   return (
     <DrawerContentScrollView
-      style={{ backgroundColor: "black", padding: 33.3 }}
+      style={MAIN}
       contentContainerStyle={{ flex: 1, justifyContent: "space-between" }}
     >
       <View style={{ backgroundColor: "black" }}>
@@ -109,7 +126,7 @@ function CustomDrawerContent(props) {
       <View style={{ backgroundColor: "black" }}>
         <DrawerItem
           label="LOG OUT"
-          onPress={() => authStore.removeToken()}
+          onPress={() => removeTokenConfirmation()}
           style={DRAWER_STYLE}
           labelStyle={labelStyle}
           activeTintColor={color.palette.golden}

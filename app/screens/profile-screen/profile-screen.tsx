@@ -13,22 +13,25 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Alert,
+  TextInput,
 } from "react-native"
 import { useIsFocused } from "@react-navigation/native"
 
 import Accordion from "react-native-collapsible/Accordion"
 import FastImage from "react-native-fast-image"
-import SearchInput, { createFilter } from "react-native-search-filter"
 
+import { createFilter } from "react-native-search-filter"
 import { color } from "../../theme"
 import { icons } from "../../components/icon/icons"
 import { Screen, Header, Text, Icon } from "../../components"
 import { useStores } from "../../models"
+import { ScrollView } from "react-native-gesture-handler"
 
 const VIEW_MAX_HEIGHT = 263
 const VIEW_MIN_HEIGHT = 163
 const SCROLL_DISTANCE = VIEW_MAX_HEIGHT - VIEW_MIN_HEIGHT
 const WINDOW_WIDTH = Dimensions.get("window").width
+const WINDOW_HEIGHT = Dimensions.get("window").height
 const IMAGE_WIDTH = 116.7
 
 const MAIN: ViewStyle = {
@@ -45,10 +48,13 @@ const BACKGROUND: ImageStyle = {
 }
 const MAIN_FLEX: ViewStyle = {
   paddingHorizontal: 33.3,
+  height: WINDOW_HEIGHT - VIEW_MAX_HEIGHT,
   backgroundColor: "rgba(0,0,0,0.3)",
   flex: 1,
-  paddingBottom: 100,
+  paddingBottom: 200,
+  // marginBottom:'',
   marginTop: SCROLL_DISTANCE,
+  // backgroundColor: "red",
 }
 const PROFILE_NAME: TextStyle = {
   paddingVertical: 10,
@@ -169,6 +175,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const { mediaStore, categoryStore, authStore } = useStores()
   const [recentlyViewedData, setRecentlyViewedData] = useState([])
   const [toggle, setToggle] = useState(false)
+  const [searchText, setSearchText] = useState("")
   const [filterData, setFilterData] = useState([])
 
   const isFocused = useIsFocused()
@@ -214,6 +221,9 @@ export const ProfileScreen = observer(function ProfileScreen() {
   useEffect(() => {
     if (isFocused) {
       getRecentData()
+    }
+    return function cleanup() {
+      setSearchText("")
     }
   }, [isFocused])
   useEffect(() => {
@@ -274,6 +284,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
     mediaStore.removeViewedMediaArray(mediaId)
   }
   const searchAction = (searchItem) => {
+    setSearchText(searchItem)
     if (searchItem == "") {
       setFilterData(recentlyViewedData)
     } else {
@@ -293,7 +304,6 @@ export const ProfileScreen = observer(function ProfileScreen() {
         })
         filteredData = newMedia
         setActiveSection([0])
-        console.tron.log("Temp", newMedia)
         setFilterData(filteredData)
       } else {
         setFilterData(filteredData)
@@ -482,30 +492,29 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 scrollY.setValue(e.nativeEvent.contentOffset.y)
               }}
             >
-              <View style={MAIN_FLEX}>
-                <Text text={"Saved Category"} style={SAVED_CATEGORY} />
-                <View style={DIRECTION_ROW}>
-                  <SearchInput
-                    style={EMAIL_INPUT}
-                    inputViewStyles={EMAIL_INPUT}
-                    placeholderTextColor={color.palette.brownGray}
-                    placeholder={"Search categories"}
-                    onChangeText={(searchItem) => searchAction(searchItem)}
-                    fuzzy={true}
-                    autoCorrect={false}
-                    throttle={200}
-                    caseSensitive={false}
+              <ScrollView>
+                <View style={MAIN_FLEX}>
+                  <Text text={"Saved Category"} style={SAVED_CATEGORY} />
+                  <View style={DIRECTION_ROW}>
+                    <TextInput
+                      value={searchText}
+                      style={EMAIL_INPUT}
+                      placeholderTextColor={color.palette.brownGray}
+                      placeholder={"Search categories"}
+                      onChangeText={(searchItem) => searchAction(searchItem)}
+                      autoCorrect={false}
+                    />
+                    <Icon icon={"search"} style={SEARCH} />
+                  </View>
+                  <Accordion
+                    sections={filterData}
+                    activeSections={activeSection}
+                    renderHeader={renderHeader}
+                    renderContent={renderContent}
+                    onChange={(activeSections) => setActiveSection(activeSections)}
                   />
-                  <Icon icon={"search"} style={SEARCH} />
                 </View>
-                <Accordion
-                  sections={filterData}
-                  activeSections={activeSection}
-                  renderHeader={renderHeader}
-                  renderContent={renderContent}
-                  onChange={(activeSections) => setActiveSection(activeSections)}
-                />
-              </View>
+              </ScrollView>
             </Animated.ScrollView>
           </View>
         </Screen>

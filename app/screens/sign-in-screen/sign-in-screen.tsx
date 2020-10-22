@@ -11,6 +11,7 @@ import {
   ImageStyle,
   Keyboard,
   KeyboardAvoidingView,
+  StatusBar,
 } from "react-native"
 import { GoogleSignin, statusCodes } from "@react-native-community/google-signin"
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from "react-native-fbsdk"
@@ -49,6 +50,7 @@ const MAINFLEX: ViewStyle = {
   paddingBottom: 30,
   flex: 1,
   justifyContent: "space-between",
+  backgroundColor: color.transparent,
 }
 const EMAIL_INPUT: TextStyle = {
   height: 50,
@@ -60,7 +62,7 @@ const EMAIL_INPUT: TextStyle = {
 }
 const LOGO_SPACING: ViewStyle = {
   paddingVertical: 19,
-  paddingTop: 40,
+  paddingTop: 30,
 }
 const WELCOME_MSG: TextStyle = {
   fontSize: 30,
@@ -124,7 +126,6 @@ export const SignInScreen = observer(function SignInScreen() {
     try {
       await GoogleSignin.hasPlayServices()
       const userInfo = await GoogleSignin.signIn()
-      console.tron.log("UserData", userInfo)
       let profileData = {
         profileImage: userInfo.user.photo,
         profileName: userInfo.user.name,
@@ -140,7 +141,6 @@ export const SignInScreen = observer(function SignInScreen() {
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
         // play services not available or outdated
       } else {
-        console.log(error)
       }
     }
   }
@@ -158,13 +158,11 @@ export const SignInScreen = observer(function SignInScreen() {
         return username == item.username && password == item.password
       })
       if (results.length == 0) {
-        console.log("Unsuceesfull!")
         setRuntimeUsername(true)
         Alert.alert("Invalid Inputs!!", "Please enter valid username and password")
       } else {
         authStore.setToken()
       }
-      console.log("Sucess")
     } else {
     }
   }
@@ -204,9 +202,7 @@ export const SignInScreen = observer(function SignInScreen() {
     LoginManager.logInWithPermissions(["public_profile", "email"]).then(
       function (result) {
         if (result.isCancelled) {
-          console.log("Login cancelled")
         } else {
-          console.log("Login success with permissions: " + result.grantedPermissions.toString())
           AccessToken.getCurrentAccessToken().then((data) => {
             const infoRequest = new GraphRequest(
               "/me",
@@ -225,16 +221,12 @@ export const SignInScreen = observer(function SignInScreen() {
           })
         }
       },
-      function (error) {
-        console.log("Login fail with error: " + error)
-      },
+      function (error) {},
     )
   }
   const _responseInfoCallback = (error, result) => {
     if (error) {
-      console.log("Error fetching data: " + error.toString())
     } else {
-      console.tron.log(result)
       let profileData = {
         profileImage: result.picture.data.url,
         profileName: result.name,
@@ -247,6 +239,7 @@ export const SignInScreen = observer(function SignInScreen() {
   }
   return (
     <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
+      <StatusBar barStyle={"light-content"} backgroundColor={"black"} />
       <KeyboardAvoidingView style={ROOT}>
         <View style={MAINFLEX}>
           <View>
