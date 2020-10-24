@@ -6,7 +6,7 @@ import { Text } from "../text/text"
 import { Icon } from "../icon/icon"
 import { spacing, fontSize } from "../../theme"
 import { translate } from "../../i18n/"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, DrawerActions } from "@react-navigation/native"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
 // static styles
@@ -48,7 +48,7 @@ export function Header(props: HeaderProps) {
         <Text style={{ ...TITLE, ...titleStyle }} text={header} />
       </View>
       {rightIcon ? (
-        <Button preset="link" onPress={() => navigation.toggleDrawer()}>
+        <Button preset="link" onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
           <Icon icon={rightIcon} style={{ width: hp("3%"), height: hp("2%") }} />
         </Button>
       ) : (

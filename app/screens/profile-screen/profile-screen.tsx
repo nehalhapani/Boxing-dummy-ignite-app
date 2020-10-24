@@ -50,7 +50,7 @@ const BACKGROUND: ImageStyle = {
 const STATUSBAR_HEIGHT = Platform.OS == "ios" ? 48 : StatusBar.currentHeight
 const MAIN_FLEX: ViewStyle = {
   paddingHorizontal: hp("3.7%"),
-  minHeight: WINDOW_HEIGHT - VIEW_MIN_HEIGHT - hp("10%") - STATUSBAR_HEIGHT - 40,
+  minHeight: WINDOW_HEIGHT - VIEW_MIN_HEIGHT - hp("10%") - STATUSBAR_HEIGHT - 32,
   backgroundColor: "rgba(0,0,0,0.3)",
   paddingBottom: 27,
   marginTop: SCROLL_DISTANCE,
@@ -76,7 +76,7 @@ const TEXT_IDENTITY: TextStyle = {
 const SAVED_CATEGORY: TextStyle = {
   fontSize: fontSize.FONT_20Px,
   color: color.palette.golden,
-  paddingTop: hp("3%"),
+  paddingTop: hp("3.5%"),
   paddingBottom: hp("2%"),
   fontFamily: typography.fontRegular,
 }
