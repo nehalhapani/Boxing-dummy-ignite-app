@@ -1,5 +1,4 @@
 import { GeneralApiProblem } from "./api-problem"
-import { CategoryStore } from "../../models"
 
 export interface User {
   id: number

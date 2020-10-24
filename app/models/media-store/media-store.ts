@@ -1,5 +1,6 @@
 import { Instance, SnapshotOut, types, flow } from "mobx-state-tree"
 import { Api } from "../../services/api"
+import { Alert } from "react-native"
 
 const api = new Api()
 api.setup()
@@ -23,18 +24,30 @@ export const MediaStoreModel = types
       try {
         self.loading = true
         const data = yield api.getSubCategoryItems(id)
-
-        // check index in array and push/relplace data object
-        let indexInAllMedia = findArrayObject(self.allSubCategoryMedia, id)
-        if (indexInAllMedia == -1) {
-          self.allSubCategoryMedia.push({ parent_id: id, data: data.category })
+        if (data.kind == "ok" && data.category.status == 200) {
+          if (data.category.ok) {
+            // check index in array and push/relplace data object
+            let indexInAllMedia = findArrayObject(self.allSubCategoryMedia, id)
+            if (indexInAllMedia == -1) {
+              self.allSubCategoryMedia.push({ parent_id: id, data: data.category.data.data })
+            } else {
+              self.allSubCategoryMedia[indexInAllMedia] = {
+                parent_id: id,
+                data: data.category.data.data,
+              }
+            }
+          } else {
+            self.loading = false
+          }
         } else {
-          self.allSubCategoryMedia[indexInAllMedia] = { parent_id: id, data: data.category }
+          self.loading = false
         }
-        self.loading = false
       } catch (error) {
         self.loading = false
+        return { response: false, message: "Something went wrong! Please try again later." }
       }
+      self.loading = false
+      return { response: false, message: "Something went wrong! Please try again later." }
     }),
 
     // set array for recently Viewed media
@@ -83,17 +96,26 @@ export const MediaStoreModel = types
     // get currently opened subCategory from all category array
     getCurrentSubCategory(parent_id: number) {
       let currentSubcategoryIndex = findArrayObject(self.allSubCategoryMedia, parent_id)
+      if (currentSubcategoryIndex == -1) {
+        Alert.alert("Something went wrong !! Please try again later.")
+      }
       self.subCategory = self.allSubCategoryMedia[currentSubcategoryIndex].data
     },
 
     // get media of currently open subCategory
     getMediaForSubcategory(idOfSubcategory: number, parent_id: number) {
       let indexForPerticularMedia = self.subCategory.findIndex((item) => item.id == idOfSubcategory)
+      if (indexForPerticularMedia == -1) {
+        Alert.alert("Something went wrong !! Please try again later.")
+      }
       self.mediaArray = self.subCategory[indexForPerticularMedia].media
     },
 
-    subcategoryCleanup() {
+    subcategoryMediaCleanup() {
       self.mediaArray = []
+    },
+    subcategoryCleanup() {
+      self.subCategory = []
     },
 
     // set index for active drawer item

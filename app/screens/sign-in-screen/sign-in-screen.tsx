@@ -16,17 +16,15 @@ import {
 } from "react-native"
 import { GoogleSignin, statusCodes } from "@react-native-community/google-signin"
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from "react-native-fbsdk"
+import Spinner from "react-native-spinkit"
 
-import { color, spacing } from "../../theme"
+import { color, fontSize } from "../../theme"
 import { icons } from "../../components/icon/icons"
 import { Text, Button } from "../../components"
 import { useStores } from "../../models"
 import { validatePassword, validateEmail } from "../../utils/custom-validate"
 import { ScrollView } from "react-native-gesture-handler"
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -61,17 +59,18 @@ const MAINFLEX: ViewStyle = {
 const EMAIL_INPUT: TextStyle = {
   height: hp("6%"),
   borderColor: "gray",
-  fontSize: 16,
+  fontSize: fontSize.FONT_16Px,
   color: color.palette.white,
-  borderBottomWidth: 1.5,
-  borderStartColor: color.palette.white,
+  borderBottomWidth: hp("0.167%"),
+  textAlign: "left",
+  paddingLeft: 0,
 }
 const LOGO_SPACING: ViewStyle = {
   paddingVertical: hp("2"),
   paddingTop: hp("3"),
 }
 const WELCOME_MSG: TextStyle = {
-  fontSize: 30,
+  fontSize: fontSize.FONT_30Px,
   fontWeight: "bold",
 }
 const BOTTOM_VIEW: ViewStyle = {
@@ -81,7 +80,7 @@ const BOTTOM_VIEW: ViewStyle = {
 }
 const TEXT_COLOR: TextStyle = {
   color: "#FEFEFE",
-  fontSize: 15,
+  fontSize: fontSize.FONT_16Px,
 }
 const BUTTON: ViewStyle = {
   paddingTop: hp("3.5%"),
@@ -89,7 +88,7 @@ const BUTTON: ViewStyle = {
 }
 const SIGN_IN_TEXT: TextStyle = {
   color: "#000",
-  fontSize: 15,
+  fontSize: fontSize.FONT_16Px,
   letterSpacing: 3.07,
 }
 const INPUT_VIEW: ViewStyle = {
@@ -99,18 +98,27 @@ const INPUT_SUB_VIEW: ViewStyle = {
   paddingVertical: hp("0.8"),
 }
 const SUB_TEXT: TextStyle = {
-  fontSize: 17,
+  fontSize: fontSize.FONT_18Px,
 }
 const NAME_TEXT: TextStyle = {
-  fontSize: 12,
+  fontSize: fontSize.FONT_12Px,
 }
 const ERROR_STYLE: TextStyle = {
   color: color.palette.angry,
-  fontSize: 12,
+  fontSize: fontSize.FONT_12Px,
   paddingTop: hp("1%"),
 }
 const FB_BUTTON: ViewStyle = {
   paddingVertical: hp("0.7"),
+}
+const INDICATOR: ViewStyle = {
+  justifyContent: "center",
+  alignItems: "center",
+  position: "absolute",
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 0,
 }
 export const SignInScreen = observer(function SignInScreen() {
   const { authStore } = useStores()
@@ -118,6 +126,7 @@ export const SignInScreen = observer(function SignInScreen() {
   const [userNameError, setUserNameError] = useState("")
   const [runtimeUserame, setRuntimeUsername] = useState(false)
   const [passwordError, setPasswordError] = useState([])
+  const [loading, setLoading] = useState(false)
   const [password, setPassword] = useState("")
 
   useEffect(() => {
@@ -130,6 +139,7 @@ export const SignInScreen = observer(function SignInScreen() {
 
   const signIn = async () => {
     try {
+      setLoading(true)
       await GoogleSignin.hasPlayServices()
       const userInfo = await GoogleSignin.signIn()
       let profileData = {
@@ -139,16 +149,21 @@ export const SignInScreen = observer(function SignInScreen() {
       }
       authStore.setToken()
       authStore.setUserData(profileData)
+      setLoading(false)
     } catch (error) {
+      setLoading(false)
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        setLoading(false)
         // user cancelled the login flow
       } else if (error.code === statusCodes.IN_PROGRESS) {
         // operation (e.g. sign in) is in progress already
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
         // play services not available or outdated
       } else {
+        setLoading(false)
       }
     }
+    setLoading(false)
   }
 
   const ref_input2 = useRef(null)
@@ -205,12 +220,15 @@ export const SignInScreen = observer(function SignInScreen() {
     }
   }
   const loginWIthFacebook = () => {
+    setLoading(true)
     if (Platform.OS === "android") {
       LoginManager.setLoginBehavior("web_only")
     }
     LoginManager.logInWithPermissions(["public_profile", "email"]).then(
       function (result) {
         if (result.isCancelled) {
+          setLoading(false)
+          Alert.alert("Login Cancelled", "Something Went Wrong!!")
         } else {
           AccessToken.getCurrentAccessToken().then((data) => {
             const infoRequest = new GraphRequest(
@@ -224,6 +242,7 @@ export const SignInScreen = observer(function SignInScreen() {
                 },
               },
               _responseInfoCallback,
+              setLoading(false),
             )
             // Start the graph request.
             new GraphRequestManager().addRequest(infoRequest).start()
@@ -267,6 +286,8 @@ export const SignInScreen = observer(function SignInScreen() {
                   <TextInput
                     style={EMAIL_INPUT}
                     value={username}
+                    autoCompleteType={"email"}
+                    autoCorrect={false}
                     autoCapitalize="none"
                     returnKeyType={"next"}
                     placeholder={"Enter Email Here"}
@@ -285,6 +306,7 @@ export const SignInScreen = observer(function SignInScreen() {
                     secureTextEntry={true}
                     style={EMAIL_INPUT}
                     value={password}
+                    autoCompleteType={"password"}
                     placeholder={"Enter Password Here"}
                     placeholderTextColor={color.palette.offWhite}
                     returnKeyType="done"
@@ -310,6 +332,11 @@ export const SignInScreen = observer(function SignInScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      {loading && (
+        <View style={INDICATOR}>
+          <Spinner type={"CircleFlip"} color={color.palette.white} />
+        </View>
+      )}
       <View style={BOTTOM_VIEW}>
         <View style={FB_BUTTON}>
           <Button

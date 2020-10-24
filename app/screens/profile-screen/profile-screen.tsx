@@ -10,22 +10,23 @@ import {
   FlatList,
   Dimensions,
   Platform,
-  ActivityIndicator,
   TouchableOpacity,
   Alert,
   TextInput,
+  NativeModules,
 } from "react-native"
 import { useIsFocused } from "@react-navigation/native"
 
 import Accordion from "react-native-collapsible/Accordion"
 import FastImage from "react-native-fast-image"
+import Spinner from "react-native-spinkit"
 
 import { createFilter } from "react-native-search-filter"
-import { color } from "../../theme"
+import { color, fontSize } from "../../theme"
 import { icons } from "../../components/icon/icons"
 import { Screen, Header, Text, Icon } from "../../components"
 import { useStores } from "../../models"
-import { ScrollView } from "react-native-gesture-handler"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
 const VIEW_MAX_HEIGHT = 263
 const VIEW_MIN_HEIGHT = 163
@@ -33,7 +34,7 @@ const SCROLL_DISTANCE = VIEW_MAX_HEIGHT - VIEW_MIN_HEIGHT
 const WINDOW_WIDTH = Dimensions.get("window").width
 const WINDOW_HEIGHT = Dimensions.get("window").height
 const IMAGE_WIDTH = 116.7
-
+const { StatusBarManager } = NativeModules
 const MAIN: ViewStyle = {
   flex: 1,
 }
@@ -48,15 +49,16 @@ const BACKGROUND: ImageStyle = {
 }
 const MAIN_FLEX: ViewStyle = {
   paddingHorizontal: 33.3,
-  minHeight: WINDOW_HEIGHT - SCROLL_DISTANCE - 260,
+  minHeight:
+    WINDOW_HEIGHT - SCROLL_DISTANCE - 56 - WINDOW_HEIGHT * 0.103 - StatusBarManager.HEIGHT - 50,
   backgroundColor: "rgba(0,0,0,0.3)",
   paddingBottom: 27,
   marginTop: SCROLL_DISTANCE,
 }
 const PROFILE_NAME: TextStyle = {
-  paddingVertical: 10,
+  paddingVertical: hp("1.11%"),
   textAlign: "center",
-  fontSize: 24,
+  fontSize: fontSize.FONT_24Px,
   letterSpacing: 0.6,
   fontWeight: "500",
   color: color.palette.white,
@@ -64,22 +66,22 @@ const PROFILE_NAME: TextStyle = {
   textTransform: "capitalize",
 }
 const TEXT_IDENTITY: TextStyle = {
-  fontSize: 17,
+  fontSize: fontSize.FONT_16Px,
   letterSpacing: 0.43,
   textAlign: "center",
   color: color.palette.white,
   alignSelf: "flex-start",
 }
 const SAVED_CATEGORY: TextStyle = {
-  fontSize: 20,
+  fontSize: fontSize.FONT_20Px,
   color: color.palette.golden,
-  paddingTop: 27,
-  paddingBottom: 18,
+  paddingTop: hp("3%"),
+  paddingBottom: hp("2%"),
 }
 const SEARCH_INPUT: TextStyle = {
-  height: 40,
+  height: hp("5%"),
   borderColor: "gray",
-  fontSize: 16,
+  fontSize: fontSize.FONT_18Px,
   color: color.palette.white,
   borderBottomWidth: 1.5,
   borderStartColor: color.palette.white,
@@ -94,7 +96,7 @@ const DIRECTION_ROW: ViewStyle = {
   flexDirection: "row",
 }
 const BUTTON_VIEW: ViewStyle = {
-  marginTop: 16,
+  marginTop: hp("1.78%"),
   justifyContent: "space-between",
   alignItems: "center",
   flexDirection: "row",
@@ -118,13 +120,13 @@ const ACTIVE_DOWNAERO: ImageStyle = {
   transform: [{ rotate: "360deg" }],
 }
 const SUBCATEGORY_MEDIATYPE: TextStyle = {
-  paddingVertical: 16,
-  fontSize: 16,
+  paddingVertical: hp("1.78%"),
+  fontSize: fontSize.FONT_16Px,
   textTransform: "uppercase",
 }
 const BUTTON_STYLE: TextStyle = {
-  paddingVertical: 15,
-  fontSize: 17,
+  paddingVertical: hp("1.67%"),
+  fontSize: fontSize.FONT_18Px,
   textTransform: "uppercase",
 }
 const ACTIVE_BUTTON_STYLE: TextStyle = {
@@ -164,7 +166,7 @@ const TEXT_EMPLTY_ELEMENT: TextStyle = {
   padding: 10,
 }
 const VIEW_MARGIN_IMG: TextStyle = {
-  marginRight: 16,
+  marginRight: hp("1.78%"),
 }
 
 export const ProfileScreen = observer(function ProfileScreen() {
@@ -222,12 +224,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
     return function cleanup() {
       setSearchText("")
     }
-  }, [isFocused])
-  useEffect(() => {
-    if (isFocused) {
-      getRecentData()
-    }
-  }, [toggle])
+  }, [isFocused, toggle])
+
   const getRecentData = () => {
     let recentlyViewedData = []
     categoryStore.category.forEach((element) => {
@@ -326,19 +324,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 horizontal={true}
                 ListEmptyComponent={(item, index) => {
                   return (
-                    <TouchableOpacity
-                      style={VIEW_MARGIN_IMG}
-                      // onPress={() => {
-                      //   mediaStore.subcategoryCleanup()
-                      //   navigation.dispatch(
-                      //     CommonActions.navigate("video", {
-                      //       id: element.id,
-                      //       parent_id: element.parent_id,
-                      //       name: element.name,
-                      //     }),
-                      //   )
-                      // }}
-                    >
+                    <TouchableOpacity style={VIEW_MARGIN_IMG}>
                       <TouchableOpacity
                         style={DELETE_IMAGE}
                         onPress={() => {
@@ -354,8 +340,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
                             priority: FastImage.priority.normal,
                           }}
                           style={{
-                            height: 64.7,
-                            width: 64.3,
+                            height: hp("7.18%"),
+                            width: hp("7.18%"),
                             borderWidth: 2,
                             borderColor: color.palette.golden,
                             borderRadius: IMAGE_WIDTH / 2,
@@ -375,10 +361,11 @@ export const ProfileScreen = observer(function ProfileScreen() {
                       // onPress={() => {
                       //   mediaStore.subcategoryCleanup()
                       //   navigation.dispatch(
-                      //     CommonActions.navigate(item.type == "Image" ? "image" : "video", {
+                      //     CommonActions.navigate(element.type == "Image" ? "image" : "video", {
                       //       id: element.id,
                       //       parent_id: element.parent_id,
                       //       name: element.name,
+                      //       screenType: element.type,
                       //     }),
                       //   )
                       // }}
@@ -398,8 +385,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
                             priority: FastImage.priority.normal,
                           }}
                           style={{
-                            height: 64.7,
-                            width: 64.3,
+                            height: hp("7.18%"),
+                            width: hp("7.18%"),
                             borderWidth: 2,
                             borderRadius: IMAGE_WIDTH / 2,
                             borderColor: color.palette.golden,
@@ -426,7 +413,9 @@ export const ProfileScreen = observer(function ProfileScreen() {
         <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
           <Header headerText={"Profile"} />
           {mediaStore.loading && (
-            <ActivityIndicator color={color.palette.white} style={INDICATOR} />
+            <View style={INDICATOR}>
+              <Spinner type={"CircleFlip"} color={color.palette.golden} />
+            </View>
           )}
           <Animated.View
             style={{

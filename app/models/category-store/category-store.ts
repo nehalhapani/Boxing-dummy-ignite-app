@@ -17,14 +17,24 @@ export const CategoryStoreModel = types
   .actions((self) => ({
     // api call for main category items
     getCategoryItems: flow(function* getCategoryItems() {
+      self.loading = true
       try {
-        self.loading = true
         const data = yield api.getCategoryItems()
-        self.category = data.category
-        self.loading = false
+        if (data.kind == "ok" && data.category.status == 200) {
+          if (data.category.ok) {
+            self.category = data.category.data.data
+            self.loading = false
+          }
+        } else {
+          self.loading = false
+          return { response: false, message: "Something went wrong! Please try again later." }
+        }
       } catch (error) {
         self.loading = false
+        return { response: false, message: "Something went wrong! Please try again later." }
       }
+      self.loading = false
+      return { response: false, message: "Something went wrong! Please try again later." }
     }),
   }))
 

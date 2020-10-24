@@ -4,7 +4,7 @@ import { HeaderProps } from "./header.props"
 import { Button } from "../button/button"
 import { Text } from "../text/text"
 import { Icon } from "../icon/icon"
-import { spacing, color } from "../../theme"
+import { spacing, fontSize } from "../../theme"
 import { translate } from "../../i18n/"
 import { useNavigation } from "@react-navigation/native"
 
@@ -20,7 +20,7 @@ const ROOT: ViewStyle = {
   borderBottomColor: "rgba(255, 255, 255, 0.4)",
   zIndex: 1,
 }
-const TITLE: TextStyle = { textAlign: "center", fontSize: 24 }
+const TITLE: TextStyle = { textAlign: "center", fontSize: fontSize.FONT_24Px }
 const TITLE_MIDDLE: ViewStyle = { flex: 1, justifyContent: "center" }
 const LEFT: ViewStyle = { width: 32 }
 const RIGHT: ViewStyle = { width: 32 }
@@ -38,7 +38,7 @@ export function Header(props: HeaderProps) {
     <View style={{ ...ROOT, ...style }}>
       {leftIcon ? (
         <Button preset="link" onPress={() => goBack()}>
-          <Icon icon={leftIcon} />
+          <Icon icon={leftIcon} style={{ paddingRight: 20 }} />
         </Button>
       ) : (
         <View style={LEFT} />

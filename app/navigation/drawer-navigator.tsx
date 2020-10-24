@@ -10,7 +10,8 @@ import { icons } from "../components/icon/icons"
 import { useNavigation } from "@react-navigation/native"
 import { useStores } from "../models"
 import { BottomTabNavigator } from "./bottom-tab-navigator"
-import { color } from "../theme"
+import { color, fontSize } from "../theme"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
 export type DrawerParamList = {
   bottomTab: undefined
@@ -18,13 +19,13 @@ export type DrawerParamList = {
 
 const MAIN: ViewStyle = {
   backgroundColor: "black",
-  padding: 33.3,
+  padding: hp("3.7%"),
 }
 const LOGO_SPACING: ViewStyle = {
   paddingVertical: 1,
 }
 const BOXING: TextStyle = {
-  fontSize: 24,
+  fontSize: hp("2.67%"),
   fontWeight: "bold",
 }
 const SUB_TEXT: TextStyle = {
@@ -32,17 +33,16 @@ const SUB_TEXT: TextStyle = {
   letterSpacing: 2.4,
 }
 const LOGO_SIZE: ImageStyle = {
-  height: 36,
-  width: 36,
+  height: hp("4%"),
+  width: hp("4%"),
 }
 const LINK_VIEW: ViewStyle = {
-  marginTop: 50,
+  marginTop: hp("5.56%"),
   justifyContent: "space-between",
 }
 const labelStyle = {
-  lineHeight: 50,
-  marginLeft: -10,
-  fontSize: 20,
+  lineHeight: hp("5.56%"),
+  fontSize: fontSize.FONT_20Px,
   marginVertical: -10,
 }
 const DRAWER_STYLE: ViewStyle = {
@@ -78,7 +78,7 @@ function CustomDrawerContent(props) {
       contentContainerStyle={{ flex: 1, justifyContent: "space-between" }}
     >
       <View style={{ backgroundColor: "black" }}>
-        <View>
+        <View style={{ marginLeft: 10 }}>
           <View style={LOGO_SPACING}>
             <Image source={icons.logo} style={LOGO_SIZE} />
           </View>

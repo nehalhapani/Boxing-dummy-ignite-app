@@ -1,15 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react"
 import { observer } from "mobx-react-lite"
-import {
-  ViewStyle,
-  ImageStyle,
-  TextStyle,
-  ImageBackground,
-  View,
-  FlatList,
-  ActivityIndicator,
-  Alert,
-} from "react-native"
+import { ViewStyle, ImageStyle, TextStyle, ImageBackground, View, FlatList } from "react-native"
 import { useIsFocused } from "@react-navigation/native"
 
 import YoutubePlayer, { InitialPlayerParams } from "react-native-youtube-iframe"
@@ -20,6 +11,7 @@ import { color, spacing } from "../../theme"
 import { icons } from "../../components/icon/icons"
 import { Screen, Header, Navigate, Text } from "../../components"
 import { useStores } from "../../models"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -33,13 +25,13 @@ const BACKGROUND: ImageStyle = {
 const MAIN_FLEX: ViewStyle = {
   flex: 1,
   paddingHorizontal: 33.3,
-  paddingVertical: 13,
+  paddingVertical: hp("1.44%"),
 }
 const VIDEO_VIEW: ViewStyle = {
   paddingTop: spacing[1],
 }
 const RENDER_VIEW: ViewStyle = {
-  marginVertical: spacing[4],
+  marginVertical: hp("1.78%"),
 }
 const STYLE_EMPTY_VIEW: ViewStyle = {
   flex: 1,
@@ -47,7 +39,7 @@ const STYLE_EMPTY_VIEW: ViewStyle = {
 }
 const STYLE_EMPTY_TEXT: TextStyle = {
   alignSelf: "center",
-  fontSize: 16,
+  fontSize: hp("1.78%"),
   fontWeight: "bold",
 }
 const INDICATOR: ViewStyle = {
@@ -69,16 +61,20 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
   const [loading, setLoading] = useState(true)
   const [videoPlay, setVideoPlay] = useState(false)
   const isFocused = useIsFocused()
+  const [responseReceived, setResponseReceived] = useState(false)
+
   useEffect(() => {
     if (isFocused) {
       getdata(route.params.id, route.params.parent_id)
     }
     return function cleanup() {
-      mediaStore.subcategoryCleanup()
+      mediaStore.subcategoryMediaCleanup()
     }
   }, [route.params.id, isFocused])
+
   const getdata = async (id: number, parentId) => {
     await mediaStore.getSubCategoryItems(parentId)
+    setResponseReceived(true)
     await mediaStore.getCurrentSubCategory(parentId)
     await mediaStore.getMediaForSubcategory(id, parentId)
     mediaStore.setIndexForSubcategory(parentId)
@@ -98,28 +94,8 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
   }, [])
   const renderItem = ({ item, index }) => {
     mediaStore.setViewdMediaArray(item.id)
-
-    let video_id = item.url.match(
-      /(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/,
-    )[1]
     return (
       <View key={index} style={VIDEO_VIEW}>
-        <View style={RENDER_VIEW}>
-          <YoutubePlayer
-            videoId={video_id}
-            play={videoPlay}
-            height={200}
-            initialPlayerParams={videoParams}
-            onReady={() => setLoading(false)}
-            onChangeState={videoStateChange}
-          />
-          {loading && (
-            <View style={INDICATOR}>
-              <Text text={"Video is loading..."} style={{ color: color.palette.golden }} />
-              <Spinner type={"CircleFlip"} color={color.palette.golden} />
-            </View>
-          )}
-        </View>
         <HTML
           tagsStyles={{
             ul: { color: "white", fontSize: 16 },
@@ -137,6 +113,33 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
     )
   }
 
+  const renderVideo = () => {
+    if (!responseReceived) return null
+    return mediaStore.mediaArray.map((item, index) => {
+      let video_id = item.url.match(
+        /(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/,
+      )[1]
+      return (
+        <View key={index} style={RENDER_VIEW}>
+          <YoutubePlayer
+            videoId={video_id}
+            play={videoPlay}
+            height={200}
+            initialPlayerParams={videoParams}
+            onReady={() => setLoading(false)}
+            onChangeState={videoStateChange}
+          />
+          {loading && (
+            <View style={INDICATOR}>
+              <Text text={"Video is loading..."} style={{ color: color.palette.golden }} />
+              <Spinner type={"CircleFlip"} color={color.palette.golden} />
+            </View>
+          )}
+        </View>
+      )
+    })
+  }
+
   return (
     <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
       <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
@@ -149,13 +152,16 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
         <View style={MAIN_FLEX}>
           <Navigate id={route.params.id} parent_id={route.params.parent_id} />
           {mediaStore.loading && (
-            <ActivityIndicator color={color.palette.white} style={INDICATOR} />
+            <View style={INDICATOR}>
+              <Spinner type={"CircleFlip"} color={color.palette.golden} />
+            </View>
           )}
           {route.params.screenType == "None" && (
             <View style={STYLE_EMPTY_VIEW}>
               <Text text={"No Data Found !"} style={STYLE_EMPTY_TEXT} />
             </View>
           )}
+          {renderVideo()}
           <FlatList
             data={mediaStore.mediaArray}
             renderItem={renderItem}

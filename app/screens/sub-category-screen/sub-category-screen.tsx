@@ -9,15 +9,18 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  ActivityIndicator,
+  BackHandler,
 } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { useIsFocused } from "@react-navigation/native"
 
-import { color } from "../../theme"
+import Spinner from "react-native-spinkit"
+
+import { color, fontSize } from "../../theme"
 import { icons } from "../../components/icon/icons"
 import { Screen, Header, Text } from "../../components"
 import { useStores } from "../../models"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -30,26 +33,26 @@ const BACKGROUND: ImageStyle = {
 }
 const TEXT_COLOR: TextStyle = {
   color: "#FEFEFE",
-  fontSize: 20,
+  fontSize: fontSize.FONT_20Px,
   letterSpacing: 0.5,
   textTransform: "capitalize",
   alignSelf: "center",
-  paddingLeft: 18,
+  paddingLeft: hp("2%"),
 }
 const MAIN_VIEW: ViewStyle = {
   paddingHorizontal: 33.3,
 }
 
 const BUTTON: ViewStyle = {
-  paddingVertical: 12,
+  paddingVertical: hp("1.33%"),
   flexDirection: "row",
 }
 const ICON_STYLE: ImageStyle = {
   borderWidth: 3,
   borderColor: color.palette.golden,
-  borderRadius: 67,
-  height: 67,
-  width: 67,
+  borderRadius: hp("7.45%"),
+  height: hp("7.45%"),
+  width: hp("7.45%"),
 }
 const VIEW_DIRECTION: ViewStyle = {
   flexDirection: "row",
@@ -76,8 +79,12 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({
   const navigation = useNavigation()
   const isFocused = useIsFocused()
   const { mediaStore } = useStores()
+
   useEffect(() => {
-    getdata(route.params.id)
+    if (isFocused) {
+      getdata(route.params.id)
+    }
+    return () => mediaStore.subcategoryCleanup()
   }, [route.params.id, isFocused])
 
   const getdata = async (id: number) => {
@@ -118,7 +125,9 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({
         <View style={VIEW_ABOVE_MAIN}>
           <View style={MAIN_VIEW}>
             {mediaStore.loading && (
-              <ActivityIndicator color={color.palette.white} style={INDICATOR} />
+              <View style={INDICATOR}>
+                <Spinner type={"CircleFlip"} color={color.palette.golden} />
+              </View>
             )}
             <FlatList
               data={mediaStore.subCategory}

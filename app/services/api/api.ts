@@ -56,7 +56,7 @@ export class Api {
     }
     // transform the data into the format we are expecting
     try {
-      return { kind: "ok", category: response.data.data }
+      return { kind: "ok", category: response }
     } catch {
       return { kind: "bad-data" }
     }
@@ -71,7 +71,7 @@ export class Api {
     }
     // transform the data into the format we are expecting
     try {
-      return { kind: "ok", category: response.data.data }
+      return { kind: "ok", category: response }
     } catch {
       return { kind: "bad-data" }
     }
@@ -86,7 +86,7 @@ export class Api {
     }
     // transform the data into the format we are expecting
     try {
-      return { kind: "ok", category: response.data.data }
+      return { kind: "ok", category: response }
     } catch {
       return { kind: "bad-data" }
     }

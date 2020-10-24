@@ -1,24 +1,18 @@
 import React, { useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
-import {
-  ViewStyle,
-  ImageStyle,
-  ImageBackground,
-  TextStyle,
-  View,
-  Dimensions,
-  ActivityIndicator,
-} from "react-native"
+import { ViewStyle, ImageStyle, ImageBackground, TextStyle, View, Dimensions } from "react-native"
 import { useIsFocused } from "@react-navigation/native"
 
 import Carousel, { Pagination } from "react-native-snap-carousel"
 import HTML from "react-native-render-html"
 import FastImage from "react-native-fast-image"
+import Spinner from "react-native-spinkit"
 
 import { icons } from "../../components/icon/icons"
 import { Screen, Header, Text, Navigate } from "../../components"
 import { useStores } from "../../models"
-import { color, spacing } from "../../theme"
+import { color, spacing, fontSize } from "../../theme"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -31,16 +25,16 @@ const BACKGROUND: ImageStyle = {
 }
 const MAIN_FLEX: ViewStyle = {
   flex: 1,
-  paddingTop: 13.3,
-  paddingBottom: 34,
+  paddingTop: hp("1.47%"),
+  paddingBottom: hp("3.77%"),
 }
 const DETAIL_VIEW: ViewStyle = {
-  paddingTop: 26.7,
+  paddingTop: hp("2.97%"),
   flex: 1,
 }
 const TITLE: TextStyle = {
   paddingTop: 26.3,
-  fontSize: 20,
+  fontSize: fontSize.FONT_21Px,
   fontWeight: "bold",
 }
 const TEXT_SET: ViewStyle = {
@@ -75,6 +69,7 @@ export const MediaImageScreen = observer(function MediaImageScreen({
 }: MediaImageScreenProps) {
   const swiper_ref = useRef()
   const [activeSLide, setActiveSlide] = useState<number>(0)
+  const [loading, setLoading] = useState(false)
   const { mediaStore } = useStores()
   const isFocused = useIsFocused()
 
@@ -85,12 +80,11 @@ export const MediaImageScreen = observer(function MediaImageScreen({
       getdata(route.params.id, route.params.parent_id)
     }
     return function cleanup() {
-      mediaStore.subcategoryCleanup()
+      mediaStore.subcategoryMediaCleanup()
     }
   }, [route.params.id, isFocused])
 
   const getdata = async (id: number, parentId) => {
-    await mediaStore.subcategoryCleanup()
     await mediaStore.getSubCategoryItems(parentId)
     await mediaStore.getCurrentSubCategory(parentId)
     await mediaStore.getMediaForSubcategory(id, parentId)
@@ -110,7 +104,7 @@ export const MediaImageScreen = observer(function MediaImageScreen({
           width: 13.3,
           borderRadius: 13.3,
           marginLeft: spacing[4],
-          backgroundColor: color.palette.white,
+          backgroundColor: color.palette.angry,
         }}
         dotColor={color.palette.golden}
         inactiveDotColor={color.palette.white}
@@ -131,7 +125,15 @@ export const MediaImageScreen = observer(function MediaImageScreen({
             }}
             style={{ height: "100%", width: "100%" }}
             resizeMode={FastImage.resizeMode.contain}
+            onLoadStart={() => setLoading(true)}
+            onLoadEnd={() => setLoading(false)}
           />
+          {loading && (
+            <View style={INDICATOR}>
+              <Text text={"Image is loading..."} style={{ color: color.palette.golden }} />
+              <Spinner type={"CircleFlip"} color={color.palette.golden} />
+            </View>
+          )}
         </View>
         <View style={TEXT_SET}>
           <Text text={item.caption} style={TITLE} />
@@ -151,7 +153,9 @@ export const MediaImageScreen = observer(function MediaImageScreen({
           </View>
           <View style={FLEX_STYLE_IMGDETAILVIEW}>
             {mediaStore.loading && (
-              <ActivityIndicator color={color.palette.white} style={INDICATOR} />
+              <View style={INDICATOR}>
+                <Spinner type={"CircleFlip"} color={color.palette.golden} />
+              </View>
             )}
             <Carousel
               ref={swiper_ref}

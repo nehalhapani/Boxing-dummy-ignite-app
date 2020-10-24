@@ -7,17 +7,20 @@ import {
   TextStyle,
   View,
   FlatList,
-  ActivityIndicator,
   BackHandler,
   Alert,
 } from "react-native"
 import { useIsFocused } from "@react-navigation/native"
 import { useNavigation } from "@react-navigation/native"
 
+import Spinner from "react-native-spinkit"
+
 import { icons } from "../../components/icon/icons"
-import { Screen, Header, Button } from "../../components"
+import { Screen, Header, Button, Text } from "../../components"
 import { useStores } from "../../models"
-import { color } from "../../theme"
+import { color, fontSize } from "../../theme"
+
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -30,7 +33,7 @@ const BACKGROUND: ImageStyle = {
 }
 const TEXT_COLOR: TextStyle = {
   color: "#FEFEFE",
-  fontSize: 15.3,
+  fontSize: fontSize.FONT_16Px,
   letterSpacing: 3.07,
 }
 const MAIN_VIEW: ViewStyle = {
@@ -39,13 +42,13 @@ const MAIN_VIEW: ViewStyle = {
 const BUTTON_VIEW: ViewStyle = {
   justifyContent: "center",
   alignItems: "center",
-  paddingVertical: 21.3,
+  paddingVertical: hp("2.36%"),
   backgroundColor: color.transparent,
   borderWidth: 1,
   borderColor: color.palette.white,
 }
 const BUTTON: ViewStyle = {
-  paddingVertical: 8,
+  paddingVertical: hp("0.89%"),
 }
 const FIRST_FLEX: ViewStyle = {
   flex: 1,
@@ -60,15 +63,31 @@ const INDICATOR: ViewStyle = {
   top: 0,
   bottom: 0,
 }
-
+const STYLE_EMPTY_TEXT: TextStyle = {
+  alignSelf: "center",
+  fontSize: hp("2%"),
+  fontWeight: "bold",
+}
 export const HomeScreen = observer(function HomeScreen() {
   const navigation = useNavigation()
   const { categoryStore, mediaStore } = useStores()
   const isFocused = useIsFocused()
 
   useEffect(() => {
-    getCategoryData()
-    const backAction = () => {
+    if (isFocused) {
+      getCategoryData()
+      BackHandler.addEventListener("hardwareBackPress", backAction)
+    }
+
+    return () => BackHandler.removeEventListener("hardwareBackPress", backAction)
+  }, [isFocused])
+
+  const getCategoryData = async () => {
+    await categoryStore.getCategoryItems()
+    await mediaStore.setIndexForSubcategory(0)
+  }
+  const backAction = () => {
+    if (mediaStore.indexForSubcategory == 0) {
       Alert.alert("Hold on!", "Are you sure you want to go back?", [
         {
           text: "Cancel",
@@ -77,16 +96,8 @@ export const HomeScreen = observer(function HomeScreen() {
         },
         { text: "YES", style: "destructive", onPress: () => BackHandler.exitApp() },
       ])
-      return true
     }
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction)
-
-    return () => backHandler.remove()
-  }, [isFocused])
-
-  const getCategoryData = async () => {
-    await categoryStore.getCategoryItems()
-    await mediaStore.setIndexForSubcategory(0)
+    return true
   }
 
   const renderItem = ({ item, index }) => {
@@ -106,6 +117,14 @@ export const HomeScreen = observer(function HomeScreen() {
       </View>
     )
   }
+
+  const emptyListCategory = () => {
+    return (
+      <View>
+        <Text text={"Something went wrong ! Please try again later ."} style={[STYLE_EMPTY_TEXT]} />
+      </View>
+    )
+  }
   return (
     <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
       <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
@@ -113,12 +132,15 @@ export const HomeScreen = observer(function HomeScreen() {
         <View style={FIRST_FLEX}>
           <View style={MAIN_VIEW}>
             {categoryStore.loading && (
-              <ActivityIndicator color={color.palette.white} style={INDICATOR} />
+              <View style={INDICATOR}>
+                <Spinner type={"CircleFlip"} color={color.palette.golden} />
+              </View>
             )}
             <FlatList
               data={categoryStore.category}
               renderItem={renderItem}
               keyExtractor={(item, index) => index.toString()}
+              ListEmptyComponent={emptyListCategory}
             />
           </View>
         </View>

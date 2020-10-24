@@ -5,15 +5,14 @@
  * You'll likely spend most of your time in this file.
  */
 import React from "react"
-
-// import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { ProfileScreen } from "../screens"
 import { Icon, Text } from "../components"
-import { color, spacing } from "../theme"
+import { color } from "../theme"
 import { ImageBackground, View, TouchableOpacity, SafeAreaView, Platform } from "react-native"
 import { icons } from "../components/icon/icons"
 import { PrimaryNavigator } from "./primary-navigator"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
 export type BottomTabParamList = {
   primary: undefined
@@ -83,11 +82,11 @@ function MyTabBar({ state, descriptors, navigation }) {
                   <View
                     style={{
                       alignItems: "center",
-                      marginBottom: Platform.OS == "ios" ? 0 : 10,
+                      marginBottom: Platform.OS == "ios" ? 0 : hp("1%"),
                     }}
                   >
-                    <Icon icon={icon} style={{ marginVertical: spacing[2] }} />
-                    <Text text={label} style={{ color: color.palette.black, fontSize: 18 }} />
+                    <Icon icon={icon} style={{ marginVertical: hp("0.44%") }} />
+                    <Text text={label} style={{ color: color.palette.black, fontSize: hp("2%") }} />
                   </View>
                 </SafeAreaView>
               </View>
