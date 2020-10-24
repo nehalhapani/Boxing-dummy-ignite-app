@@ -8,7 +8,7 @@ import React from "react"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { ProfileScreen } from "../screens"
 import { Icon, Text } from "../components"
-import { color } from "../theme"
+import { color, typography } from "../theme"
 import { ImageBackground, View, TouchableOpacity, SafeAreaView, Platform } from "react-native"
 import { icons } from "../components/icon/icons"
 import { PrimaryNavigator } from "./primary-navigator"
@@ -24,7 +24,7 @@ function MyTabBar({ state, descriptors, navigation }) {
     <View
       style={{
         flexDirection: "row",
-        height: "10.3%",
+        height: hp("10%"),
       }}
     >
       {state.routes.map((route, index) => {
@@ -82,11 +82,18 @@ function MyTabBar({ state, descriptors, navigation }) {
                   <View
                     style={{
                       alignItems: "center",
-                      marginBottom: Platform.OS == "ios" ? 0 : hp("1%"),
+                      marginBottom: Platform.OS == "ios" ? 0 : hp("1.5%"),
                     }}
                   >
-                    <Icon icon={icon} style={{ marginVertical: hp("0.44%") }} />
-                    <Text text={label} style={{ color: color.palette.black, fontSize: hp("2%") }} />
+                    <Icon icon={icon} style={{ marginVertical: hp("0.44%"), height: hp("2.9%") }} />
+                    <Text
+                      text={label}
+                      style={{
+                        color: color.palette.black,
+                        fontSize: hp("2%"),
+                        fontFamily: typography.fontRegular,
+                      }}
+                    />
                   </View>
                 </SafeAreaView>
               </View>

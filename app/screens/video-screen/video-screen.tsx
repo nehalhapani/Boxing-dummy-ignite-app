@@ -7,7 +7,7 @@ import YoutubePlayer, { InitialPlayerParams } from "react-native-youtube-iframe"
 import Spinner from "react-native-spinkit"
 import HTML from "react-native-render-html"
 
-import { color, spacing } from "../../theme"
+import { color, spacing, fontSize, typography } from "../../theme"
 import { icons } from "../../components/icon/icons"
 import { Screen, Header, Navigate, Text } from "../../components"
 import { useStores } from "../../models"
@@ -24,7 +24,7 @@ const BACKGROUND: ImageStyle = {
 }
 const MAIN_FLEX: ViewStyle = {
   flex: 1,
-  paddingHorizontal: 33.3,
+  paddingHorizontal: hp("3.7%"),
   paddingVertical: hp("1.44%"),
 }
 const VIDEO_VIEW: ViewStyle = {
@@ -39,8 +39,8 @@ const STYLE_EMPTY_VIEW: ViewStyle = {
 }
 const STYLE_EMPTY_TEXT: TextStyle = {
   alignSelf: "center",
-  fontSize: hp("1.78%"),
-  fontWeight: "bold",
+  fontSize: fontSize.FONT_16Px,
+  fontFamily: typography.fontBold,
 }
 const INDICATOR: ViewStyle = {
   justifyContent: "center",
@@ -98,13 +98,22 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
       <View key={index} style={VIDEO_VIEW}>
         <HTML
           tagsStyles={{
-            ul: { color: "white", fontSize: 16 },
-            p: { color: "white", fontSize: 16, paddingBottom: 10 },
-            h2: { color: "white" },
+            ul: { color: "white", fontSize: fontSize.FONT_16Px, fontFamily: typography.fontLight },
+            p: {
+              color: "white",
+              fontSize: fontSize.FONT_16Px,
+              paddingBottom: hp("1%"),
+              fontFamily: typography.fontLight,
+            },
+            h2: {
+              color: "white",
+              fontSize: fontSize.FONT_22Px,
+              fontFamily: typography.fontRegular,
+            },
           }}
           listsPrefixesRenderers={{
             ul: (htmlAttribs, children, convertedCSSStyles, passProps) => {
-              return <Text style={{ color: "white", fontSize: 16, marginRight: 5 }}>+</Text>
+              return <Text style={{ color: "white", marginRight: 5 }}>+</Text>
             },
           }}
           html={'<div style="color: white">' + item.description + "</div>"}
@@ -124,7 +133,7 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
           <YoutubePlayer
             videoId={video_id}
             play={videoPlay}
-            height={200}
+            height={hp("22.2%")}
             initialPlayerParams={videoParams}
             onReady={() => setLoading(false)}
             onChangeState={videoStateChange}
@@ -132,7 +141,7 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
           {loading && (
             <View style={INDICATOR}>
               <Text text={"Video is loading..."} style={{ color: color.palette.golden }} />
-              <Spinner type={"CircleFlip"} color={color.palette.golden} />
+              <Spinner type={"ThreeBounce"} color={color.palette.golden} />
             </View>
           )}
         </View>
@@ -153,7 +162,7 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
           <Navigate id={route.params.id} parent_id={route.params.parent_id} />
           {mediaStore.loading && (
             <View style={INDICATOR}>
-              <Spinner type={"CircleFlip"} color={color.palette.golden} />
+              <Spinner type={"Bounce"} color={color.palette.golden} />
             </View>
           )}
           {route.params.screenType == "None" && (

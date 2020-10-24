@@ -7,11 +7,12 @@ import { Icon } from "../icon/icon"
 import { spacing, fontSize } from "../../theme"
 import { translate } from "../../i18n/"
 import { useNavigation } from "@react-navigation/native"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
 // static styles
 const ROOT: ViewStyle = {
   flexDirection: "row",
-  paddingHorizontal: 33.3,
+  paddingHorizontal: hp("3.7%"),
   alignItems: "center",
   paddingTop: spacing[4],
   paddingBottom: spacing[4],
@@ -22,8 +23,8 @@ const ROOT: ViewStyle = {
 }
 const TITLE: TextStyle = { textAlign: "center", fontSize: fontSize.FONT_24Px }
 const TITLE_MIDDLE: ViewStyle = { flex: 1, justifyContent: "center" }
-const LEFT: ViewStyle = { width: 32 }
-const RIGHT: ViewStyle = { width: 32 }
+const LEFT: ViewStyle = { width: hp("5%"), backgroundColor: "red" }
+const RIGHT: ViewStyle = { width: hp("5%") }
 
 /**
  * Header that appears on many screens. Will hold navigation buttons and screen title.
@@ -38,7 +39,7 @@ export function Header(props: HeaderProps) {
     <View style={{ ...ROOT, ...style }}>
       {leftIcon ? (
         <Button preset="link" onPress={() => goBack()}>
-          <Icon icon={leftIcon} style={{ paddingRight: 20 }} />
+          <Icon icon={leftIcon} style={{ paddingRight: 20, width: hp("2%"), height: hp("2%") }} />
         </Button>
       ) : (
         <View style={LEFT} />
@@ -48,7 +49,7 @@ export function Header(props: HeaderProps) {
       </View>
       {rightIcon ? (
         <Button preset="link" onPress={() => navigation.toggleDrawer()}>
-          <Icon icon={rightIcon} />
+          <Icon icon={rightIcon} style={{ width: hp("3%"), height: hp("2%") }} />
         </Button>
       ) : (
         <View style={RIGHT} />

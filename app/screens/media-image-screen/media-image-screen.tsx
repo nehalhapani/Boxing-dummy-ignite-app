@@ -11,7 +11,7 @@ import Spinner from "react-native-spinkit"
 import { icons } from "../../components/icon/icons"
 import { Screen, Header, Text, Navigate } from "../../components"
 import { useStores } from "../../models"
-import { color, spacing, fontSize } from "../../theme"
+import { color, fontSize, typography } from "../../theme"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
 const ROOT: ViewStyle = {
@@ -33,9 +33,9 @@ const DETAIL_VIEW: ViewStyle = {
   flex: 1,
 }
 const TITLE: TextStyle = {
-  paddingTop: 26.3,
+  paddingTop: hp("2.92%"),
   fontSize: fontSize.FONT_21Px,
-  fontWeight: "bold",
+  fontFamily: typography.fontBold,
 }
 const TEXT_SET: ViewStyle = {
   flex: 5,
@@ -58,7 +58,7 @@ const FLEX_STYLE_IMGDETAILVIEW: ViewStyle = {
   flex: 1,
 }
 const NAVIGATE_COMPONENT_PADDING: ViewStyle = {
-  paddingHorizontal: 33.3,
+  paddingHorizontal: hp("3.7%"),
 }
 interface MediaImageScreenProps {
   route
@@ -100,10 +100,10 @@ export const MediaImageScreen = observer(function MediaImageScreen({
         activeDotIndex={activeSLide}
         containerStyle={{ backgroundColor: color.transparent }}
         dotStyle={{
-          height: 13.3,
-          width: 13.3,
-          borderRadius: 13.3,
-          marginLeft: spacing[4],
+          height: hp("1.47%"),
+          width: hp("1.47%"),
+          borderRadius: hp("1.47%"),
+          marginLeft: hp("1.77%"),
           backgroundColor: color.palette.angry,
         }}
         dotColor={color.palette.golden}
@@ -131,13 +131,23 @@ export const MediaImageScreen = observer(function MediaImageScreen({
           {loading && (
             <View style={INDICATOR}>
               <Text text={"Image is loading..."} style={{ color: color.palette.golden }} />
-              <Spinner type={"CircleFlip"} color={color.palette.golden} />
+              <Spinner type={"ThreeBounce"} color={color.palette.golden} />
             </View>
           )}
         </View>
         <View style={TEXT_SET}>
           <Text text={item.caption} style={TITLE} />
-          <HTML html={'<div style="color: white; fontSize: 17">' + item.description + "</div>"} />
+          <HTML
+            tagsStyles={{
+              p: {
+                color: "white",
+                fontSize: fontSize.FONT_18Px,
+                paddingTop: 16,
+                fontFamily: typography.fontLight,
+              },
+            }}
+            html={'<div style="color: white;">' + item.description + "</div>"}
+          />
         </View>
       </View>
     )
@@ -154,7 +164,7 @@ export const MediaImageScreen = observer(function MediaImageScreen({
           <View style={FLEX_STYLE_IMGDETAILVIEW}>
             {mediaStore.loading && (
               <View style={INDICATOR}>
-                <Spinner type={"CircleFlip"} color={color.palette.golden} />
+                <Spinner type={"Bounce"} color={color.palette.golden} />
               </View>
             )}
             <Carousel

@@ -10,7 +10,7 @@ import { icons } from "../components/icon/icons"
 import { useNavigation } from "@react-navigation/native"
 import { useStores } from "../models"
 import { BottomTabNavigator } from "./bottom-tab-navigator"
-import { color, fontSize } from "../theme"
+import { color, fontSize, typography } from "../theme"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
 export type DrawerParamList = {
@@ -42,8 +42,9 @@ const LINK_VIEW: ViewStyle = {
 }
 const labelStyle = {
   lineHeight: hp("5.56%"),
-  fontSize: fontSize.FONT_20Px,
+  fontSize: fontSize.FONT_22Px,
   marginVertical: -10,
+  fontFamily: typography.fontBold,
 }
 const DRAWER_STYLE: ViewStyle = {
   marginLeft: 0,

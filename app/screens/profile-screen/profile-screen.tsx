@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   Alert,
   TextInput,
-  NativeModules,
+  StatusBar,
 } from "react-native"
 import { useIsFocused } from "@react-navigation/native"
 
@@ -22,19 +22,19 @@ import FastImage from "react-native-fast-image"
 import Spinner from "react-native-spinkit"
 
 import { createFilter } from "react-native-search-filter"
-import { color, fontSize } from "../../theme"
+import { color, fontSize, typography } from "../../theme"
 import { icons } from "../../components/icon/icons"
 import { Screen, Header, Text, Icon } from "../../components"
 import { useStores } from "../../models"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
-const VIEW_MAX_HEIGHT = 263
-const VIEW_MIN_HEIGHT = 163
+const VIEW_MAX_HEIGHT = hp("29.22%")
+const VIEW_MIN_HEIGHT = hp("18.11%")
 const SCROLL_DISTANCE = VIEW_MAX_HEIGHT - VIEW_MIN_HEIGHT
 const WINDOW_WIDTH = Dimensions.get("window").width
 const WINDOW_HEIGHT = Dimensions.get("window").height
-const IMAGE_WIDTH = 116.7
-const { StatusBarManager } = NativeModules
+const IMAGE_WIDTH = hp("15%")
+
 const MAIN: ViewStyle = {
   flex: 1,
 }
@@ -47,20 +47,20 @@ const BACKGROUND: ImageStyle = {
   backgroundColor: color.palette.black,
   resizeMode: "cover",
 }
+const STATUSBAR_HEIGHT = Platform.OS == "ios" ? 48 : StatusBar.currentHeight
 const MAIN_FLEX: ViewStyle = {
-  paddingHorizontal: 33.3,
-  minHeight:
-    WINDOW_HEIGHT - SCROLL_DISTANCE - 56 - WINDOW_HEIGHT * 0.103 - StatusBarManager.HEIGHT - 50,
+  paddingHorizontal: hp("3.7%"),
+  minHeight: WINDOW_HEIGHT - VIEW_MIN_HEIGHT - hp("10%") - STATUSBAR_HEIGHT - 40,
   backgroundColor: "rgba(0,0,0,0.3)",
   paddingBottom: 27,
   marginTop: SCROLL_DISTANCE,
 }
 const PROFILE_NAME: TextStyle = {
-  paddingVertical: hp("1.11%"),
+  paddingVertical: hp("1%"),
   textAlign: "center",
   fontSize: fontSize.FONT_24Px,
   letterSpacing: 0.6,
-  fontWeight: "500",
+  fontFamily: typography.fontSemibold,
   color: color.palette.white,
   alignSelf: "flex-start",
   textTransform: "capitalize",
@@ -71,26 +71,30 @@ const TEXT_IDENTITY: TextStyle = {
   textAlign: "center",
   color: color.palette.white,
   alignSelf: "flex-start",
+  fontFamily: typography.fontLight,
 }
 const SAVED_CATEGORY: TextStyle = {
   fontSize: fontSize.FONT_20Px,
   color: color.palette.golden,
   paddingTop: hp("3%"),
   paddingBottom: hp("2%"),
+  fontFamily: typography.fontRegular,
 }
 const SEARCH_INPUT: TextStyle = {
-  height: hp("5%"),
+  height: Platform.OS == "ios" ? hp("6%") : hp("7.5%"),
   borderColor: "gray",
   fontSize: fontSize.FONT_18Px,
   color: color.palette.white,
   borderBottomWidth: 1.5,
   borderStartColor: color.palette.white,
   width: "100%",
+  fontFamily: typography.fontLight,
 }
 const SEARCH: ImageStyle = {
   position: "absolute",
   right: 0,
-  top: 9,
+  top: hp("3%"),
+  height: hp("2.22%"),
 }
 const DIRECTION_ROW: ViewStyle = {
   flexDirection: "row",
@@ -113,6 +117,7 @@ const ACTIVE_BUTTON_VIEW: ViewStyle = {
 const DOWNAERO: ImageStyle = {
   tintColor: color.palette.white,
   transform: [{ rotate: "180deg" }],
+  height: hp("1.2%"),
 }
 const ACTIVE_DOWNAERO: ImageStyle = {
   ...DOWNAERO,
@@ -123,11 +128,13 @@ const SUBCATEGORY_MEDIATYPE: TextStyle = {
   paddingVertical: hp("1.78%"),
   fontSize: fontSize.FONT_16Px,
   textTransform: "uppercase",
+  fontFamily: typography.fontRegular,
 }
 const BUTTON_STYLE: TextStyle = {
   paddingVertical: hp("1.67%"),
   fontSize: fontSize.FONT_18Px,
   textTransform: "uppercase",
+  fontFamily: typography.fontRegular,
 }
 const ACTIVE_BUTTON_STYLE: TextStyle = {
   ...BUTTON_STYLE,
@@ -157,8 +164,8 @@ const DELETE_IMAGE: ImageStyle = {
   borderRadius: 9,
 }
 const ICON_DELETE: ImageStyle = {
-  height: 10,
-  width: 10,
+  height: hp("1.1%"),
+  width: hp("1.1%"),
 }
 const TEXT_EMPLTY_ELEMENT: TextStyle = {
   textAlign: "left",
@@ -188,22 +195,22 @@ export const ProfileScreen = observer(function ProfileScreen() {
   })
   const setProfileImg = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
-    outputRange: [(WINDOW_WIDTH - IMAGE_WIDTH) / 2, 33.3],
+    outputRange: [(WINDOW_WIDTH - IMAGE_WIDTH) / 2, hp("3.7%")],
     extrapolate: "clamp",
   })
   const marginBottomProfileText = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
-    outputRange: [0, 10],
+    outputRange: [0, hp("1.1%")],
     extrapolate: "clamp",
   })
   const paddingTopForImage = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
-    outputRange: [30, (VIEW_MIN_HEIGHT - IMAGE_WIDTH) / 2],
+    outputRange: [hp("3.33%"), (VIEW_MIN_HEIGHT - IMAGE_WIDTH) / 2],
     extrapolate: "clamp",
   })
   const topText = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
-    outputRange: [150, 30],
+    outputRange: [hp("18%"), hp("3%")],
     extrapolate: "clamp",
   })
   const leftText = scrollY.interpolate({
@@ -414,14 +421,14 @@ export const ProfileScreen = observer(function ProfileScreen() {
           <Header headerText={"Profile"} />
           {mediaStore.loading && (
             <View style={INDICATOR}>
-              <Spinner type={"CircleFlip"} color={color.palette.golden} />
+              <Spinner type={"Bounce"} color={color.palette.golden} />
             </View>
           )}
           <Animated.View
             style={{
               height: translateY,
               position: "absolute",
-              top: Platform.OS == "ios" ? 100 : 65,
+              top: Platform.OS == "ios" ? hp("11.11%") : hp("7.5%"),
               left: 0,
               right: 0,
             }}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import {
   ViewStyle,
@@ -18,7 +18,7 @@ import Spinner from "react-native-spinkit"
 import { icons } from "../../components/icon/icons"
 import { Screen, Header, Button, Text } from "../../components"
 import { useStores } from "../../models"
-import { color, fontSize } from "../../theme"
+import { color, fontSize, typography } from "../../theme"
 
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
@@ -35,9 +35,10 @@ const TEXT_COLOR: TextStyle = {
   color: "#FEFEFE",
   fontSize: fontSize.FONT_16Px,
   letterSpacing: 3.07,
+  fontFamily: "SFProText-Regular",
 }
 const MAIN_VIEW: ViewStyle = {
-  paddingHorizontal: 33.3,
+  paddingHorizontal: hp("3.7%"),
 }
 const BUTTON_VIEW: ViewStyle = {
   justifyContent: "center",
@@ -66,12 +67,13 @@ const INDICATOR: ViewStyle = {
 const STYLE_EMPTY_TEXT: TextStyle = {
   alignSelf: "center",
   fontSize: hp("2%"),
-  fontWeight: "bold",
+  fontFamily: typography.fontBold,
 }
 export const HomeScreen = observer(function HomeScreen() {
   const navigation = useNavigation()
   const { categoryStore, mediaStore } = useStores()
   const isFocused = useIsFocused()
+  const [responseReceived, setResponseReceived] = useState(false)
 
   useEffect(() => {
     if (isFocused) {
@@ -84,6 +86,7 @@ export const HomeScreen = observer(function HomeScreen() {
 
   const getCategoryData = async () => {
     await categoryStore.getCategoryItems()
+    setResponseReceived(true)
     await mediaStore.setIndexForSubcategory(0)
   }
   const backAction = () => {
@@ -101,6 +104,7 @@ export const HomeScreen = observer(function HomeScreen() {
   }
 
   const renderItem = ({ item, index }) => {
+    if (!responseReceived) return null
     return (
       <View key={index} style={BUTTON}>
         <Button
@@ -119,6 +123,7 @@ export const HomeScreen = observer(function HomeScreen() {
   }
 
   const emptyListCategory = () => {
+    if (!responseReceived) return null
     return (
       <View>
         <Text text={"Something went wrong ! Please try again later ."} style={[STYLE_EMPTY_TEXT]} />
@@ -133,7 +138,7 @@ export const HomeScreen = observer(function HomeScreen() {
           <View style={MAIN_VIEW}>
             {categoryStore.loading && (
               <View style={INDICATOR}>
-                <Spinner type={"CircleFlip"} color={color.palette.golden} />
+                <Spinner type={"Bounce"} color={color.palette.golden} />
               </View>
             )}
             <FlatList

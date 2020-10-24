@@ -9,14 +9,13 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  BackHandler,
 } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { useIsFocused } from "@react-navigation/native"
 
 import Spinner from "react-native-spinkit"
 
-import { color, fontSize } from "../../theme"
+import { color, fontSize, typography } from "../../theme"
 import { icons } from "../../components/icon/icons"
 import { Screen, Header, Text } from "../../components"
 import { useStores } from "../../models"
@@ -33,14 +32,15 @@ const BACKGROUND: ImageStyle = {
 }
 const TEXT_COLOR: TextStyle = {
   color: "#FEFEFE",
-  fontSize: fontSize.FONT_20Px,
+  fontSize: fontSize.FONT_22Px,
   letterSpacing: 0.5,
   textTransform: "capitalize",
   alignSelf: "center",
   paddingLeft: hp("2%"),
+  fontFamily: typography.fontRegular,
 }
 const MAIN_VIEW: ViewStyle = {
-  paddingHorizontal: 33.3,
+  paddingHorizontal: hp("3.7%"),
 }
 
 const BUTTON: ViewStyle = {
@@ -51,8 +51,8 @@ const ICON_STYLE: ImageStyle = {
   borderWidth: 3,
   borderColor: color.palette.golden,
   borderRadius: hp("7.45%"),
-  height: hp("7.45%"),
-  width: hp("7.45%"),
+  height: hp("7.7%"),
+  width: hp("7.7%"),
 }
 const VIEW_DIRECTION: ViewStyle = {
   flexDirection: "row",
@@ -126,7 +126,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({
           <View style={MAIN_VIEW}>
             {mediaStore.loading && (
               <View style={INDICATOR}>
-                <Spinner type={"CircleFlip"} color={color.palette.golden} />
+                <Spinner type={"Bounce"} color={color.palette.golden} />
               </View>
             )}
             <FlatList

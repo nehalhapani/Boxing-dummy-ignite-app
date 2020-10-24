@@ -2,9 +2,10 @@ import React, { useState } from "react"
 import { TextStyle, View, ViewStyle, ImageStyle, TouchableOpacity } from "react-native"
 import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
-import { color } from "../../theme"
+import { color, fontSize } from "../../theme"
 import { Icon, Text } from "../../components"
 import { useNavigation, StackActions } from "@react-navigation/native"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
 const NAVIGATE_VIEW: ViewStyle = {
   flexDirection: "row",
@@ -21,10 +22,10 @@ const PREV_VIEW: ViewStyle = {
   flexDirection: "row",
   justifyContent: "center",
   alignItems: "center",
-  borderWidth: 1,
+  borderWidth: hp("0.1%"),
   borderColor: color.palette.white,
-  paddingHorizontal: 10,
-  paddingVertical: 8.7,
+  paddingHorizontal: hp("1%"),
+  paddingVertical: hp("0.97%"),
   backgroundColor: color.transparent,
   opacity: 1,
 }
@@ -34,13 +35,13 @@ const DISABLE_PREV_VIEW: ViewStyle = {
 }
 
 const TEXT_PREV: TextStyle = {
-  fontSize: 12,
-  paddingLeft: 10.7,
+  fontSize: fontSize.FONT_12Px,
+  paddingLeft: hp("1.18%"),
   color: color.palette.white,
 }
 const TEXT_NEXT: TextStyle = {
-  fontSize: 12,
-  paddingRight: 10.7,
+  fontSize: fontSize.FONT_12Px,
+  paddingRight: hp("1.18%"),
   color: color.palette.black,
 }
 const NEXT_VIEW: ViewStyle = {

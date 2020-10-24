@@ -20,6 +20,10 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A66226E7022D4A2801E1CF81 /* libPods-BoxingProject-BoxingProjectTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D9885ED969951B0E9E1BCF1D /* libPods-BoxingProject-BoxingProjectTests.a */; };
 		C1DBE794158FAE9F78D42D84 /* libPods-BoxingProject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8429B409E12234C079788D87 /* libPods-BoxingProject.a */; };
+		F8189FCB2544244B00048CF8 /* SFProText-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8189FCA2544244B00048CF8 /* SFProText-Light.ttf */; };
+		F8189FCD2544247F00048CF8 /* SFProText-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8189FCC2544247F00048CF8 /* SFProText-Semibold.ttf */; };
+		F8189FCF2544249D00048CF8 /* SFProText-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8189FCE2544249D00048CF8 /* SFProText-Bold.ttf */; };
+		F8189FD1254424BE00048CF8 /* SFProText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8189FD0254424BE00048CF8 /* SFProText-Regular.ttf */; };
 		F87A441D2524C75E00CA1B13 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F87A441C2524C75E00CA1B13 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -68,6 +72,10 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F7670FAF9A3D94853F0DD33E /* Pods-BoxingProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoxingProject.release.xcconfig"; path = "Target Support Files/Pods-BoxingProject/Pods-BoxingProject.release.xcconfig"; sourceTree = "<group>"; };
+		F8189FCA2544244B00048CF8 /* SFProText-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Light.ttf"; sourceTree = "<group>"; };
+		F8189FCC2544247F00048CF8 /* SFProText-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Semibold.ttf"; sourceTree = "<group>"; };
+		F8189FCE2544249D00048CF8 /* SFProText-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Bold.ttf"; sourceTree = "<group>"; };
+		F8189FD0254424BE00048CF8 /* SFProText-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Regular.ttf"; sourceTree = "<group>"; };
 		F87A441C2524C75E00CA1B13 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -162,6 +170,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				F8189FC92544242100048CF8 /* Fonts */,
 				13B07FAE1A68108700A75B9A /* BoxingProject */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* BoxingProjectTests */,
@@ -206,6 +215,17 @@
 			children = (
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		F8189FC92544242100048CF8 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				F8189FD0254424BE00048CF8 /* SFProText-Regular.ttf */,
+				F8189FCE2544249D00048CF8 /* SFProText-Bold.ttf */,
+				F8189FCC2544247F00048CF8 /* SFProText-Semibold.ttf */,
+				F8189FCA2544244B00048CF8 /* SFProText-Light.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -351,7 +371,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				F8189FCD2544247F00048CF8 /* SFProText-Semibold.ttf in Resources */,
+				F8189FD1254424BE00048CF8 /* SFProText-Regular.ttf in Resources */,
+				F8189FCF2544249D00048CF8 /* SFProText-Bold.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				F8189FCB2544244B00048CF8 /* SFProText-Light.ttf in Resources */,
 				F87A441D2524C75E00CA1B13 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
