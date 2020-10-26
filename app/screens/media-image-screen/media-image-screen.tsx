@@ -60,6 +60,8 @@ const FLEX_STYLE_IMGDETAILVIEW: ViewStyle = {
 const NAVIGATE_COMPONENT_PADDING: ViewStyle = {
   paddingHorizontal: hp("3.7%"),
 }
+
+// use route parameters for access data send by previous screen
 interface MediaImageScreenProps {
   route
 }
@@ -79,20 +81,34 @@ export const MediaImageScreen = observer(function MediaImageScreen({
     if (isFocused) {
       getdata(route.params.id, route.params.parent_id)
     }
+
+    // clean data for screen
     return function cleanup() {
       mediaStore.subcategoryMediaCleanup()
     }
   }, [route.params.id, isFocused])
 
   const getdata = async (id: number, parentId) => {
+    // access subCategory detail from store by passing parentId
     await mediaStore.getSubCategoryItems(parentId)
+
+    // access data for currently open subCategroy
     await mediaStore.getCurrentSubCategory(parentId)
+
+    // access media array of subcategory
     await mediaStore.getMediaForSubcategory(id, parentId)
+
+    // set currently open subcategory to recently viewed data array
     await mediaStore.getRecentData(parentId, id)
+
+    // set currently open image slide id to store
     await mediaStore.setViewdMediaArray(activeSLide + 1)
+
+    // set id of opened subcategory to store for drawer focused link
     mediaStore.setIndexForSubcategory(parentId)
   }
 
+  // render pagination dots under image
   const pagination = () => {
     return (
       <Pagination
@@ -114,6 +130,7 @@ export const MediaImageScreen = observer(function MediaImageScreen({
     )
   }
 
+  // render api response details in screen
   const renderItem = ({ item, index }) => {
     return (
       <View key={index} style={DETAIL_VIEW}>
@@ -156,8 +173,10 @@ export const MediaImageScreen = observer(function MediaImageScreen({
   return (
     <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
       <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
+        {/* header component view */}
         <Header headerText={route.params.name} rightIcon="hamBurger" leftIcon="back" />
         <View style={MAIN_FLEX}>
+          {/* prev/next button component view */}
           <View style={NAVIGATE_COMPONENT_PADDING}>
             <Navigate id={route.params.id} parent_id={route.params.parent_id} />
           </View>
@@ -167,6 +186,8 @@ export const MediaImageScreen = observer(function MediaImageScreen({
                 <Spinner type={"Bounce"} color={color.palette.golden} />
               </View>
             )}
+
+            {/* swiper carousel for images */}
             <Carousel
               ref={swiper_ref}
               data={mediaStore.mediaArray}
@@ -181,6 +202,8 @@ export const MediaImageScreen = observer(function MediaImageScreen({
                 mediaStore.setViewdMediaArray(index + 1)
               }}
             />
+
+            {/* pagination dots for swiper */}
             {pagination()}
           </View>
         </View>

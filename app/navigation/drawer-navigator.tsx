@@ -56,6 +56,7 @@ function CustomDrawerContent(props) {
   const { categoryStore, mediaStore } = useStores()
   const navigation = useNavigation()
 
+  // logout confirmation on click logout button
   const removeTokenConfirmation = () => {
     Alert.alert("LOG OUT", "Are you want to Logout from app ?", [
       {
@@ -86,7 +87,9 @@ function CustomDrawerContent(props) {
           <Text style={BOXING} text="BOXING" />
           <Text style={SUB_TEXT} text="BY TATVASOFT" />
         </View>
+
         <View style={LINK_VIEW}>
+          {/* drawer item - deshboard */}
           <View>
             <DrawerItem
               label="DASHBOARD"
@@ -98,6 +101,8 @@ function CustomDrawerContent(props) {
               activeBackgroundColor={color.transparent}
               focused={mediaStore.indexForSubcategory == 0 ? true : false}
             />
+
+            {/* get dynamic drawer items - categories from api */}
             <FlatList
               data={categoryStore.category}
               renderItem={({ item, index }: any) => {
@@ -124,6 +129,8 @@ function CustomDrawerContent(props) {
           </View>
         </View>
       </View>
+
+      {/* drawer item - logout */}
       <View style={{ backgroundColor: "black" }}>
         <DrawerItem
           label="LOG OUT"

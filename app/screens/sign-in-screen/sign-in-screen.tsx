@@ -133,6 +133,7 @@ export const SignInScreen = observer(function SignInScreen() {
   const [loading, setLoading] = useState(false)
   const [password, setPassword] = useState("")
 
+  //get google sign in confirguration
   useEffect(() => {
     GoogleSignin.configure({
       webClientId: "400169882902-vcn7snnfnajehl7vj7i0hsh41e6k8aft.apps.googleusercontent.com",
@@ -141,10 +142,13 @@ export const SignInScreen = observer(function SignInScreen() {
     })
   }, [])
 
+  // google sign in request
   const signIn = async () => {
     try {
       setLoading(true)
       await GoogleSignin.hasPlayServices()
+
+      //get user details of logged user
       const userInfo = await GoogleSignin.signIn()
       let profileData = {
         profileImage: userInfo.user.photo,
@@ -170,9 +174,13 @@ export const SignInScreen = observer(function SignInScreen() {
     setLoading(false)
   }
 
+  // input field reference
   const ref_input2 = useRef(null)
 
+  // user data array for filter incoming username and password for login to app
   const USER_DATA = [{ username: "test@gmail.com", password: "test@12345" }]
+
+  // login form validation -validate field
   const ValidateForm = () => {
     setRuntimeUsername(true)
     let isUsernameError = UsernameValidate(username)
@@ -191,6 +199,8 @@ export const SignInScreen = observer(function SignInScreen() {
     } else {
     }
   }
+
+  //userName validations for get validate error
   const UsernameValidate = (username) => {
     let nameData = validateEmail(username)
     setUserNameError(nameData)
@@ -200,6 +210,8 @@ export const SignInScreen = observer(function SignInScreen() {
       return false
     }
   }
+
+  //password validations for get validate errors
   const PasswordValidate = (password) => {
     let passwordData = validatePassword(password)
     setPasswordError(passwordData)
@@ -211,18 +223,23 @@ export const SignInScreen = observer(function SignInScreen() {
     }
   }
 
+  // handle email validate
   const handleEmailError = (username) => {
     setUsername(username)
     if (runtimeUserame) {
       UsernameValidate(username)
     }
   }
+
+  // handle password validate
   const handlePasswordError = (password) => {
     setPassword(password)
     if (runtimeUserame) {
       PasswordValidate(password)
     }
   }
+
+  // facebook login request / graph request for email and public profile
   const loginWIthFacebook = () => {
     setLoading(true)
     if (Platform.OS === "android") {
@@ -256,6 +273,8 @@ export const SignInScreen = observer(function SignInScreen() {
       function (error) {},
     )
   }
+
+  // get details of logged user using facebook
   const _responseInfoCallback = (error, result) => {
     if (error) {
     } else {

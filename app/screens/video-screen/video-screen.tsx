@@ -64,34 +64,47 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
   const [responseReceived, setResponseReceived] = useState(false)
 
   useEffect(() => {
+    // get data of subCategory media
     if (isFocused) {
       getdata(route.params.id, route.params.parent_id)
     }
+
+    // data cleanup for screen
     return function cleanup() {
       mediaStore.subcategoryMediaCleanup()
     }
   }, [route.params.id, isFocused])
 
   const getdata = async (id: number, parentId) => {
+    // get data of subCategory, currently opened subcategory , media details
     await mediaStore.getSubCategoryItems(parentId)
     setResponseReceived(true)
     await mediaStore.getCurrentSubCategory(parentId)
     await mediaStore.getMediaForSubcategory(id, parentId)
+
+    // set id of open subcategory for apply drawer focused
     mediaStore.setIndexForSubcategory(parentId)
+
+    // set open media details for visited recently viewed data
     await mediaStore.getRecentData(parentId, id)
   }
 
+  // params for video
   const videoParams: InitialPlayerParams = {
     controls: true,
     modestbranding: false,
     loop: false,
     rel: false,
   }
+
+  // on reach end of video - set video playing stop
   const videoStateChange = useCallback((state) => {
     if (state === "ended") {
       setVideoPlay(false)
     }
   }, [])
+
+  // render video description from api
   const renderItem = ({ item, index }) => {
     mediaStore.setViewdMediaArray(item.id)
     return (
@@ -122,9 +135,11 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
     )
   }
 
+  // render video in screen
   const renderVideo = () => {
     if (!responseReceived) return null
     return mediaStore.mediaArray.map((item, index) => {
+      // extract video id from video link
       let video_id = item.url.match(
         /(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/,
       )[1]
@@ -152,6 +167,7 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
   return (
     <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
       <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
+        {/* header component with screen name / back action / drawer icon */}
         <Header
           headerText={route.params.name}
           rightIcon="hamBurger"
@@ -159,18 +175,25 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
           titleStyle={{ textTransform: "capitalize" }}
         />
         <View style={MAIN_FLEX}>
+          {/* prev/next navigation component */}
           <Navigate id={route.params.id} parent_id={route.params.parent_id} />
           {mediaStore.loading && (
             <View style={INDICATOR}>
               <Spinner type={"Bounce"} color={color.palette.golden} />
             </View>
           )}
+
+          {/* set message for empty media array */}
           {route.params.screenType == "None" && (
             <View style={STYLE_EMPTY_VIEW}>
               <Text text={"No Data Found !"} style={STYLE_EMPTY_TEXT} />
             </View>
           )}
+
+          {/* video render view */}
           {renderVideo()}
+
+          {/* video description render view */}
           <FlatList
             data={mediaStore.mediaArray}
             renderItem={renderItem}

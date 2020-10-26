@@ -61,6 +61,9 @@ const VIEW_ABOVE_MAIN: ViewStyle = {
   flex: 1,
   justifyContent: "center",
 }
+const HEADER_TEXT: TextStyle = {
+  textTransform: "capitalize",
+}
 const INDICATOR: ViewStyle = {
   justifyContent: "center",
   alignItems: "center",
@@ -88,11 +91,15 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({
   }, [route.params.id, isFocused])
 
   const getdata = async (id: number) => {
+    // get subcategory data from store actions using parent id of subcategory
     await mediaStore.getSubCategoryItems(id)
     await mediaStore.getCurrentSubCategory(id)
+
+    // set id of subcategory for drawer active link
     await mediaStore.setIndexForSubcategory(id)
   }
 
+  // render view for subcategory items
   const renderItem = ({ item, index }) => {
     return (
       <View key={index} style={BUTTON}>
@@ -120,7 +127,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({
           headerText={route.params.name}
           rightIcon="hamBurger"
           leftIcon="back"
-          titleStyle={{ textTransform: "capitalize" }}
+          titleStyle={HEADER_TEXT}
         />
         <View style={VIEW_ABOVE_MAIN}>
           <View style={MAIN_VIEW}>

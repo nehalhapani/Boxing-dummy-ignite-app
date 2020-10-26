@@ -75,17 +75,21 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
     }
     return -1
   }
+
+  // function for next button
   const nextClicked = async () => {
     let index = findArrayObject(mediaStore.allSubCategoryMedia, parent_id)
     let lastSubcategoryIndex = mediaStore.allSubCategoryMedia.findIndex((x) => x.parent_id == 3)
     for (var i = 0; i < mediaStore.allSubCategoryMedia[index].data.length; i += 1) {
       if (mediaStore.allSubCategoryMedia[index].data[i].id == id) {
+        // if no further screens -set button disable
         if (
           index == lastSubcategoryIndex &&
           i == mediaStore.allSubCategoryMedia[index].data.length - 1
         ) {
           setNextBtnDisable(true)
         } else if (i == mediaStore.allSubCategoryMedia[index].data.length - 1) {
+          // navigate between categories
           setNextBtnDisable(false)
           await mediaStore.getSubCategoryItems(parent_id + 1)
           mediaStore.subcategoryCleanup()
@@ -102,6 +106,7 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
             ),
           )
         } else {
+          // navigate between subCategories within same category
           setNextBtnDisable(false)
           let subCategoryId = mediaStore.allSubCategoryMedia[index].data.findIndex(
             (x) => x.id == id,
@@ -125,14 +130,17 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
     }
   }
 
+  // previous button funtions
   const prevClicked = async () => {
     let index = findArrayObject(mediaStore.allSubCategoryMedia, parent_id)
     let subCategoryIndex = mediaStore.allSubCategoryMedia.findIndex((x) => x.parent_id == 1)
     for (var i = 0; i < mediaStore.allSubCategoryMedia[index].data.length; i += 1) {
       if (mediaStore.allSubCategoryMedia[index].data[i].id == id) {
+        // disable prev button when no further navigations possible
         if (index == subCategoryIndex && i == 0) {
           setBtnDisable(true)
         } else if (i == 0) {
+          // navigate between categories
           setBtnDisable(false)
           mediaStore.subcategoryCleanup()
           await mediaStore.getSubCategoryItems(parent_id - 1)
@@ -165,6 +173,7 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
             ),
           )
         } else {
+          // navigate within same category media
           setBtnDisable(false)
           mediaStore.subcategoryCleanup()
           let subCategoryId = mediaStore.allSubCategoryMedia[index].data.findIndex(

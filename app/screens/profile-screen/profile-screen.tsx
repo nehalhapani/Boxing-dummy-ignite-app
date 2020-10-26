@@ -187,37 +187,49 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const isFocused = useIsFocused()
   const KEYS_TO_FILTERS = ["title"]
 
+  // animation for scrolling profile details
   const scrollY = new Animated.Value(0)
   const translateY = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
     outputRange: [VIEW_MAX_HEIGHT, VIEW_MIN_HEIGHT],
     extrapolate: "clamp",
   })
+
+  // profile image scroll range
   const setProfileImg = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
     outputRange: [(WINDOW_WIDTH - IMAGE_WIDTH) / 2, hp("3.7%")],
     extrapolate: "clamp",
   })
+
+  // profile text range
   const marginBottomProfileText = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
     outputRange: [0, hp("1.1%")],
     extrapolate: "clamp",
   })
+
+  // top padding for image on scroll
   const paddingTopForImage = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
     outputRange: [hp("3.33%"), (VIEW_MIN_HEIGHT - IMAGE_WIDTH) / 2],
     extrapolate: "clamp",
   })
+
+  // top padding for text details
   const topText = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
     outputRange: [hp("18%"), hp("3%")],
     extrapolate: "clamp",
   })
+
+  // set details text left
   const leftText = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
     outputRange: [0, IMAGE_WIDTH + 50],
     extrapolate: "clamp",
   })
+
   const minWidth = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
     outputRange: ["100%", "0%"],
@@ -228,11 +240,14 @@ export const ProfileScreen = observer(function ProfileScreen() {
     if (isFocused) {
       getRecentData()
     }
+
+    // input field cleaning on change screens
     return function cleanup() {
       setSearchText("")
     }
   }, [isFocused, toggle])
 
+  // get recently viewed subcategory data
   const getRecentData = () => {
     let recentlyViewedData = []
     categoryStore.category.forEach((element) => {
@@ -256,6 +271,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
     setRecentlyViewedData(recentlyViewedData)
     setFilterData(recentlyViewedData)
   }
+
+  // render accordian header -category name
   const renderHeader = (item, index, isExpanded) => {
     return (
       <View key={index} style={isExpanded ? ACTIVE_BUTTON_VIEW : BUTTON_VIEW}>
@@ -265,6 +282,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
     )
   }
 
+  // delete confirmation for media on click delete icon
   const removeItemConfirmation = (mediaId) => {
     Alert.alert("DELETE", "Are you want to delete this item ?", [
       {
@@ -282,9 +300,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
       },
     ])
   }
+
+  // remove deleted media from recently viewed data array
   const removeItem = (mediaId) => {
     mediaStore.removeViewedMediaArray(mediaId)
   }
+
+  // implementation of search filter for category/subCategory
   const searchAction = (searchItem) => {
     setSearchText(searchItem)
     if (searchItem == "") {
@@ -313,6 +335,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
     }
   }
 
+  // render accordian with details
   const renderContent = (data, index) => {
     {
       if (data.content.length == 0) {
@@ -325,10 +348,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
           return (
             <View>
               <Text key={key} text={element.name} style={SUBCATEGORY_MEDIATYPE} />
+
+              {/* list for show media inside accordian collapsible */}
               <FlatList
                 data={element.media}
                 keyExtractor={(item, index) => index.toString()}
                 horizontal={true}
+                // empty list for empty subcategory details
                 ListEmptyComponent={(item, index) => {
                   return (
                     <TouchableOpacity style={VIEW_MARGIN_IMG}>
@@ -424,6 +450,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
               <Spinner type={"Bounce"} color={color.palette.golden} />
             </View>
           )}
+
+          {/* animated view for profile view */}
           <Animated.View
             style={{
               height: translateY,
@@ -433,6 +461,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
               right: 0,
             }}
           >
+            {/* animated view for profile image */}
             <Animated.View
               style={{
                 position: "absolute",
@@ -457,6 +486,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 resizeMode={FastImage.resizeMode.contain}
               />
             </Animated.View>
+
+            {/* animated view for profile text details */}
             <Animated.View
               style={{
                 position: "absolute",
@@ -500,6 +531,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
                   />
                   <Icon icon={"search"} style={SEARCH} />
                 </View>
+
+                {/* accordian collapse for category-media */}
                 <Accordion
                   sections={filterData}
                   activeSections={activeSection}
