@@ -7,7 +7,7 @@ import YoutubePlayer, { InitialPlayerParams } from "react-native-youtube-iframe"
 import Spinner from "react-native-spinkit"
 import HTML from "react-native-render-html"
 
-import { color, spacing, fontSize, typography } from "../../theme"
+import { color, spacing, fontSize, typography, string } from "../../theme"
 import { icons } from "../../components/icon/icons"
 import { Screen, Header, Navigate, Text } from "../../components"
 import { useStores } from "../../models"
@@ -51,6 +51,9 @@ const INDICATOR: ViewStyle = {
   top: 0,
   bottom: 0,
 }
+const ERROR_TEXT_STYLE: TextStyle = {
+  color: color.palette.golden,
+}
 
 interface VideoScreenProps {
   route
@@ -64,32 +67,32 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
   const [responseReceived, setResponseReceived] = useState(false)
 
   useEffect(() => {
-    // get data of subCategory media
+    /** get data of subCategory media */
     if (isFocused) {
       getdata(route.params.id, route.params.parent_id)
     }
 
-    // data cleanup for screen
+    /** data cleanup for screen */
     return function cleanup() {
       mediaStore.subcategoryMediaCleanup()
     }
   }, [route.params.id, isFocused])
 
   const getdata = async (id: number, parentId) => {
-    // get data of subCategory, currently opened subcategory , media details
+    /** get data of subCategory, currently opened subcategory , media details */
     await mediaStore.getSubCategoryItems(parentId)
     setResponseReceived(true)
     await mediaStore.getCurrentSubCategory(parentId)
     await mediaStore.getMediaForSubcategory(id, parentId)
 
-    // set id of open subcategory for apply drawer focused
+    /** set id of open subcategory for apply drawer focused */
     mediaStore.setIndexForSubcategory(parentId)
 
-    // set open media details for visited recently viewed data
+    /** set open media details for visited recently viewed data */
     await mediaStore.getRecentData(parentId, id)
   }
 
-  // params for video
+  /** params for video */
   const videoParams: InitialPlayerParams = {
     controls: true,
     modestbranding: false,
@@ -97,14 +100,14 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
     rel: false,
   }
 
-  // on reach end of video - set video playing stop
+  /** on reach end of video - set video playing stop */
   const videoStateChange = useCallback((state) => {
     if (state === "ended") {
       setVideoPlay(false)
     }
   }, [])
 
-  // render video description from api
+  /** render video description from api */
   const renderItem = ({ item, index }) => {
     mediaStore.setViewdMediaArray(item.id)
     return (
@@ -135,11 +138,11 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
     )
   }
 
-  // render video in screen
+  /** render video in screen */
   const renderVideo = () => {
     if (!responseReceived) return null
     return mediaStore.mediaArray.map((item, index) => {
-      // extract video id from video link
+      /** extract video id from video link */
       let video_id = item.url.match(
         /(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/,
       )[1]
@@ -155,7 +158,7 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
           />
           {loading && (
             <View style={INDICATOR}>
-              <Text text={"Video is loading..."} style={{ color: color.palette.golden }} />
+              <Text text={string.videoLoading} style={ERROR_TEXT_STYLE} />
               <Spinner type={"ThreeBounce"} color={color.palette.golden} />
             </View>
           )}
@@ -186,7 +189,7 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
           {/* set message for empty media array */}
           {route.params.screenType == "None" && (
             <View style={STYLE_EMPTY_VIEW}>
-              <Text text={"No Data Found !"} style={STYLE_EMPTY_TEXT} />
+              <Text text={string.notFound} style={STYLE_EMPTY_TEXT} />
             </View>
           )}
 

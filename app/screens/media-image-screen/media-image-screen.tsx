@@ -11,7 +11,7 @@ import Spinner from "react-native-spinkit"
 import { icons } from "../../components/icon/icons"
 import { Screen, Header, Text, Navigate } from "../../components"
 import { useStores } from "../../models"
-import { color, fontSize, typography } from "../../theme"
+import { color, fontSize, typography, string } from "../../theme"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
 const ROOT: ViewStyle = {
@@ -61,7 +61,7 @@ const NAVIGATE_COMPONENT_PADDING: ViewStyle = {
   paddingHorizontal: hp("3.7%"),
 }
 
-// use route parameters for access data send by previous screen
+/** use route parameters for access data send by previous screen */
 interface MediaImageScreenProps {
   route
 }
@@ -82,33 +82,33 @@ export const MediaImageScreen = observer(function MediaImageScreen({
       getdata(route.params.id, route.params.parent_id)
     }
 
-    // clean data for screen
+    /** clean data for screen */
     return function cleanup() {
       mediaStore.subcategoryMediaCleanup()
     }
   }, [route.params.id, isFocused])
 
   const getdata = async (id: number, parentId) => {
-    // access subCategory detail from store by passing parentId
+    /** access subCategory detail from store by passing parentId */
     await mediaStore.getSubCategoryItems(parentId)
 
-    // access data for currently open subCategroy
+    /** access data for currently open subCategroy */
     await mediaStore.getCurrentSubCategory(parentId)
 
-    // access media array of subcategory
+    /** access media array of subcategory */
     await mediaStore.getMediaForSubcategory(id, parentId)
 
-    // set currently open subcategory to recently viewed data array
+    /** set currently open subcategory to recently viewed data array */
     await mediaStore.getRecentData(parentId, id)
 
-    // set currently open image slide id to store
+    /** set currently open image slide id to store */
     await mediaStore.setViewdMediaArray(activeSLide + 1)
 
-    // set id of opened subcategory to store for drawer focused link
+    /** set id of opened subcategory to store for drawer focused link */
     mediaStore.setIndexForSubcategory(parentId)
   }
 
-  // render pagination dots under image
+  /** render pagination dots under image */
   const pagination = () => {
     return (
       <Pagination
@@ -130,7 +130,7 @@ export const MediaImageScreen = observer(function MediaImageScreen({
     )
   }
 
-  // render api response details in screen
+  /** render api response details in screen */
   const renderItem = ({ item, index }) => {
     return (
       <View key={index} style={DETAIL_VIEW}>
@@ -147,7 +147,7 @@ export const MediaImageScreen = observer(function MediaImageScreen({
           />
           {loading && (
             <View style={INDICATOR}>
-              <Text text={"Image is loading..."} style={{ color: color.palette.golden }} />
+              <Text text={string.imageLoading} style={{ color: color.palette.golden }} />
               <Spinner type={"ThreeBounce"} color={color.palette.golden} />
             </View>
           )}

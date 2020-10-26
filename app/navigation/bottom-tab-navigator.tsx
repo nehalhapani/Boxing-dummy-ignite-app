@@ -8,8 +8,17 @@ import React from "react"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { ProfileScreen } from "../screens"
 import { Icon, Text } from "../components"
-import { color, typography } from "../theme"
-import { ImageBackground, View, TouchableOpacity, SafeAreaView, Platform } from "react-native"
+import { color, typography, string } from "../theme"
+import {
+  ImageBackground,
+  View,
+  TouchableOpacity,
+  SafeAreaView,
+  Platform,
+  ViewStyle,
+  ImageStyle,
+  TextStyle,
+} from "react-native"
 import { icons } from "../components/icon/icons"
 import { PrimaryNavigator } from "./primary-navigator"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
@@ -18,15 +27,39 @@ export type BottomTabParamList = {
   primary: undefined
   profile: undefined
 }
+const MAIN_VIEW: ViewStyle = {
+  flex: 1,
+  backgroundColor: color.transparent,
+  justifyContent: "flex-end",
+}
+const CONTAINER: ViewStyle = {
+  flexDirection: "row",
+  height: hp("10%"),
+}
+const VIEW_BOTTOM: ViewStyle = {
+  flex: 1,
+}
+const SAFEAREA_STYLE: ViewStyle = {
+  flex: 1,
+  justifyContent: "flex-end",
+}
+const CONTENT_STYLE: ViewStyle = {
+  alignItems: "center",
+  marginBottom: Platform.OS == "ios" ? 0 : hp("1.5%"),
+}
+const ICON_STYLE: ImageStyle = {
+  marginVertical: hp("0.44%"),
+  height: hp("2.9%"),
+}
+const LABEL_STYLE: TextStyle = {
+  color: color.palette.black,
+  fontSize: hp("2%"),
+  fontFamily: typography.fontRegular,
+}
 
 function MyTabBar({ state, descriptors, navigation }) {
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        height: hp("10%"),
-      }}
-    >
+    <View style={CONTAINER}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key]
         const label =
@@ -42,7 +75,7 @@ function MyTabBar({ state, descriptors, navigation }) {
 
         const onPress = () => {
           const event = navigation.emit({
-            type: "tabPress",
+            type: string.tabPress,
             target: route.key,
           })
 
@@ -53,7 +86,7 @@ function MyTabBar({ state, descriptors, navigation }) {
 
         const onLongPress = () => {
           navigation.emit({
-            type: "tabLongPress",
+            type: string.tabLongPress,
             target: route.key,
           })
         }
@@ -67,7 +100,7 @@ function MyTabBar({ state, descriptors, navigation }) {
             activeOpacity={1}
             onPress={onPress}
             onLongPress={onLongPress}
-            style={{ flex: 1, backgroundColor: color.transparent, justifyContent: "flex-end" }}
+            style={MAIN_VIEW}
           >
             <ImageBackground
               source={backgroundImage}
@@ -77,23 +110,11 @@ function MyTabBar({ state, descriptors, navigation }) {
                 height: isFocused ? "122%" : "100%",
               }}
             >
-              <View style={{ flex: 1 }}>
-                <SafeAreaView style={{ flex: 1, justifyContent: "flex-end" }}>
-                  <View
-                    style={{
-                      alignItems: "center",
-                      marginBottom: Platform.OS == "ios" ? 0 : hp("1.5%"),
-                    }}
-                  >
-                    <Icon icon={icon} style={{ marginVertical: hp("0.44%"), height: hp("2.9%") }} />
-                    <Text
-                      text={label}
-                      style={{
-                        color: color.palette.black,
-                        fontSize: hp("2%"),
-                        fontFamily: typography.fontRegular,
-                      }}
-                    />
+              <View style={VIEW_BOTTOM}>
+                <SafeAreaView style={SAFEAREA_STYLE}>
+                  <View style={CONTENT_STYLE}>
+                    <Icon icon={icon} style={ICON_STYLE} />
+                    <Text text={label} style={LABEL_STYLE} />
                   </View>
                 </SafeAreaView>
               </View>

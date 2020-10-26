@@ -1,5 +1,5 @@
 import React from "react"
-import { View, ViewStyle, TextStyle } from "react-native"
+import { View, ViewStyle, TextStyle, ImageStyle } from "react-native"
 import { HeaderProps } from "./header.props"
 import { Button } from "../button/button"
 import { Text } from "../text/text"
@@ -9,7 +9,9 @@ import { translate } from "../../i18n/"
 import { useNavigation, DrawerActions } from "@react-navigation/native"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
-// static styles
+/**
+ * Static styles
+ */
 const ROOT: ViewStyle = {
   flexDirection: "row",
   paddingHorizontal: hp("3.7%"),
@@ -21,9 +23,20 @@ const ROOT: ViewStyle = {
   borderBottomColor: "rgba(255, 255, 255, 0.4)",
   zIndex: 1,
 }
-const TITLE: TextStyle = { textAlign: "center", fontSize: fontSize.FONT_24Px }
+const LEFT_ICON: ImageStyle = {
+  width: hp("2%"),
+  height: hp("2.3%"),
+}
+const RIGHT_ICON: ImageStyle = {
+  width: hp("3%"),
+  height: hp("2%"),
+}
+const TITLE: TextStyle = {
+  textAlign: "center",
+  fontSize: fontSize.FONT_24Px,
+}
 const TITLE_MIDDLE: ViewStyle = { flex: 1, justifyContent: "center" }
-const LEFT: ViewStyle = { width: hp("5%"), backgroundColor: "red" }
+const LEFT: ViewStyle = { width: hp("5%") }
 const RIGHT: ViewStyle = { width: hp("5%") }
 
 /**
@@ -39,7 +52,7 @@ export function Header(props: HeaderProps) {
     <View style={{ ...ROOT, ...style }}>
       {leftIcon ? (
         <Button preset="link" onPress={() => goBack()}>
-          <Icon icon={leftIcon} style={{ paddingRight: 20, width: hp("2%"), height: hp("2%") }} />
+          <Icon icon={leftIcon} style={LEFT_ICON} />
         </Button>
       ) : (
         <View style={LEFT} />
@@ -49,7 +62,7 @@ export function Header(props: HeaderProps) {
       </View>
       {rightIcon ? (
         <Button preset="link" onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
-          <Icon icon={rightIcon} style={{ width: hp("3%"), height: hp("2%") }} />
+          <Icon icon={rightIcon} style={RIGHT_ICON} />
         </Button>
       ) : (
         <View style={RIGHT} />

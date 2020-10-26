@@ -22,7 +22,7 @@ import FastImage from "react-native-fast-image"
 import Spinner from "react-native-spinkit"
 
 import { createFilter } from "react-native-search-filter"
-import { color, fontSize, typography } from "../../theme"
+import { color, fontSize, typography, string } from "../../theme"
 import { icons } from "../../components/icon/icons"
 import { Screen, Header, Text, Icon } from "../../components"
 import { useStores } from "../../models"
@@ -187,7 +187,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const isFocused = useIsFocused()
   const KEYS_TO_FILTERS = ["title"]
 
-  // animation for scrolling profile details
+  /** animation for scrolling profile details */
   const scrollY = new Animated.Value(0)
   const translateY = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
@@ -195,35 +195,35 @@ export const ProfileScreen = observer(function ProfileScreen() {
     extrapolate: "clamp",
   })
 
-  // profile image scroll range
+  /** profile image scroll range */
   const setProfileImg = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
     outputRange: [(WINDOW_WIDTH - IMAGE_WIDTH) / 2, hp("3.7%")],
     extrapolate: "clamp",
   })
 
-  // profile text range
+  /** profile text range */
   const marginBottomProfileText = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
     outputRange: [0, hp("1.1%")],
     extrapolate: "clamp",
   })
 
-  // top padding for image on scroll
+  /** top padding for image on scroll */
   const paddingTopForImage = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
     outputRange: [hp("3.33%"), (VIEW_MIN_HEIGHT - IMAGE_WIDTH) / 2],
     extrapolate: "clamp",
   })
 
-  // top padding for text details
+  /** top padding for text details */
   const topText = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
     outputRange: [hp("18%"), hp("3%")],
     extrapolate: "clamp",
   })
 
-  // set details text left
+  /** set details text left */
   const leftText = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
     outputRange: [0, IMAGE_WIDTH + 50],
@@ -241,13 +241,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
       getRecentData()
     }
 
-    // input field cleaning on change screens
+    /** input field cleaning on change screens */
     return function cleanup() {
       setSearchText("")
     }
   }, [isFocused, toggle])
 
-  // get recently viewed subcategory data
+  /** get recently viewed subcategory data */
   const getRecentData = () => {
     let recentlyViewedData = []
     categoryStore.category.forEach((element) => {
@@ -272,7 +272,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
     setFilterData(recentlyViewedData)
   }
 
-  // render accordian header -category name
+  /** render accordian header -category name */
   const renderHeader = (item, index, isExpanded) => {
     return (
       <View key={index} style={isExpanded ? ACTIVE_BUTTON_VIEW : BUTTON_VIEW}>
@@ -282,7 +282,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
     )
   }
 
-  // delete confirmation for media on click delete icon
+  /** delete confirmation for media on click delete icon */
   const removeItemConfirmation = (mediaId) => {
     Alert.alert("DELETE", "Are you want to delete this item ?", [
       {
@@ -301,12 +301,12 @@ export const ProfileScreen = observer(function ProfileScreen() {
     ])
   }
 
-  // remove deleted media from recently viewed data array
+  /** remove deleted media from recently viewed data array */
   const removeItem = (mediaId) => {
     mediaStore.removeViewedMediaArray(mediaId)
   }
 
-  // implementation of search filter for category/subCategory
+  /** implementation of search filter for category/subCategory */
   const searchAction = (searchItem) => {
     setSearchText(searchItem)
     if (searchItem == "") {
@@ -335,11 +335,11 @@ export const ProfileScreen = observer(function ProfileScreen() {
     }
   }
 
-  // render accordian with details
+  /** render accordian with details */
   const renderContent = (data, index) => {
     {
       if (data.content.length == 0) {
-        return <Text text="No Data Found!" style={TEXT_EMPLTY_ELEMENT} />
+        return <Text text={string.notFound} style={TEXT_EMPLTY_ELEMENT} />
       }
     }
     return (
@@ -354,7 +354,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 data={element.media}
                 keyExtractor={(item, index) => index.toString()}
                 horizontal={true}
-                // empty list for empty subcategory details
+                /** empty list for empty subcategory details */
                 ListEmptyComponent={(item, index) => {
                   return (
                     <TouchableOpacity style={VIEW_MARGIN_IMG}>
@@ -388,21 +388,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 }}
                 renderItem={({ item, index }: any) => {
                   return (
-                    <TouchableOpacity
-                      key={index}
-                      style={VIEW_MARGIN_IMG}
-                      // onPress={() => {
-                      //   mediaStore.subcategoryCleanup()
-                      //   navigation.dispatch(
-                      //     CommonActions.navigate(element.type == "Image" ? "image" : "video", {
-                      //       id: element.id,
-                      //       parent_id: element.parent_id,
-                      //       name: element.name,
-                      //       screenType: element.type,
-                      //     }),
-                      //   )
-                      // }}
-                    >
+                    <TouchableOpacity key={index} style={VIEW_MARGIN_IMG}>
                       <TouchableOpacity
                         style={DELETE_IMAGE}
                         onPress={() => {
@@ -444,7 +430,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
     <View style={MAIN}>
       <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
         <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
-          <Header headerText={"Profile"} />
+          <Header headerText={string.profile} />
           {mediaStore.loading && (
             <View style={INDICATOR}>
               <Spinner type={"Bounce"} color={color.palette.golden} />
@@ -519,13 +505,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
               }}
             >
               <View style={MAIN_FLEX}>
-                <Text text={"Saved Category"} style={SAVED_CATEGORY} />
+                <Text text={string.savedCategory} style={SAVED_CATEGORY} />
                 <View style={DIRECTION_ROW}>
                   <TextInput
                     value={searchText}
                     style={SEARCH_INPUT}
                     placeholderTextColor={color.palette.brownGray}
-                    placeholder={"Search categories"}
+                    placeholder={string.searchCategory}
                     onChangeText={(searchItem) => searchAction(searchItem)}
                     autoCorrect={false}
                   />

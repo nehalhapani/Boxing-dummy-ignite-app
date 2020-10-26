@@ -18,7 +18,7 @@ import { GoogleSignin, statusCodes } from "@react-native-community/google-signin
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from "react-native-fbsdk"
 import Spinner from "react-native-spinkit"
 
-import { color, fontSize, typography } from "../../theme"
+import { color, fontSize, typography, string } from "../../theme"
 import { icons } from "../../components/icon/icons"
 import { Text, Button } from "../../components"
 import { useStores } from "../../models"
@@ -124,6 +124,10 @@ const INDICATOR: ViewStyle = {
   top: 0,
   bottom: 0,
 }
+const LOGO: ImageStyle = {
+  height: hp("8%"),
+  width: hp("8%"),
+}
 export const SignInScreen = observer(function SignInScreen() {
   const { authStore } = useStores()
   const [username, setUsername] = useState("")
@@ -133,7 +137,7 @@ export const SignInScreen = observer(function SignInScreen() {
   const [loading, setLoading] = useState(false)
   const [password, setPassword] = useState("")
 
-  //get google sign in confirguration
+  /** get google sign in confirguration */
   useEffect(() => {
     GoogleSignin.configure({
       webClientId: "400169882902-vcn7snnfnajehl7vj7i0hsh41e6k8aft.apps.googleusercontent.com",
@@ -142,13 +146,13 @@ export const SignInScreen = observer(function SignInScreen() {
     })
   }, [])
 
-  // google sign in request
+  /** google sign in request */
   const signIn = async () => {
     try {
       setLoading(true)
       await GoogleSignin.hasPlayServices()
 
-      //get user details of logged user
+      /** get user details of logged user */
       const userInfo = await GoogleSignin.signIn()
       let profileData = {
         profileImage: userInfo.user.photo,
@@ -162,11 +166,11 @@ export const SignInScreen = observer(function SignInScreen() {
       setLoading(false)
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         setLoading(false)
-        // user cancelled the login flow
+        /** user cancelled the login flow */
       } else if (error.code === statusCodes.IN_PROGRESS) {
-        // operation (e.g. sign in) is in progress already
+        /** operation (e.g. sign in) is in progress already */
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        // play services not available or outdated
+        /** play services not available or outdated */
       } else {
         setLoading(false)
       }
@@ -174,13 +178,13 @@ export const SignInScreen = observer(function SignInScreen() {
     setLoading(false)
   }
 
-  // input field reference
+  /** input field reference */
   const ref_input2 = useRef(null)
 
-  // user data array for filter incoming username and password for login to app
+  /** user data array for filter incoming username and password for login to app */
   const USER_DATA = [{ username: "test@gmail.com", password: "test@12345" }]
 
-  // login form validation -validate field
+  /**login form validation -validate field */
   const ValidateForm = () => {
     setRuntimeUsername(true)
     let isUsernameError = UsernameValidate(username)
@@ -200,7 +204,7 @@ export const SignInScreen = observer(function SignInScreen() {
     }
   }
 
-  //userName validations for get validate error
+  /** userName validations for get validate error */
   const UsernameValidate = (username) => {
     let nameData = validateEmail(username)
     setUserNameError(nameData)
@@ -211,7 +215,7 @@ export const SignInScreen = observer(function SignInScreen() {
     }
   }
 
-  //password validations for get validate errors
+  /** password validations for get validate errors */
   const PasswordValidate = (password) => {
     let passwordData = validatePassword(password)
     setPasswordError(passwordData)
@@ -223,7 +227,7 @@ export const SignInScreen = observer(function SignInScreen() {
     }
   }
 
-  // handle email validate
+  /** handle email validate */
   const handleEmailError = (username) => {
     setUsername(username)
     if (runtimeUserame) {
@@ -231,7 +235,7 @@ export const SignInScreen = observer(function SignInScreen() {
     }
   }
 
-  // handle password validate
+  /** handle password validate */
   const handlePasswordError = (password) => {
     setPassword(password)
     if (runtimeUserame) {
@@ -239,7 +243,7 @@ export const SignInScreen = observer(function SignInScreen() {
     }
   }
 
-  // facebook login request / graph request for email and public profile
+  /** facebook login request / graph request for email and public profile */
   const loginWIthFacebook = () => {
     setLoading(true)
     if (Platform.OS === "android") {
@@ -265,7 +269,7 @@ export const SignInScreen = observer(function SignInScreen() {
               _responseInfoCallback,
               setLoading(false),
             )
-            // Start the graph request.
+            /** Start the graph request. */
             new GraphRequestManager().addRequest(infoRequest).start()
           })
         }
@@ -274,7 +278,7 @@ export const SignInScreen = observer(function SignInScreen() {
     )
   }
 
-  // get details of logged user using facebook
+  /** get details of logged user using facebook */
   const _responseInfoCallback = (error, result) => {
     if (error) {
     } else {
@@ -296,15 +300,15 @@ export const SignInScreen = observer(function SignInScreen() {
           <View>
             <View>
               <View style={LOGO_SPACING}>
-                <Image source={icons["logo"]} style={{ height: hp("8%"), width: hp("8%") }} />
+                <Image source={icons["logo"]} style={LOGO} />
               </View>
-              <Text style={WELCOME_MSG} text="Welcome Back," />
-              <Text style={SUB_TEXT} text="Sign in to continue" />
+              <Text style={WELCOME_MSG} text={string.welcomeMessage} />
+              <Text style={SUB_TEXT} text={string.signinContinue} />
             </View>
 
             <View style={INPUT_VIEW}>
               <View style={INPUT_SUB_VIEW}>
-                <Text style={NAME_TEXT} text="Email Address" />
+                <Text style={NAME_TEXT} text={string.emailAddress} />
                 <TextInput
                   style={EMAIL_INPUT}
                   value={username}
@@ -312,7 +316,7 @@ export const SignInScreen = observer(function SignInScreen() {
                   autoCorrect={false}
                   autoCapitalize="none"
                   returnKeyType={"next"}
-                  placeholder={"Enter Email Here"}
+                  placeholder={string.emailPlaceholder}
                   placeholderTextColor={color.palette.offWhite}
                   onSubmitEditing={() => ref_input2.current.focus()}
                   blurOnSubmit={false}
@@ -323,13 +327,13 @@ export const SignInScreen = observer(function SignInScreen() {
                 </View>
               </View>
               <View style={INPUT_SUB_VIEW}>
-                <Text style={NAME_TEXT} text="Password" />
+                <Text style={NAME_TEXT} text={string.password} />
                 <TextInput
                   secureTextEntry={true}
                   style={EMAIL_INPUT}
                   value={password}
                   autoCompleteType={"password"}
-                  placeholder={"Enter Password Here"}
+                  placeholder={string.passwordPlaceholder}
                   placeholderTextColor={color.palette.offWhite}
                   returnKeyType="done"
                   ref={ref_input2}
@@ -345,7 +349,7 @@ export const SignInScreen = observer(function SignInScreen() {
                 <Button
                   style={BUTTONVIEW_SIGNIN}
                   textStyle={SIGN_IN_TEXT}
-                  text="SIGN IN"
+                  text={string.signIn}
                   onPress={() => ValidateForm()}
                 />
               </View>
@@ -363,7 +367,7 @@ export const SignInScreen = observer(function SignInScreen() {
           <Button
             style={BUTTONVIEW_FACEBOOK}
             textStyle={TEXT_COLOR}
-            text="Login with Facebook"
+            text={string.loginWithFacebook}
             onPress={() => loginWIthFacebook()}
           />
         </View>
@@ -371,7 +375,7 @@ export const SignInScreen = observer(function SignInScreen() {
           <Button
             style={BUTTONVIEW_GOOGLE}
             textStyle={TEXT_COLOR}
-            text="Login with Gmail"
+            text={string.loginWithGmail}
             onPress={() => signIn()}
           />
         </View>

@@ -91,15 +91,15 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({
   }, [route.params.id, isFocused])
 
   const getdata = async (id: number) => {
-    // get subcategory data from store actions using parent id of subcategory
+    /** get subcategory data from store actions using parent id of subcategory */
     await mediaStore.getSubCategoryItems(id)
     await mediaStore.getCurrentSubCategory(id)
 
-    // set id of subcategory for drawer active link
+    /** set id of subcategory for drawer active link */
     await mediaStore.setIndexForSubcategory(id)
   }
 
-  // render view for subcategory items
+  /** render view for subcategory items */
   const renderItem = ({ item, index }) => {
     return (
       <View key={index} style={BUTTON}>

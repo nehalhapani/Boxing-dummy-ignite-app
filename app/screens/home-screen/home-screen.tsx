@@ -18,7 +18,7 @@ import Spinner from "react-native-spinkit"
 import { icons } from "../../components/icon/icons"
 import { Screen, Header, Button, Text } from "../../components"
 import { useStores } from "../../models"
-import { color, fontSize, typography } from "../../theme"
+import { color, fontSize, typography, string } from "../../theme"
 
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
@@ -77,7 +77,7 @@ export const HomeScreen = observer(function HomeScreen() {
 
   useEffect(() => {
     if (isFocused) {
-      // get data from api
+      /** get data from api */
       getCategoryData()
       BackHandler.addEventListener("hardwareBackPress", backAction)
     }
@@ -86,31 +86,33 @@ export const HomeScreen = observer(function HomeScreen() {
   }, [isFocused])
 
   const getCategoryData = async () => {
-    // get category details from api
+    /** get category details from api */
     await categoryStore.getCategoryItems()
     setResponseReceived(true)
 
-    // set index 0 for deshboard screen - index used for give drawer link focused for deshboard
+    /** set index 0 for deshboard screen - index used for give drawer link focused for deshboard */
     await mediaStore.setIndexForSubcategory(0)
   }
 
-  // give alert for confirmation of close app on click back hardware button
+  /** give alert for confirmation of close app on click back hardware button */
   const backAction = () => {
     if (mediaStore.indexForSubcategory == 0) {
-      Alert.alert("Hold on!", "Are you sure you want to go back?", [
+      Alert.alert(string.holdOn, string.goOutConfirmation, [
         {
-          text: "Cancel",
+          text: string.cancel,
           onPress: () => null,
           style: "cancel",
         },
-        { text: "YES", style: "destructive", onPress: () => BackHandler.exitApp() },
+        { text: string.yes, style: "destructive", onPress: () => BackHandler.exitApp() },
       ])
     }
     return true
   }
 
-  // show api data in screen
-  // navigate to subCategory screen with parent id and subcategory name
+  /**
+   * navigate to subCategory screen with parent id and subcategory name
+   * show api data in screen
+   */
   const renderItem = ({ item, index }) => {
     if (!responseReceived) return null
     return (
@@ -130,19 +132,19 @@ export const HomeScreen = observer(function HomeScreen() {
     )
   }
 
-  // show text message for null response from api
+  /** show text message for null response from api */
   const emptyListCategory = () => {
     if (!responseReceived) return null
     return (
       <View>
-        <Text text={"Something went wrong ! Please try again later ."} style={[STYLE_EMPTY_TEXT]} />
+        <Text text={string.somethingWrong} style={[STYLE_EMPTY_TEXT]} />
       </View>
     )
   }
   return (
     <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
       <Screen style={ROOT} backgroundColor={color.transparent} preset="fixed">
-        <Header headerText={"Dashboard"} rightIcon="hamBurger" />
+        <Header headerText={string.dashboardCapitalize} rightIcon="hamBurger" />
         <View style={FIRST_FLEX}>
           <View style={MAIN_VIEW}>
             {categoryStore.loading && (

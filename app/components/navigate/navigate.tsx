@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { TextStyle, View, ViewStyle, ImageStyle, TouchableOpacity } from "react-native"
 import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
-import { color, fontSize } from "../../theme"
+import { color, fontSize, string, typography } from "../../theme"
 import { Icon, Text } from "../../components"
 import { useNavigation, StackActions } from "@react-navigation/native"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
@@ -12,7 +12,7 @@ const NAVIGATE_VIEW: ViewStyle = {
   justifyContent: "space-between",
 }
 
-const PREV_BTN: ImageStyle = { width: 5, height: 9, tintColor: color.palette.white }
+const PREV_BTN: ImageStyle = { width: hp("1%"), height: hp("1.3%"), tintColor: color.palette.white }
 const NEXT_BTN: ImageStyle = {
   ...PREV_BTN,
   transform: [{ rotate: "180deg" }],
@@ -25,7 +25,7 @@ const PREV_VIEW: ViewStyle = {
   borderWidth: hp("0.1%"),
   borderColor: color.palette.white,
   paddingHorizontal: hp("1%"),
-  paddingVertical: hp("0.97%"),
+  paddingVertical: hp("0.8%"),
   backgroundColor: color.transparent,
   opacity: 1,
 }
@@ -38,16 +38,18 @@ const TEXT_PREV: TextStyle = {
   fontSize: fontSize.FONT_12Px,
   paddingLeft: hp("1.18%"),
   color: color.palette.white,
+  fontFamily: typography.fontRegular,
 }
 const TEXT_NEXT: TextStyle = {
   fontSize: fontSize.FONT_12Px,
   paddingRight: hp("1.18%"),
   color: color.palette.black,
+  fontFamily: typography.fontRegular,
 }
 const NEXT_VIEW: ViewStyle = {
   ...PREV_VIEW,
   backgroundColor: color.palette.golden,
-  borderColor: color.transparent,
+  borderColor: color.palette.golden,
   opacity: 1,
 }
 const DISABLE_NEXT_VIEW: ViewStyle = {
@@ -76,20 +78,22 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
     return -1
   }
 
-  // function for next button
+  /**
+   * function for next button
+   */
   const nextClicked = async () => {
     let index = findArrayObject(mediaStore.allSubCategoryMedia, parent_id)
     let lastSubcategoryIndex = mediaStore.allSubCategoryMedia.findIndex((x) => x.parent_id == 3)
     for (var i = 0; i < mediaStore.allSubCategoryMedia[index].data.length; i += 1) {
       if (mediaStore.allSubCategoryMedia[index].data[i].id == id) {
-        // if no further screens -set button disable
+        /** if no further screens -set button disable*/
         if (
           index == lastSubcategoryIndex &&
           i == mediaStore.allSubCategoryMedia[index].data.length - 1
         ) {
           setNextBtnDisable(true)
         } else if (i == mediaStore.allSubCategoryMedia[index].data.length - 1) {
-          // navigate between categories
+          /** navigate between categories */
           setNextBtnDisable(false)
           await mediaStore.getSubCategoryItems(parent_id + 1)
           mediaStore.subcategoryCleanup()
@@ -106,7 +110,7 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
             ),
           )
         } else {
-          // navigate between subCategories within same category
+          /** navigate between subCategories within same category */
           setNextBtnDisable(false)
           let subCategoryId = mediaStore.allSubCategoryMedia[index].data.findIndex(
             (x) => x.id == id,
@@ -130,17 +134,17 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
     }
   }
 
-  // previous button funtions
+  /** previous button funtions*/
   const prevClicked = async () => {
     let index = findArrayObject(mediaStore.allSubCategoryMedia, parent_id)
     let subCategoryIndex = mediaStore.allSubCategoryMedia.findIndex((x) => x.parent_id == 1)
     for (var i = 0; i < mediaStore.allSubCategoryMedia[index].data.length; i += 1) {
       if (mediaStore.allSubCategoryMedia[index].data[i].id == id) {
-        // disable prev button when no further navigations possible
+        /** disable prev button when no further navigations possible */
         if (index == subCategoryIndex && i == 0) {
           setBtnDisable(true)
         } else if (i == 0) {
-          // navigate between categories
+          /** navigate between categories */
           setBtnDisable(false)
           mediaStore.subcategoryCleanup()
           await mediaStore.getSubCategoryItems(parent_id - 1)
@@ -173,7 +177,7 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
             ),
           )
         } else {
-          // navigate within same category media
+          /** navigate within same category media */
           setBtnDisable(false)
           mediaStore.subcategoryCleanup()
           let subCategoryId = mediaStore.allSubCategoryMedia[index].data.findIndex(
@@ -205,14 +209,14 @@ export const Navigate = observer(function Navigate(props: NavigateProps) {
         onPress={() => prevClicked()}
       >
         <Icon icon={"back"} style={PREV_BTN} />
-        <Text text={"PREV"} style={TEXT_PREV} />
+        <Text text={string.prev} style={TEXT_PREV} />
       </TouchableOpacity>
       <TouchableOpacity
         style={nextBtnDisable ? DISABLE_NEXT_VIEW : NEXT_VIEW}
         disabled={nextBtnDisable}
         onPress={() => nextClicked()}
       >
-        <Text text={"NEXT"} style={TEXT_NEXT} />
+        <Text text={string.next} style={TEXT_NEXT} />
         <Icon icon={"back"} style={NEXT_BTN} />
       </TouchableOpacity>
     </View>

@@ -10,7 +10,7 @@ import { icons } from "../components/icon/icons"
 import { useNavigation } from "@react-navigation/native"
 import { useStores } from "../models"
 import { BottomTabNavigator } from "./bottom-tab-navigator"
-import { color, fontSize, typography } from "../theme"
+import { color, fontSize, typography, string } from "../theme"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
 export type DrawerParamList = {
@@ -50,22 +50,34 @@ const DRAWER_STYLE: ViewStyle = {
   marginLeft: 0,
   marginVertical: 0,
 }
+const CONTAINER: ViewStyle = {
+  flex: 1,
+  justifyContent: "space-between",
+}
+const BACKGROUND_STYLE: ViewStyle = {
+  backgroundColor: "black",
+}
+const LEFT_MARGIN: ViewStyle = {
+  marginLeft: 10,
+}
 
 function CustomDrawerContent(props) {
   const { authStore } = useStores()
   const { categoryStore, mediaStore } = useStores()
   const navigation = useNavigation()
 
-  // logout confirmation on click logout button
+  /**
+   * logout confirmation on click logout button
+   */
   const removeTokenConfirmation = () => {
-    Alert.alert("LOG OUT", "Are you want to Logout from app ?", [
+    Alert.alert(string.logOut, string.logOutMessage, [
       {
-        text: "Cancel",
+        text: string.cancel,
         onPress: () => null,
         style: "cancel",
       },
       {
-        text: "Logout",
+        text: string.logOut,
         onPress: () => {
           authStore.removeToken()
         },
@@ -75,24 +87,21 @@ function CustomDrawerContent(props) {
   }
 
   return (
-    <DrawerContentScrollView
-      style={MAIN}
-      contentContainerStyle={{ flex: 1, justifyContent: "space-between" }}
-    >
-      <View style={{ backgroundColor: "black" }}>
-        <View style={{ marginLeft: 10 }}>
+    <DrawerContentScrollView style={MAIN} contentContainerStyle={CONTAINER}>
+      <View style={BACKGROUND_STYLE}>
+        <View style={LEFT_MARGIN}>
           <View style={LOGO_SPACING}>
             <Image source={icons.logo} style={LOGO_SIZE} />
           </View>
-          <Text style={BOXING} text="BOXING" />
-          <Text style={SUB_TEXT} text="BY TATVASOFT" />
+          <Text style={BOXING} text={string.boxing} />
+          <Text style={SUB_TEXT} text={string.organization} />
         </View>
 
         <View style={LINK_VIEW}>
           {/* drawer item - deshboard */}
           <View>
             <DrawerItem
-              label="DASHBOARD"
+              label={string.dashboard}
               onPress={() => navigation.navigate("dashboard")}
               style={DRAWER_STYLE}
               labelStyle={labelStyle}
@@ -131,9 +140,9 @@ function CustomDrawerContent(props) {
       </View>
 
       {/* drawer item - logout */}
-      <View style={{ backgroundColor: "black" }}>
+      <View style={BACKGROUND_STYLE}>
         <DrawerItem
-          label="LOG OUT"
+          label={string.logOut}
           onPress={() => removeTokenConfirmation()}
           style={DRAWER_STYLE}
           labelStyle={labelStyle}
