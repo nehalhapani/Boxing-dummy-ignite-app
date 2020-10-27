@@ -202,8 +202,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   /** profile image scroll range */
   const setProfileImg = scrollY.interpolate({
-    inputRange: [0, SCROLL_DISTANCE],
-    outputRange: [(WINDOW_WIDTH - IMAGE_WIDTH) / 2, hp("3.7%")],
+    inputRange: [0, hp("4%"), hp("7.11%"), SCROLL_DISTANCE],
+    outputRange: [(WINDOW_WIDTH - IMAGE_WIDTH) / 2, hp("2.8%"), hp("3.3%"), hp("3.7%")],
     extrapolate: "clamp",
   })
 
@@ -230,8 +230,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   /** set details text left */
   const leftText = scrollY.interpolate({
-    inputRange: [0, SCROLL_DISTANCE],
-    outputRange: [0, IMAGE_WIDTH + 50],
+    inputRange: [0, hp("4%"), hp("7.11%"), SCROLL_DISTANCE],
+    outputRange: [0, IMAGE_WIDTH + 60, IMAGE_WIDTH + 60, IMAGE_WIDTH + 50],
     extrapolate: "clamp",
   })
 
@@ -383,7 +383,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
                             borderWidth: 2,
                             borderColor: color.palette.golden,
                             borderRadius: IMAGE_WIDTH / 2,
-                            backgroundColor: "white",
+                            backgroundColor: color.palette.white,
                           }}
                           resizeMode={FastImage.resizeMode.contain}
                         />
@@ -405,7 +405,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
                       <View>
                         <FastImage
                           source={{
-                            uri: item.type == "Image" ? item.url : item.video_cover,
+                            uri: item.type == string.imageType ? item.url : item.video_cover,
                             priority: FastImage.priority.normal,
                           }}
                           style={{
@@ -489,13 +489,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
               }}
             >
               <Animated.Text style={[PROFILE_NAME, { minWidth }]} numberOfLines={1}>
-                {authStore.userData == "" ? "Test UserName" : authStore.userData.profileName}
+                {authStore.userData == "" ? string.testUser : authStore.userData.profileName}
               </Animated.Text>
               <Animated.Text style={[TEXT_IDENTITY, { minWidth }]} numberOfLines={1}>
-                {authStore.userData == "" ? "test@gmail.com" : authStore.userData.profileEmail}
+                {authStore.userData == "" ? string.testEmail : authStore.userData.profileEmail}
               </Animated.Text>
               <Animated.Text style={[TEXT_IDENTITY, { minWidth }]} numberOfLines={1}>
-                {"23th, oct, 1998"}
+                {string.date}
               </Animated.Text>
             </Animated.View>
           </Animated.View>

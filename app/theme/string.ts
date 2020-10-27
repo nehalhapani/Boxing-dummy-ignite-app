@@ -33,4 +33,8 @@ export const string = {
   delete: "DELETE",
   deleteMessage: "Are you want to delete this item ?",
   OK: "OK",
+  date: "23th, oct, 1998",
+  testUser: "Test UserName",
+  testEmail: "test@gmail.com",
+  imageType: "Image",
 }
