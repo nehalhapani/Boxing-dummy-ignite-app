@@ -289,14 +289,14 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   /** delete confirmation for media on click delete icon */
   const removeItemConfirmation = (mediaId) => {
-    Alert.alert("DELETE", "Are you want to delete this item ?", [
+    Alert.alert(string.delete, string.deleteMessage, [
       {
-        text: "Cancel",
+        text: string.cancel,
         onPress: () => null,
         style: "cancel",
       },
       {
-        text: "OK",
+        text: string.OK,
         onPress: () => {
           removeItem(mediaId)
           setToggle(!toggle)
@@ -506,8 +506,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
               bounces={false}
               overScrollMode="never"
               scrollEventThrottle={16}
-              onScroll={(e) => {
-                scrollY.setValue(e.nativeEvent.contentOffset.y)
+              onScroll={(event) => {
+                scrollY.setValue(event.nativeEvent.contentOffset.y)
               }}
               onScrollEndDrag={(event) => {
                 if (

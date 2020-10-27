@@ -30,4 +30,7 @@ export const string = {
   signIn: "SIGN IN",
   loginWithFacebook: "Login with Facebook",
   loginWithGmail: "Login with Gmail",
+  delete: "DELETE",
+  deleteMessage: "Are you want to delete this item ?",
+  OK: "OK",
 }
