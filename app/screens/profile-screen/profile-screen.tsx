@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { observer } from "mobx-react-lite"
 import {
   ViewStyle,
@@ -175,6 +175,10 @@ const TEXT_EMPLTY_ELEMENT: TextStyle = {
 const VIEW_MARGIN_IMG: TextStyle = {
   marginRight: hp("1.78%"),
 }
+const ANIMATED_VIEW: ViewStyle = {
+  flexGrow: 1,
+  marginTop: VIEW_MIN_HEIGHT,
+}
 
 export const ProfileScreen = observer(function ProfileScreen() {
   const [activeSection, setActiveSection] = useState([])
@@ -183,6 +187,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const [toggle, setToggle] = useState(false)
   const [searchText, setSearchText] = useState("")
   const [filterData, setFilterData] = useState([])
+  const ScrollViewRef = useRef(null)
 
   const isFocused = useIsFocused()
   const KEYS_TO_FILTERS = ["title"]
@@ -494,28 +499,45 @@ export const ProfileScreen = observer(function ProfileScreen() {
               </Animated.Text>
             </Animated.View>
           </Animated.View>
-          <View style={{ flexGrow: 1, marginTop: VIEW_MIN_HEIGHT }}>
+          <View style={ANIMATED_VIEW}>
             <Animated.ScrollView
-              style={{ flex: 1 }}
+              ref={ScrollViewRef}
+              style={MAIN}
               bounces={false}
               overScrollMode="never"
               scrollEventThrottle={16}
               onScroll={(e) => {
                 scrollY.setValue(e.nativeEvent.contentOffset.y)
               }}
+              onScrollEndDrag={(event) => {
+                if (
+                  event.nativeEvent.contentOffset.y >= 0 &&
+                  event.nativeEvent.contentOffset.y <= hp("5%")
+                ) {
+                  ScrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true })
+                }
+                if (
+                  event.nativeEvent.contentOffset.y > hp("5%") &&
+                  event.nativeEvent.contentOffset.y <= hp("11.11%")
+                ) {
+                  ScrollViewRef.current.scrollTo({ x: 0, y: hp("11.11%"), animated: true })
+                }
+              }}
             >
               <View style={MAIN_FLEX}>
-                <Text text={string.savedCategory} style={SAVED_CATEGORY} />
-                <View style={DIRECTION_ROW}>
-                  <TextInput
-                    value={searchText}
-                    style={SEARCH_INPUT}
-                    placeholderTextColor={color.palette.brownGray}
-                    placeholder={string.searchCategory}
-                    onChangeText={(searchItem) => searchAction(searchItem)}
-                    autoCorrect={false}
-                  />
-                  <Icon icon={"search"} style={SEARCH} />
+                <View>
+                  <Text text={string.savedCategory} style={SAVED_CATEGORY} />
+                  <View style={DIRECTION_ROW}>
+                    <TextInput
+                      value={searchText}
+                      style={SEARCH_INPUT}
+                      placeholderTextColor={color.palette.brownGray}
+                      placeholder={string.searchCategory}
+                      onChangeText={(searchItem) => searchAction(searchItem)}
+                      autoCorrect={false}
+                    />
+                    <Icon icon={"search"} style={SEARCH} />
+                  </View>
                 </View>
 
                 {/* accordian collapse for category-media */}
