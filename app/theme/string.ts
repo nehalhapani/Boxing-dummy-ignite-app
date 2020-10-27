@@ -37,4 +37,9 @@ export const string = {
   testUser: "Test UserName",
   testEmail: "test@gmail.com",
   imageType: "Image",
+  noInternet: "No Internet Connection!",
+  internetMessage: "Please check your internet connection",
+  invalidInputs: "Invalid Inputs!!",
+  signinError: "Please enter valid username and password",
+  testEMailId: "test@gmail.com",
 }

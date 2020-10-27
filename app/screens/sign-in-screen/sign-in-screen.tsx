@@ -13,8 +13,8 @@ import {
   KeyboardAvoidingView,
   StatusBar,
   Platform,
-  TouchableWithoutFeedback,
 } from "react-native"
+import { useNetInfo } from "@react-native-community/netinfo"
 import { GoogleSignin, statusCodes } from "@react-native-community/google-signin"
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from "react-native-fbsdk"
 import Spinner from "react-native-spinkit"
@@ -138,6 +138,9 @@ export const SignInScreen = observer(function SignInScreen() {
   const [loading, setLoading] = useState(false)
   const [password, setPassword] = useState("")
 
+  const netInfo = useNetInfo()
+  // const isFocused = useIsFocused()
+
   /** get google sign in confirguration */
   useEffect(() => {
     GoogleSignin.configure({
@@ -192,14 +195,18 @@ export const SignInScreen = observer(function SignInScreen() {
     let isPasswordError = PasswordValidate(password)
 
     if (isUsernameError && isPasswordError) {
-      var results = USER_DATA.filter((item) => {
-        return username == item.username && password == item.password
-      })
-      if (results.length == 0) {
-        setRuntimeUsername(true)
-        Alert.alert("Invalid Inputs!!", "Please enter valid username and password")
+      if (netInfo.isConnected) {
+        var results = USER_DATA.filter((item) => {
+          return username == item.username && password == item.password
+        })
+        if (results.length == 0) {
+          setRuntimeUsername(true)
+          Alert.alert(string.invalidInputs, string.signinError)
+        } else {
+          authStore.setToken()
+        }
       } else {
-        authStore.setToken()
+        Alert.alert(string.noInternet, string.internetMessage)
       }
     } else {
     }
@@ -319,6 +326,7 @@ export const SignInScreen = observer(function SignInScreen() {
                   style={EMAIL_INPUT}
                   value={username}
                   autoCompleteType={"email"}
+                  keyboardType={"email-address"}
                   autoCorrect={false}
                   autoCapitalize="none"
                   returnKeyType={"next"}

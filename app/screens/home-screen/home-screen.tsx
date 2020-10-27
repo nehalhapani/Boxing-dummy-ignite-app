@@ -21,6 +21,7 @@ import { useStores } from "../../models"
 import { color, fontSize, typography, string } from "../../theme"
 
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
+import { useNetInfo } from "@react-native-community/netinfo"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -74,6 +75,7 @@ export const HomeScreen = observer(function HomeScreen() {
   const { categoryStore, mediaStore } = useStores()
   const isFocused = useIsFocused()
   const [responseReceived, setResponseReceived] = useState(false)
+  const netInfo = useNetInfo()
 
   useEffect(() => {
     if (isFocused) {
@@ -84,6 +86,12 @@ export const HomeScreen = observer(function HomeScreen() {
 
     return () => BackHandler.removeEventListener("hardwareBackPress", backAction)
   }, [isFocused])
+
+  // useEffect(() => {
+  //   if (!netInfo.isConnected && isFocused) {
+  //     Alert.alert(string.noInternet, string.internetMessage)
+  //   }
+  // }, [netInfo.isConnected])
 
   const getCategoryData = async () => {
     /** get category details from api */

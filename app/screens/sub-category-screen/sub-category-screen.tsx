@@ -20,6 +20,7 @@ import { icons } from "../../components/icon/icons"
 import { Screen, Header, Text } from "../../components"
 import { useStores } from "../../models"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
+import NetInfo, { useNetInfo } from "@react-native-community/netinfo"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -82,13 +83,14 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({
   const navigation = useNavigation()
   const isFocused = useIsFocused()
   const { mediaStore } = useStores()
+  const NetInfo = useNetInfo()
 
   useEffect(() => {
     if (isFocused) {
       getdata(route.params.id)
     }
     return () => mediaStore.subcategoryCleanup()
-  }, [route.params.id, isFocused])
+  }, [route.params.id, isFocused, NetInfo.isConnected])
 
   const getdata = async (id: number) => {
     /** get subcategory data from store actions using parent id of subcategory */

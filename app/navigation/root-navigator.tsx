@@ -13,6 +13,9 @@ import { useStores } from "../models"
 import { observer } from "mobx-react-lite"
 import { DrawerNavigator } from "./drawer-navigator"
 import SplashScreen from "react-native-splash-screen"
+import { useNetInfo } from "@react-native-community/netinfo"
+import { Alert } from "react-native"
+import { string } from "../theme"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -39,7 +42,7 @@ const RootStack = observer(() => {
         headerShown: false,
         gestureEnabled: true,
 
-        stackPresentation: "modal",
+        // stackPresentation: "modal",
       }}
     >
       {authStore.isTokenSet ? (
@@ -70,6 +73,12 @@ export const RootNavigator = React.forwardRef<
   useEffect(() => {
     SplashScreen.hide()
   }, [])
+  const netInfo = useNetInfo()
+  React.useEffect(() => {
+    if (!netInfo.isConnected && netInfo.details != null) {
+      Alert.alert(string.noInternet, string.internetMessage)
+    }
+  }, [netInfo.isConnected])
   return (
     <NavigationContainer {...props} ref={ref}>
       <RootStack />

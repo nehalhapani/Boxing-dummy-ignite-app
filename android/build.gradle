@@ -9,6 +9,7 @@ buildscript {
         googlePlayServicesAuthVersion = "16.0.1"
         // glideVersion = "4.8.0"
          excludeAppGlideModule = true
+         androidXCore = "1.0.2"
     }
     repositories {
         google()

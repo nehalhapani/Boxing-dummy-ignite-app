@@ -356,6 +356,8 @@ PODS:
   - react-native-fbsdk/Share (2.0.0):
     - FBSDKShareKit (~> 7.0)
     - React
+  - react-native-netinfo (5.9.7):
+    - React-Core
   - react-native-safe-area-context (3.1.8):
     - React-Core
   - react-native-spinkit (1.4.1):
@@ -501,6 +503,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-fbsdk (from `../node_modules/react-native-fbsdk`)
+  - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-spinkit (from `../node_modules/react-native-spinkit`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
@@ -598,6 +601,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-fbsdk:
     :path: "../node_modules/react-native-fbsdk"
+  react-native-netinfo:
+    :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-spinkit:
@@ -696,6 +701,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 8ca588cc921e70590820ce72b8789b02c67cce38
   React-jsinspector: b14e62ebe7a66e9231e9581279909f2fc3db6606
   react-native-fbsdk: 00c15d138bba6d4efa628670886fc58cec858c19
+  react-native-netinfo: 250dc0ca126512f618a8a2ca6a936577e1f66586
   react-native-safe-area-context: 79fea126c6830c85f65947c223a5e3058a666937
   react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865

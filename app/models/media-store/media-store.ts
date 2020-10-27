@@ -1,6 +1,7 @@
 import { Instance, SnapshotOut, types, flow } from "mobx-state-tree"
 import { Api } from "../../services/api"
 import { Alert } from "react-native"
+import { string } from "../../theme"
 
 const api = new Api()
 api.setup()
@@ -41,24 +42,29 @@ export const MediaStoreModel = types
             let indexInAllMedia = findArrayObject(self.allSubCategoryMedia, id)
             if (indexInAllMedia == -1) {
               self.allSubCategoryMedia.push({ parent_id: id, data: data.category.data.data })
+              self.loading = false
+              return { response: true, message: string.ok }
             } else {
               self.allSubCategoryMedia[indexInAllMedia] = {
                 parent_id: id,
                 data: data.category.data.data,
               }
+              self.loading = false
+              return { response: true, message: string.ok }
             }
           } else {
             self.loading = false
+            return { response: false, message: string.somethingWrong }
           }
         } else {
           self.loading = false
+          return { response: false, message: string.somethingWrong }
         }
       } catch (error) {
         self.loading = false
-        return { response: false, message: "Something went wrong! Please try again later." }
+        return { response: false, message: string.noInternet }
       }
-      self.loading = false
-      return { response: false, message: "Something went wrong! Please try again later." }
+      // self.loading = false
     }),
 
     /** set array for recently Viewed media */
