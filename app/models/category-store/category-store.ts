@@ -11,7 +11,7 @@ api.setup()
 export const CategoryStoreModel = types
   .model("CategoryStore")
   .props({
-    category: types.optional(types.frozen(), {}),
+    category: types.optional(types.frozen(), []),
     loading: false,
   })
   .views((self) => ({}))

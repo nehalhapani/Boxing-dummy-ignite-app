@@ -56,7 +56,7 @@ const MAIN_FLEX: ViewStyle = {
   marginTop: SCROLL_DISTANCE,
 }
 const PROFILE_NAME: TextStyle = {
-  paddingVertical: hp("1%"),
+  paddingVertical: hp("0.5%"),
   textAlign: "center",
   fontSize: fontSize.FONT_24Px,
   letterSpacing: 0.6,
@@ -217,14 +217,14 @@ export const ProfileScreen = observer(function ProfileScreen() {
   /** top padding for image on scroll */
   const paddingTopForImage = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
-    outputRange: [hp("3.33%"), (VIEW_MIN_HEIGHT - IMAGE_WIDTH) / 2],
+    outputRange: [hp("2.33%"), (VIEW_MIN_HEIGHT - IMAGE_WIDTH) / 2],
     extrapolate: "clamp",
   })
 
   /** top padding for text details */
   const topText = scrollY.interpolate({
     inputRange: [0, SCROLL_DISTANCE],
-    outputRange: [hp("18%"), hp("3%")],
+    outputRange: [hp("17%"), hp("3%")],
     extrapolate: "clamp",
   })
 
@@ -447,7 +447,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
             style={{
               height: translateY,
               position: "absolute",
-              top: Platform.OS == "ios" ? hp("11.11%") : hp("7.5%"),
+              top: Platform.OS == "ios" ? hp("11.11%") : hp("9%"),
               left: 0,
               right: 0,
             }}
