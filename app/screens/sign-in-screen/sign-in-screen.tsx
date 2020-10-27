@@ -13,6 +13,7 @@ import {
   KeyboardAvoidingView,
   StatusBar,
   Platform,
+  TouchableWithoutFeedback,
 } from "react-native"
 import { GoogleSignin, statusCodes } from "@react-native-community/google-signin"
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from "react-native-fbsdk"
@@ -292,11 +293,16 @@ export const SignInScreen = observer(function SignInScreen() {
       authStore.setToken()
     }
   }
+  const handleUnhandledTouches = () => {
+    Keyboard.dismiss()
+    return false
+  }
+
   return (
     <ImageBackground source={icons["backgroundImage"]} style={BACKGROUND}>
       <StatusBar barStyle={"light-content"} backgroundColor={"black"} />
       <KeyboardAvoidingView style={ROOT}>
-        <View style={MAINFLEX}>
+        <View style={MAINFLEX} onStartShouldSetResponder={() => handleUnhandledTouches()}>
           <View>
             <View>
               <View style={LOGO_SPACING}>
