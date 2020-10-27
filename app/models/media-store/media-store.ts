@@ -8,25 +8,36 @@ api.setup()
 export const MediaStoreModel = types
   .model("MediaStore")
   .props({
+    /** all subcategory data array */
     allSubCategoryMedia: types.optional(types.array(types.frozen()), []),
+
+    /** current subcategory data array */
     subCategory: types.optional(types.frozen(), []),
+
+    /** perticular subcategory media array */
     mediaArray: types.optional(types.frozen(), []),
+
+    /** index array for drawer active link */
     indexForSubcategory: types.optional(types.integer, 0),
+
+    /** recently visited media array */
     recentData: types.optional(types.frozen(), []),
+
+    /**media id array */
     seenMedia: types.optional(types.array(types.frozen()), []),
     loading: false,
   })
 
-  .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
+  .views((self) => ({}))
   .actions((self) => ({
-    // api call for sub category data
+    /**  api call for sub category data */
     getSubCategoryItems: flow(function* getSubCategoryItems(id: number) {
       try {
         self.loading = true
         const data = yield api.getSubCategoryItems(id)
         if (data.kind == "ok" && data.category.status == 200) {
           if (data.category.ok) {
-            // check index in array and push/relplace data object
+            /** check index in array and push/relplace data object */
             let indexInAllMedia = findArrayObject(self.allSubCategoryMedia, id)
             if (indexInAllMedia == -1) {
               self.allSubCategoryMedia.push({ parent_id: id, data: data.category.data.data })
@@ -50,34 +61,32 @@ export const MediaStoreModel = types
       return { response: false, message: "Something went wrong! Please try again later." }
     }),
 
-    // set array for recently Viewed media
+    /** set array for recently Viewed media */
     getRecentData(parentId, subcategoryId) {
       let AllDataIndex = findArrayObject(self.allSubCategoryMedia, parentId)
       let recentDataParentIndex = self.recentData.findIndex((x) => x.parent_id == parentId)
       let subIndex = self.allSubCategoryMedia[AllDataIndex].data.findIndex(
         (x) => x.id == subcategoryId,
       )
-      // push data with parent id - if no data found for parent-id in array
+      /**  push data with parent id - if no data found for parent-id in array */
       if (recentDataParentIndex == -1) {
         self.recentData = self.recentData.concat({
           parent_id: parentId,
           children: [self.allSubCategoryMedia[AllDataIndex].data[subIndex]],
         })
-      }
-      // parent found in array -> find index for that parent child
-      else {
+      } else {
+        /** parent found in array -> find index for that parent child */
         let NewArray = self.recentData[recentDataParentIndex].children
         let indexofRepeated = findRepeatedIndex(
           self.recentData[recentDataParentIndex].children,
           subcategoryId,
         )
-        // concat new child in parent if child not found
+        /** concat new child in parent if child not found */
         if (indexofRepeated == -1) {
           let data = NewArray.concat(self.allSubCategoryMedia[AllDataIndex].data[subIndex])
           self.recentData[recentDataParentIndex].children = data
-        }
-        // replace child if found
-        else {
+        } else {
+          /** replace child if found */
           self.recentData[recentDataParentIndex].children[indexofRepeated] =
             self.allSubCategoryMedia[AllDataIndex].data[subIndex]
         }
@@ -93,7 +102,7 @@ export const MediaStoreModel = types
       self.seenMedia.remove(mediaId)
     },
 
-    // get currently opened subCategory from all category array
+    /** get currently opened subCategory from all category array */
     getCurrentSubCategory(parent_id: number) {
       let currentSubcategoryIndex = findArrayObject(self.allSubCategoryMedia, parent_id)
       if (currentSubcategoryIndex == -1) {
@@ -102,7 +111,7 @@ export const MediaStoreModel = types
       self.subCategory = self.allSubCategoryMedia[currentSubcategoryIndex].data
     },
 
-    // get media of currently open subCategory
+    /** get media of currently open subCategory */
     getMediaForSubcategory(idOfSubcategory: number, parent_id: number) {
       let indexForPerticularMedia = self.subCategory.findIndex((item) => item.id == idOfSubcategory)
       if (indexForPerticularMedia == -1) {
@@ -118,13 +127,13 @@ export const MediaStoreModel = types
       self.subCategory = []
     },
 
-    // set index for active drawer item
+    /** set index for active drawer item */
     setIndexForSubcategory(index: number) {
       self.indexForSubcategory = index
     },
   }))
 
-// find index of subcategory
+/**  find index of subcategory */
 function findArrayObject(array, parentId) {
   for (var i = 0; i < array.length; i += 1) {
     if (array[i].parent_id == parentId) {
@@ -141,13 +150,6 @@ function findRepeatedIndex(array, subIndex) {
   }
   return -1
 }
-/**
-  * Un-comment the following to omit model attributes from your snapshots (and from async storage).
-  * Useful for sensitive data like passwords, or transitive state like whether a modal is open.
-
-  * Note that you'll need to import `omit` from ramda, which is already included in the project!
-  *  .postProcessSnapshot(omit(["password", "socialSecurityNumber", "creditCardNumber"]))
-  */
 
 type MediaStoreType = Instance<typeof MediaStoreModel>
 export interface MediaStore extends MediaStoreType {}

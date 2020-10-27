@@ -1,8 +1,9 @@
 import { Instance, SnapshotOut, types, flow } from "mobx-state-tree"
+import { string } from "../../theme"
 import { Api } from "../../services/api"
 
 /**
- * Model description here for TypeScript hints.
+ * Model for main category api call
  */
 const api = new Api()
 api.setup()
@@ -13,34 +14,30 @@ export const CategoryStoreModel = types
     category: types.optional(types.frozen(), {}),
     loading: false,
   })
-  .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
+  .views((self) => ({}))
   .actions((self) => ({
-    // api call for main category items
+    /** api call for main category items */
     getCategoryItems: flow(function* getCategoryItems() {
       self.loading = true
       try {
         const data = yield api.getCategoryItems()
-        if (data.kind == "ok" && data.category.status == 200) {
+        if (data.kind == string.ok && data.category.status == 200) {
           if (data.category.ok) {
             self.category = data.category.data.data
             self.loading = false
           }
         } else {
           self.loading = false
-          return { response: false, message: "Something went wrong! Please try again later." }
+          return { response: false, message: string.somethingWrong }
         }
       } catch (error) {
         self.loading = false
-        return { response: false, message: "Something went wrong! Please try again later." }
+        return { response: false, message: string.somethingWrong }
       }
       self.loading = false
-      return { response: false, message: "Something went wrong! Please try again later." }
+      return { response: false, message: string.somethingWrong }
     }),
   }))
-
-/**
- *  .postProcessSnapshot(omit(["password", "socialSecurityNumber", "creditCardNumber"]))
- */
 
 type CategoryStoreType = Instance<typeof CategoryStoreModel>
 export interface CategoryStore extends CategoryStoreType {}
