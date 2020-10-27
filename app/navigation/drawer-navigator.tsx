@@ -4,7 +4,16 @@ import {
   DrawerContentScrollView,
   DrawerItem,
 } from "@react-navigation/drawer"
-import { View, ViewStyle, TextStyle, Image, ImageStyle, FlatList, Alert } from "react-native"
+import {
+  View,
+  ViewStyle,
+  TextStyle,
+  Image,
+  ImageStyle,
+  FlatList,
+  Alert,
+  Keyboard,
+} from "react-native"
 import { Text } from "../components"
 import { icons } from "../components/icon/icons"
 import { useNavigation } from "@react-navigation/native"
@@ -62,8 +71,7 @@ const LEFT_MARGIN: ViewStyle = {
 }
 
 function CustomDrawerContent(props) {
-  const { authStore } = useStores()
-  const { categoryStore, mediaStore } = useStores()
+  const { categoryStore, mediaStore, authStore } = useStores()
   const navigation = useNavigation()
 
   /**
@@ -79,6 +87,7 @@ function CustomDrawerContent(props) {
       {
         text: string.logOut,
         onPress: () => {
+          mediaStore.recentDataCleanup()
           authStore.removeToken()
         },
         style: "destructive",

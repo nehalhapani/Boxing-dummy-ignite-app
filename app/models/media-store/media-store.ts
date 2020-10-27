@@ -126,6 +126,9 @@ export const MediaStoreModel = types
     subcategoryCleanup() {
       self.subCategory = []
     },
+    recentDataCleanup() {
+      self.recentData = []
+    },
 
     /** set index for active drawer item */
     setIndexForSubcategory(index: number) {
