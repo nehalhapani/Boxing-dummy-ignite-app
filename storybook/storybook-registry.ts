@@ -1,5 +1,4 @@
 require("../app/components/navigate/navigate.story")
-require("../app/components/background/background.story")
 require("../app/components/text/text.story")
 require("../app/components/button/button.story")
 require("../app/components/icon/icon.story")
