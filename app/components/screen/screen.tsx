@@ -10,7 +10,6 @@ import {
 import { useSafeArea } from "react-native-safe-area-context"
 import { ScreenProps } from "./screen.props"
 import { isNonScrolling, offsets, presets } from "./screen.presets"
-import { Wallpaper } from "../wallpaper/wallpaper"
 import { color } from "../../theme"
 
 const isIos = Platform.OS === "ios"
@@ -50,7 +49,6 @@ function ScreenWithScrolling(props: ScreenProps) {
 
   return (
     <View style={MAIN}>
-      <Wallpaper />
       <KeyboardAvoidingView
         style={[preset.outer, backgroundStyle]}
         behavior={isIos ? "padding" : null}
