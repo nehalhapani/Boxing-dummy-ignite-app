@@ -85,13 +85,7 @@ export const HomeScreen = observer(function HomeScreen() {
     }
 
     return () => BackHandler.removeEventListener("hardwareBackPress", backAction)
-  }, [isFocused])
-
-  // useEffect(() => {
-  //   if (!netInfo.isConnected && isFocused) {
-  //     Alert.alert(string.noInternet, string.internetMessage)
-  //   }
-  // }, [netInfo.isConnected])
+  }, [isFocused, netInfo.isConnected])
 
   const getCategoryData = async () => {
     /** get category details from api */

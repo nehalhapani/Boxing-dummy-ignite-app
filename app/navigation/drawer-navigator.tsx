@@ -4,16 +4,7 @@ import {
   DrawerContentScrollView,
   DrawerItem,
 } from "@react-navigation/drawer"
-import {
-  View,
-  ViewStyle,
-  TextStyle,
-  Image,
-  ImageStyle,
-  FlatList,
-  Alert,
-  Keyboard,
-} from "react-native"
+import { View, ViewStyle, TextStyle, Image, ImageStyle, FlatList, Alert } from "react-native"
 import { Text } from "../components"
 import { icons } from "../components/icon/icons"
 import { useNavigation } from "@react-navigation/native"

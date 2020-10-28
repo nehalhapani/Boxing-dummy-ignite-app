@@ -12,6 +12,7 @@ import { icons } from "../../components/icon/icons"
 import { Screen, Header, Navigate, Text } from "../../components"
 import { useStores } from "../../models"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
+import { useNetInfo } from "@react-native-community/netinfo"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -51,6 +52,11 @@ const INDICATOR: ViewStyle = {
   top: 0,
   bottom: 0,
 }
+const NoInternet: ViewStyle = {
+  justifyContent: "center",
+  alignItems: "center",
+  height: hp("22.2%"),
+}
 const ERROR_TEXT_STYLE: TextStyle = {
   color: color.palette.golden,
 }
@@ -65,6 +71,7 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
   const [videoPlay, setVideoPlay] = useState(false)
   const isFocused = useIsFocused()
   const [responseReceived, setResponseReceived] = useState(false)
+  const netInfo = useNetInfo()
 
   useEffect(() => {
     /** get data of subCategory media */
@@ -77,6 +84,11 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
       mediaStore.subcategoryMediaCleanup()
     }
   }, [route.params.id, isFocused])
+
+  // call when network connected or disconnected
+  useEffect(() => {
+    setLoading(true)
+  }, [netInfo.isConnected])
 
   const getdata = async (id: number, parentId) => {
     /** get data of subCategory, currently opened subcategory , media details */
@@ -148,18 +160,26 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
       )[1]
       return (
         <View key={index} style={RENDER_VIEW}>
-          <YoutubePlayer
-            videoId={video_id}
-            play={videoPlay}
-            height={hp("22.2%")}
-            initialPlayerParams={videoParams}
-            onReady={() => setLoading(false)}
-            onChangeState={videoStateChange}
-          />
-          {loading && (
+          {netInfo.isConnected && (
+            <YoutubePlayer
+              videoId={video_id}
+              play={videoPlay}
+              height={hp("22.2%")}
+              initialPlayerParams={videoParams}
+              onReady={() => setLoading(false)}
+              onChangeState={videoStateChange}
+            />
+          )}
+
+          {loading && netInfo.isConnected && (
             <View style={INDICATOR}>
               <Text text={string.videoLoading} style={ERROR_TEXT_STYLE} />
               <Spinner type={"ThreeBounce"} color={color.palette.golden} />
+            </View>
+          )}
+          {!netInfo.isConnected && (
+            <View style={NoInternet}>
+              <Text text={string.noInternet} style={ERROR_TEXT_STYLE} />
             </View>
           )}
         </View>

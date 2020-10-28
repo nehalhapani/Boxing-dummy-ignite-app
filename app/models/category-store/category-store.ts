@@ -25,6 +25,10 @@ export const CategoryStoreModel = types
           if (data.category.ok) {
             self.category = data.category.data.data
             self.loading = false
+            return { response: true, message: string.ok }
+          } else {
+            self.loading = false
+            return { response: false, message: string.somethingWrong }
           }
         } else {
           self.loading = false
@@ -34,8 +38,6 @@ export const CategoryStoreModel = types
         self.loading = false
         return { response: false, message: string.somethingWrong }
       }
-      self.loading = false
-      return { response: false, message: string.somethingWrong }
     }),
   }))
 

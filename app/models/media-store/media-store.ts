@@ -1,6 +1,5 @@
 import { Instance, SnapshotOut, types, flow } from "mobx-state-tree"
 import { Api } from "../../services/api"
-import { Alert } from "react-native"
 import { string } from "../../theme"
 
 const api = new Api()
@@ -111,19 +110,17 @@ export const MediaStoreModel = types
     /** get currently opened subCategory from all category array */
     getCurrentSubCategory(parent_id: number) {
       let currentSubcategoryIndex = findArrayObject(self.allSubCategoryMedia, parent_id)
-      if (currentSubcategoryIndex == -1) {
-        Alert.alert("Something went wrong !! Please try again later.")
+      if (currentSubcategoryIndex != -1) {
+        self.subCategory = self.allSubCategoryMedia[currentSubcategoryIndex].data
       }
-      self.subCategory = self.allSubCategoryMedia[currentSubcategoryIndex].data
     },
 
     /** get media of currently open subCategory */
     getMediaForSubcategory(idOfSubcategory: number, parent_id: number) {
       let indexForPerticularMedia = self.subCategory.findIndex((item) => item.id == idOfSubcategory)
-      if (indexForPerticularMedia == -1) {
-        Alert.alert("Something went wrong !! Please try again later.")
+      if (indexForPerticularMedia != -1) {
+        self.mediaArray = self.subCategory[indexForPerticularMedia].media
       }
-      self.mediaArray = self.subCategory[indexForPerticularMedia].media
     },
 
     subcategoryMediaCleanup() {

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import {
   ViewStyle,
@@ -15,7 +15,7 @@ import { useIsFocused } from "@react-navigation/native"
 
 import Spinner from "react-native-spinkit"
 
-import { color, fontSize, typography } from "../../theme"
+import { color, fontSize, typography, string } from "../../theme"
 import { icons } from "../../components/icon/icons"
 import { Screen, Header, Text } from "../../components"
 import { useStores } from "../../models"
@@ -74,6 +74,12 @@ const INDICATOR: ViewStyle = {
   top: 0,
   bottom: 0,
 }
+const NODATA_FOUND: TextStyle = {
+  fontSize: fontSize.FONT_20Px,
+  fontFamily: typography.fontRegular,
+  color: color.palette.white,
+  textAlign: "center",
+}
 interface SubCategoryScreenProps {
   route
 }
@@ -84,6 +90,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({
   const isFocused = useIsFocused()
   const { mediaStore } = useStores()
   const NetInfo = useNetInfo()
+  const [responseReceived, setResponseReceiver] = useState(false)
 
   useEffect(() => {
     if (isFocused) {
@@ -95,14 +102,15 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({
   const getdata = async (id: number) => {
     /** get subcategory data from store actions using parent id of subcategory */
     await mediaStore.getSubCategoryItems(id)
+    setResponseReceiver(true)
     await mediaStore.getCurrentSubCategory(id)
-
     /** set id of subcategory for drawer active link */
     await mediaStore.setIndexForSubcategory(id)
   }
 
   /** render view for subcategory items */
   const renderItem = ({ item, index }) => {
+    if (!responseReceived) return null
     return (
       <View key={index} style={BUTTON}>
         <TouchableOpacity
@@ -119,6 +127,15 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({
           <Image source={{ uri: item.icon }} style={ICON_STYLE} />
           <Text text={item.name} style={TEXT_COLOR} />
         </TouchableOpacity>
+      </View>
+    )
+  }
+  const emptyListComponent = () => {
+    if (!responseReceived) return null
+    let message = NetInfo.isConnected ? string.notFound : string.internetMessage
+    return (
+      <View>
+        <Text text={message} style={NODATA_FOUND} />
       </View>
     )
   }
@@ -142,6 +159,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({
               data={mediaStore.subCategory}
               renderItem={renderItem}
               keyExtractor={(item, index) => index.toString()}
+              ListEmptyComponent={emptyListComponent}
             />
           </View>
         </View>

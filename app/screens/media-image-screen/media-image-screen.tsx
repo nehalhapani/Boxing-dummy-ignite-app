@@ -72,6 +72,8 @@ export const MediaImageScreen = observer(function MediaImageScreen({
   const swiper_ref = useRef()
   const [activeSLide, setActiveSlide] = useState<number>(0)
   const [loading, setLoading] = useState(false)
+  const [imageError, setImageError] = useState(false)
+
   const { mediaStore } = useStores()
   const isFocused = useIsFocused()
 
@@ -144,11 +146,17 @@ export const MediaImageScreen = observer(function MediaImageScreen({
             resizeMode={FastImage.resizeMode.contain}
             onLoadStart={() => setLoading(true)}
             onLoadEnd={() => setLoading(false)}
+            onError={() => setImageError(true)}
           />
-          {loading && (
+          {loading && !imageError && (
             <View style={INDICATOR}>
               <Text text={string.imageLoading} style={{ color: color.palette.golden }} />
               <Spinner type={"ThreeBounce"} color={color.palette.golden} />
+            </View>
+          )}
+          {imageError && (
+            <View style={INDICATOR}>
+              <Text text={string.noInternet} style={{ color: color.palette.golden }} />
             </View>
           )}
         </View>
