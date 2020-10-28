@@ -16,7 +16,7 @@ import { useNavigation } from "@react-navigation/native"
 import Spinner from "react-native-spinkit"
 
 import { icons } from "../../components/icon/icons"
-import { Screen, Header, Button, Text } from "../../components"
+import { Screen, Header, Button, Text, Navigate } from "../../components"
 import { useStores } from "../../models"
 import { color, fontSize, typography, string } from "../../theme"
 
@@ -124,6 +124,7 @@ export const HomeScreen = observer(function HomeScreen() {
           textStyle={TEXT_COLOR}
           text={item.name}
           onPress={() =>
+            /** Navigate to subcategory with category Id and subcategory name params */
             navigation.navigate("subCategory", {
               id: item.id,
               name: item.name,
