@@ -13,6 +13,7 @@ import { Screen, Header, Text, Navigate } from "../../components"
 import { useStores } from "../../models"
 import { color, fontSize, typography, string } from "../../theme"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
+import { useNetInfo } from "@react-native-community/netinfo"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.transparent,
@@ -76,6 +77,7 @@ export const MediaImageScreen = observer(function MediaImageScreen({
 
   const { mediaStore } = useStores()
   const isFocused = useIsFocused()
+  const netInfo = useNetInfo()
 
   const SLIDER_WIDTH = Dimensions.get("window").width
   const ITEM_WIDTH = SLIDER_WIDTH - 67
@@ -89,6 +91,12 @@ export const MediaImageScreen = observer(function MediaImageScreen({
       mediaStore.subcategoryMediaCleanup()
     }
   }, [route.params.id, isFocused])
+
+  useEffect(() => {
+    if (netInfo.isConnected) {
+      setImageError(false)
+    }
+  }, [netInfo.isConnected])
 
   const getdata = async (id: number, parentId) => {
     /** access subCategory detail from store by passing parentId */

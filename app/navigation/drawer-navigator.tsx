@@ -162,6 +162,11 @@ export function DrawerNavigator() {
         activeTintColor: "#EECE00",
         inactiveTintColor: "red",
       }}
+      drawerStyle={{
+        borderBottomColor: color.palette.black,
+        borderWidth: 0,
+        backgroundColor: color.palette.black,
+      }}
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       drawerPosition={"right"}
       drawerType={"slide"}

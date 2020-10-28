@@ -137,9 +137,10 @@ export const HomeScreen = observer(function HomeScreen() {
   /** show text message for null response from api */
   const emptyListCategory = () => {
     if (!responseReceived) return null
+    let message = netInfo.isConnected ? string.notFound : string.internetMessage
     return (
       <View>
-        <Text text={string.somethingWrong} style={[STYLE_EMPTY_TEXT]} />
+        <Text text={message} style={[STYLE_EMPTY_TEXT]} />
       </View>
     )
   }
