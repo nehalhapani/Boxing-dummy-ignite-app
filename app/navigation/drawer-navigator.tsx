@@ -161,6 +161,9 @@ export function DrawerNavigator() {
       drawerContentOptions={{
         activeTintColor: "#EECE00",
         inactiveTintColor: "red",
+        style: {
+          backgroundColor: color.palette.black,
+        },
       }}
       drawerStyle={{
         borderBottomColor: color.palette.black,

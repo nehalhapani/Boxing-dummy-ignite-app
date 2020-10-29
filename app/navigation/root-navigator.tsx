@@ -32,7 +32,7 @@ const RootStack = observer(() => {
         headerShown: false,
         gestureEnabled: true,
 
-        /** stackPresentation: "modal", */
+        stackPresentation: "push",
       }}
     >
       {authStore.isTokenSet ? (
