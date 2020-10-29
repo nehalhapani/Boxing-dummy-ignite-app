@@ -74,6 +74,8 @@ export const RootNavigator = React.forwardRef<
     SplashScreen.hide()
   }, [])
   const netInfo = useNetInfo()
+
+  //  give alert for no internet in screen when switch off internet
   React.useEffect(() => {
     if (!netInfo.isConnected && netInfo.details != null) {
       Alert.alert(string.noInternet, string.internetMessage)
