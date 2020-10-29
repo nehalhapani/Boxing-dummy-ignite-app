@@ -1,9 +1,3 @@
-/**
- * This is the navigator you will modify to display the logged-in screens of your app.
- * You can use RootNavigator to also display an auth flow or other user flows.
- *
- * You'll likely spend most of your time in this file.
- */
 import React from "react"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { ProfileScreen } from "../screens"
