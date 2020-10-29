@@ -1,4 +1,5 @@
-// this is the native storybook entry point
-// import { StorybookUI } from "./config"
-
+/**
+ * import { StorybookUI } from "./config"
+ * this is the native storybook entry point
+ */
 export * from "./storybook"

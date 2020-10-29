@@ -4,10 +4,12 @@ import { PartialState, NavigationState, NavigationContainerRef } from "@react-na
 
 export const RootNavigation = {
   navigate(name: string) {
-    name // eslint-disable-line no-unused-expressions
+    name /**eslint-disable-line no-unused-expressions */
   },
-  goBack() {}, // eslint-disable-line @typescript-eslint/no-empty-function
-  resetRoot(state?: PartialState<NavigationState> | NavigationState) {}, // eslint-disable-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  goBack() {} /** eslint-disable-line @typescript-eslint/no-empty-function */,
+  resetRoot(
+    state?: PartialState<NavigationState> | NavigationState,
+  ) {} /** eslint-disable-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function */,
   getRootState(): NavigationState {
     return {} as any
   },
@@ -29,10 +31,10 @@ export const setRootNavigation = (ref: React.RefObject<NavigationContainerRef>) 
 export function getActiveRouteName(state: NavigationState | PartialState<NavigationState>) {
   const route = state.routes[state.index]
 
-  // Found the active route -- return the name
+  /** Found the active route -- return the name */
   if (!route.state) return route.name
 
-  // Recursive call to deal with nested routers
+  /** Recursive call to deal with nested routers */
   return getActiveRouteName(route.state)
 }
 
@@ -51,7 +53,7 @@ export function useBackButtonHandler(
   }, [canExit])
 
   useEffect(() => {
-    // We'll fire this when the back button is pressed on Android.
+    /** We'll fire this when the back button is pressed on Android. */
     const onBackPress = () => {
       const navigation = ref.current
 
@@ -59,16 +61,16 @@ export function useBackButtonHandler(
         return false
       }
 
-      // grab the current route
+      /** grab the current route */
       const routeName = getActiveRouteName(navigation.getRootState())
 
-      // are we allowed to exit?
+      /** are we allowed to exit? */
       if (canExitRef.current(routeName)) {
-        // let the system know we've not handled this event
+        /**  let the system know we've not handled this event */
         return false
       }
 
-      // we can't exit, so let's turn this into a back action
+      /** we can't exit, so let's turn this into a back action */
       if (navigation.canGoBack()) {
         navigation.goBack()
 
@@ -78,10 +80,10 @@ export function useBackButtonHandler(
       return false
     }
 
-    // Subscribe when we come to life
+    /** Subscribe when we come to life */
     BackHandler.addEventListener("hardwareBackPress", onBackPress)
 
-    // Unsubscribe when we're done
+    /** Unsubscribe when we're done */
     return () => BackHandler.removeEventListener("hardwareBackPress", onBackPress)
   }, [ref])
 }
@@ -99,14 +101,14 @@ export function useNavigationPersistence(storage: any, persistenceKey: string) {
     const currentRouteName = getActiveRouteName(state)
 
     if (previousRouteName !== currentRouteName) {
-      // track screens.
+      /**  track screens. */
       __DEV__ && console.tron.log(currentRouteName)
     }
 
-    // Save the current route name for later comparision
+    /** Save the current route name for later comparision */
     routeNameRef.current = currentRouteName
 
-    // Persist state to storage
+    /** Persist state to storage */
     storage.save(persistenceKey, state)
   }
 

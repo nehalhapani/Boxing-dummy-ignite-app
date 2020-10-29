@@ -1,7 +1,6 @@
 import { contains } from "ramda"
 const ValidateJS = require("validate.js")
 
-// HACK(steve): wierd typescript situation because of strange typings
 const Validate: any = ValidateJS.default ? ValidateJS.default : ValidateJS
 
 /**
@@ -23,43 +22,10 @@ Validate.validators.tripped = function custom(value, options, key, attributes) {
   }
 }
 
-/**
- * Defines the rules for validating.
- *
- * Example:
- * ```ts
- * const RULES = {
- *   favoriteBand: {
- *     inclusion: { ['Weezer', 'Other'], message: 'Pick wisely.' }
- *   },
- *   name: {
- *     presence: { message: 'A developer has no name?' }
- *   }
- * }
- * validate(RULES, {})
- * ```
- *
- * See https://validatejs.org/#validators for more examples.
- *
- */
 export interface ValidationRules {
   [key: string]: {}
 }
 
-/**
- * An object containing any errors found.
- *
- * Example:
- * ```js
- * {
- *   email: ['Invalid email address.'],
- *   password: [
- *     'Password must be 6 characters.',
- *     'Password must have at least 1 digit.'
- *   ]
- * }
- * ```
- */
 export interface ValidationErrors {
   [key: string]: {}
 }

@@ -22,14 +22,13 @@ import { HomeScreen, SubCategoryScreen, MediaImageScreen, VideoScreen } from "..
  *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
  */
 export type PrimaryParamList = {
-  //signIn: undefined
   dashboard: undefined
   subCategory: undefined
   image: undefined
   video: undefined
 }
 
-// Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack
+/** Documentation: https://github.com/software-mansion/react-native-screens/tree/master/native-stack */
 const Stack = createNativeStackNavigator<PrimaryParamList>()
 
 export function PrimaryNavigator() {

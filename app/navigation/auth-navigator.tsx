@@ -20,6 +20,3 @@ export function AuthNavigator() {
     </Stack.Navigator>
   )
 }
-
-// const exitRoutes = ["home"]
-// export const canExit = (routeName: string) => exitRoutes.includes(routeName)

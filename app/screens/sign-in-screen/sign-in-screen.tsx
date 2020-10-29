@@ -139,7 +139,7 @@ export const SignInScreen = observer(function SignInScreen() {
   const [password, setPassword] = useState("")
 
   const netInfo = useNetInfo()
-  // const isFocused = useIsFocused()
+  /** const isFocused = useIsFocused() */
 
   /** get google sign in confirguration */
   useEffect(() => {

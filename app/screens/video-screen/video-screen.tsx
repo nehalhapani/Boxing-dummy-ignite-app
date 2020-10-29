@@ -85,7 +85,7 @@ export const VideoScreen = observer(function VideoScreen({ route }: VideoScreenP
     }
   }, [route.params.id, isFocused])
 
-  // call when network connected or disconnected
+  /** call when network connected or disconnected */
   useEffect(() => {
     setLoading(true)
   }, [netInfo.isConnected])

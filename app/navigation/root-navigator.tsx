@@ -42,7 +42,7 @@ const RootStack = observer(() => {
         headerShown: false,
         gestureEnabled: true,
 
-        // stackPresentation: "modal",
+        /** stackPresentation: "modal", */
       }}
     >
       {authStore.isTokenSet ? (
@@ -75,7 +75,7 @@ export const RootNavigator = React.forwardRef<
   }, [])
   const netInfo = useNetInfo()
 
-  //  give alert for no internet in screen when switch off internet
+  /** give alert for no internet in screen when switch off internet */
   React.useEffect(() => {
     if (!netInfo.isConnected && netInfo.details != null) {
       Alert.alert(string.noInternet, string.internetMessage)

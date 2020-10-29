@@ -11,10 +11,10 @@ import { mergeAll, flatten } from "ramda"
  * This component is a HOC over the built-in React Native one.
  */
 export function Text(props: TextProps) {
-  // grab the props
+  /** grab the props */
   const { preset = "default", tx, txOptions, text, children, style: styleOverride, ...rest } = props
 
-  // figure out which content to use
+  /**  figure out which content to use */
   const i18nText = tx && translate(tx, txOptions)
   const content = i18nText || text || children
 

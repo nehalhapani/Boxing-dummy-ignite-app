@@ -63,7 +63,6 @@ export const MediaStoreModel = types
         self.loading = false
         return { response: false, message: string.noInternet }
       }
-      // self.loading = false
     }),
 
     /** set array for recently Viewed media */
